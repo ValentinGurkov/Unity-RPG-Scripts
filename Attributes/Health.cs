@@ -78,7 +78,6 @@ namespace RPG.Attributes {
             if (IsDead) {
                 return;
             }
-            print(gameObject.name + " took damage: " + damage);
             healthPoints.value = Mathf.Max(healthPoints.value - damage, 0);
             takeDamage.Invoke(damage);
             if (healthPoints.value == 0) {
