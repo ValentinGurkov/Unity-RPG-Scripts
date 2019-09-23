@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using RPG.Combat;
+﻿using RPG.Combat;
 using UnityEngine;
 
 public class WeaponPickup : PickupBase {

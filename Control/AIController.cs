@@ -1,11 +1,10 @@
-﻿using System;
-using RPG.Attributes;
+﻿using RPG.Attributes;
 using RPG.Combat;
 using RPG.Core;
 using RPG.Movement;
 using RPG.Utility;
 using UnityEngine;
-using static RPG.Utility.Utility; // checkl this
+using static RPG.Utility.Utility;
 
 namespace RPG.Control {
 
