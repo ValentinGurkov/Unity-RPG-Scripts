@@ -51,7 +51,6 @@ namespace RPG.Combat {
                 return;
             }
 
-            // There is probably a bug here where the range does not count dead corpses in between
             if (!GetIsInRange()) {
                 mover.MoveTo(target.transform.position, 1f);
                 stopped = false;
@@ -95,7 +94,7 @@ namespace RPG.Combat {
             if (target != null) {
 
                 if (currentWeapon.value != null) {
-                    currentWeapon.value.OnHit();
+                    currentWeapon.value.OnHit(target);
                 }
                 float damage = baseStats.GetStat(Stat.Damage);
                 if (currentWeaponConfig.HasProjectile()) {
@@ -106,6 +105,7 @@ namespace RPG.Combat {
             }
         }
 
+        // Animation Trigger
         private void Shoot() {
             Hit();
         }

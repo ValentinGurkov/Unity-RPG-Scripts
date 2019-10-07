@@ -12,6 +12,7 @@ namespace RPG.Attributes {
         [SerializeField] private float regenerationPercentage = 70f;
         [SerializeField] private TakeDamageEvent takeDamage;
         [SerializeField] private UnityEvent onDie;
+        [SerializeField] private bool startDead = false;
 
         private const string DIE_TRIGGER = "die";
         private LazyValue<float> healthPoints;
@@ -33,6 +34,9 @@ namespace RPG.Attributes {
 
         private void Start() {
             healthPoints.ForceInit();
+            if (startDead) {
+                Die();
+            }
         }
 
         private void OnEnable() {
