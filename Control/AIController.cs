@@ -60,7 +60,7 @@ namespace RPG.Control {
                 AttackBehaviour();
             } else if (timeSinceLastSawPlayer < suspicionTime) {
                 SuspicionBehaviour();
-            } else if (transform.position != guardPosition.value) {
+            } else {
                 hasNotAggrevated = true;
                 PatrolBehaviour();
             }
@@ -84,10 +84,10 @@ namespace RPG.Control {
 
         private void AttackBehaviour() {
             fighter.Attack(player);
+            AggrevateNearbyEnemies();
             if (hasNotAggrevated) {
                 hasNotAggrevated = false;
                 Aggrevate();
-                AggrevateNearbyEnemies();
             }
         }
 
@@ -96,7 +96,7 @@ namespace RPG.Control {
             foreach (RaycastHit hit in hits) {
                 AIController ai = hit.collider.GetComponent<AIController>();
 
-                if (ai == null) {
+                if (ai == null || ai == this) {
                     continue;
                 }
                 ai.Aggrevate();

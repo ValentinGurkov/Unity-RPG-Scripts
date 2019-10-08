@@ -12,10 +12,10 @@ namespace RPG.Cinematics {
         private PlayerController playerController;
 
         private void Awake() {
-            playerController = player.GetComponent<PlayerController>();
-            actionScheduler = player.GetComponent<ActionScheduler>();
             playableDirector = GetComponent<PlayableDirector>();
             player = GameObject.FindWithTag("Player");
+            playerController = player.GetComponent<PlayerController>();
+            actionScheduler = player.GetComponent<ActionScheduler>();
         }
 
         private void OnEnable() {

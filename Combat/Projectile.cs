@@ -33,6 +33,11 @@ namespace RPG.Combat {
 
         void OnTriggerEnter(Collider other) {
             Health targetHealth = other.GetComponent<Health>();
+
+            if (other.gameObject.tag == "Cinematic") {
+                return;
+            }
+
             if (targetHealth == null) { // to disallow friendly fire -  || targetHealth != target
                 Destroy(gameObject);
                 return;

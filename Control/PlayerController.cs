@@ -61,9 +61,7 @@ namespace RPG.Control {
 
         private bool InteractWithComponent() {
             RaycastHit[] hits = RaycastAllSorted();
-            print(hits.Length);
             foreach (RaycastHit hit in hits) {
-                print(hit.transform.gameObject.name);
                 IRaycastable[] raycastables = hit.transform.GetComponents<IRaycastable>();
                 foreach (IRaycastable raycastable in raycastables) {
                     if (raycastable.HandleRaycast(this)) {
