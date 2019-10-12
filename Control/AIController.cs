@@ -74,10 +74,6 @@ namespace RPG.Control {
             timeSinceAggrevated += Time.deltaTime;
         }
 
-        public void Aggrevate() {
-            timeSinceAggrevated = 0;
-        }
-
         private Vector3 GetGuardPosition() {
             return transform.position;
         }
@@ -102,6 +98,10 @@ namespace RPG.Control {
                 ai.Aggrevate();
 
             }
+        }
+
+        private bool IsAggrevated() {
+            return !playerHealth.IsDead && IsTargetInRange(transform, player.transform, chaseDistance) || timeSinceAggrevated < aggroCooldown;
         }
 
         private void SuspicionBehaviour() {
@@ -137,13 +137,14 @@ namespace RPG.Control {
             return patrolPath.GetWayPoint(currentWaypointIndex);
         }
 
-        private bool IsAggrevated() {
-            return !playerHealth.IsDead && IsTargetInRange(transform, player.transform, chaseDistance) || timeSinceAggrevated < aggroCooldown;
-        }
-
         private void OnDrawGizmosSelected() {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, chaseDistance);
         }
+
+        public void Aggrevate() {
+            timeSinceAggrevated = 0;
+        }
+
     }
 }

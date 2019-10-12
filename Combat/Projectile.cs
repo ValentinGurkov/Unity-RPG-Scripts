@@ -5,6 +5,8 @@ using UnityEngine.Events;
 namespace RPG.Combat {
 
     public class Projectile : MonoBehaviour {
+        private const string TAG_CINEMATIC = "Cinematic";
+        private const string TAG_PICKUP = "Pickup";
         [SerializeField] private float speed = 1f;
         [SerializeField] private bool isHoming = false;
         [SerializeField] private GameObject hitEffect = null;
@@ -17,7 +19,6 @@ namespace RPG.Combat {
         private float damage = 0;
 
         void Start() {
-            // use character behaviour look at method?
             transform.LookAt(GetAimLocation());
         }
 
@@ -32,11 +33,12 @@ namespace RPG.Combat {
         }
 
         void OnTriggerEnter(Collider other) {
-            Health targetHealth = other.GetComponent<Health>();
-
-            if (other.gameObject.tag == "Cinematic") {
+            // make projectiles go trough cinematic triggers and items on the ground
+            if (other.gameObject.tag == TAG_CINEMATIC || other.gameObject.tag == TAG_PICKUP) {
                 return;
             }
+
+            Health targetHealth = other.GetComponent<Health>();
 
             if (targetHealth == null) { // to disallow friendly fire -  || targetHealth != target
                 Destroy(gameObject);

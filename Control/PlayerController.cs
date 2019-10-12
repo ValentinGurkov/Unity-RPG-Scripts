@@ -48,6 +48,7 @@ namespace RPG.Control {
             if (InteractWithMovement()) {
                 return;
             }
+
             SetCursor(CursorType.None);
         }
 
@@ -117,11 +118,6 @@ namespace RPG.Control {
             return true;
         }
 
-        public void SetCursor(CursorType type) {
-            CursorMapping mapping = GetCursorMapping(type);
-            Cursor.SetCursor(mapping.texture, mapping.HotSpot, CursorMode.Auto);
-        }
-
         private CursorMapping GetCursorMapping(CursorType type) {
             for (int i = 0; i < mappings.Length; i++) {
                 if (mappings[i].type == type) {
@@ -131,8 +127,13 @@ namespace RPG.Control {
             return mappings[0];
         }
 
-        private static Ray GetMouseRay() {
+        private Ray GetMouseRay() {
             return Camera.main.ScreenPointToRay(Input.mousePosition);
+        }
+
+        public void SetCursor(CursorType type) {
+            CursorMapping mapping = GetCursorMapping(type);
+            Cursor.SetCursor(mapping.texture, mapping.HotSpot, CursorMode.Auto);
         }
     }
 }
