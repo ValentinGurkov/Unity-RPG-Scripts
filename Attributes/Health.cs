@@ -99,9 +99,13 @@ namespace RPG.Attributes {
             experience.GainExperience(baseStats.GetStat(Stat.ExperienceReward));
         }
 
-        private void RegenerateHealth() {
+        private bool RegenerateHealth() {
+            if (IsDead) {
+                return false;
+            }
             float regenHealthPoints = baseStats.GetStat(Stat.Health) * (regenerationPercentage / 100);
             healthPoints.value = Mathf.Max(healthPoints.value, regenHealthPoints);
+            return true;
         }
 
         private void Die() {

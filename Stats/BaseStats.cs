@@ -9,8 +9,8 @@ namespace RPG.Stats {
         [SerializeField] private Progression progression = null;
         [SerializeField] private GameObject levelUpParticleEffect = null;
         [SerializeField] private bool shouldUseModifiers = false;
-
-        public event Action onLevelUp;
+        public delegate bool onLevelUpHandler();
+        public event onLevelUpHandler onLevelUp;
 
         private LazyValue<int> currentLevel;
         private Experience experience;
@@ -48,8 +48,9 @@ namespace RPG.Stats {
             int newLevel = CalculateLevel();
             if (newLevel > currentLevel.value) {
                 currentLevel.value = newLevel;
-                onLevelUp();
-                LevelUpEffect();
+                if (onLevelUp()) {
+                    LevelUpEffect();
+                }
             }
 
         }

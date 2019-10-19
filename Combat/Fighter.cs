@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RPG.Attributes;
+using RPG.Cinematics;
 using RPG.Core;
 using RPG.Movement;
 using RPG.Saving;
@@ -29,6 +30,7 @@ namespace RPG.Combat {
         private float timeSinceLastAttack = Mathf.Infinity;
         private WeaponConfig currentWeaponConfig;
         private LazyValue<Weapon> currentWeapon;
+        private bool attackDisabled = false;
 
         private void Awake() {
             mover = GetComponent<Mover>();
@@ -43,11 +45,16 @@ namespace RPG.Combat {
 
         private void Start() {
             currentWeapon.ForceInit();
+            CinematicControlRemover[] cinematicControlRemovers = FindObjectsOfType<CinematicControlRemover>();
+            for (int i = 0; i < cinematicControlRemovers.Length; i++) {
+                cinematicControlRemovers[i].onCinematicStart += DisableAttack;
+                cinematicControlRemovers[i].onCinematicEnd += EnableAttack;
+            }
         }
 
         private void Update() {
             timeSinceLastAttack += Time.deltaTime;
-            if (target == null || target.IsDead) {
+            if (target == null || target.IsDead || attackDisabled) {
                 return;
             }
 
@@ -167,6 +174,14 @@ namespace RPG.Combat {
             if (stat == Stat.Damage) {
                 yield return currentWeaponConfig.PercentageBous;
             }
+        }
+
+        public void EnableAttack() {
+            attackDisabled = false;
+        }
+
+        public void DisableAttack() {
+            attackDisabled = true;
         }
     }
 }
