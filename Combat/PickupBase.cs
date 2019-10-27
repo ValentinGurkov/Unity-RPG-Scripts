@@ -7,8 +7,7 @@ using UnityEngine;
 namespace RPG.Combat {
     public class PickupBase : MonoBehaviour, IRaycastable {
 
-        public CursorType Cursor =>
-            CursorType.Pickup;
+        public CursorType Cursor => CursorType.Pickup;
 
         private Collider objectCollider;
 

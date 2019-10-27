@@ -123,11 +123,7 @@ namespace RPG.Combat {
             animator.SetTrigger(STOP_ATTACK_TRIGGER);
         }
 
-        public Health Target {
-            get {
-                return target;
-            }
-        }
+        public Health Target => target;
 
         public void EquipWeapon(WeaponConfig weapon) {
             currentWeaponConfig = weapon;

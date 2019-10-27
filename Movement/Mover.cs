@@ -1,4 +1,5 @@
-﻿using RPG.Attributes;
+﻿using System;
+using RPG.Attributes;
 using RPG.Core;
 using RPG.Saving;
 using UnityEngine;
@@ -13,41 +14,35 @@ namespace RPG.Movement {
         private Animator animator;
         private ActionScheduler actionScheduler;
         private Health health;
+        private Action callbackOnReachingDestination = null;
+        private float originalStoppingDistance = 0;
+        private float interactStoppingDistance = 3f;
 
         private void Awake() {
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             actionScheduler = GetComponent<ActionScheduler>();
             health = GetComponent<Health>();
+
+            originalStoppingDistance = navMeshAgent.stoppingDistance;
         }
 
         private void Update() {
             navMeshAgent.enabled = !health.IsDead;
             UpdateAnimator();
-        }
 
-        public bool CanMoveTo(Vector3 destination) {
-            NavMeshPath path = new NavMeshPath();
-            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
-            if (!hasPath || path.status != NavMeshPathStatus.PathComplete || GetPathLength(path) > maxNavPathLength) {
-                return false;
-            };
-            return true;
-        }
-
-        public void StartMovement(Vector3 destination, float speedFraction) {
-            actionScheduler.StartAction(this);
-            MoveTo(destination, speedFraction);
-        }
-
-        public void MoveTo(Vector3 destination, float speedFraction) {
-            navMeshAgent.destination = destination;
-            navMeshAgent.speed = maxSpeed * Mathf.Clamp01(speedFraction);
-            navMeshAgent.isStopped = false;
-        }
-
-        public void Cancel() {
-            navMeshAgent.isStopped = true;
+            if (callbackOnReachingDestination != null && !navMeshAgent.pathPending) {
+                navMeshAgent.stoppingDistance = interactStoppingDistance;
+                if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance) {
+                    print(navMeshAgent.remainingDistance);
+                    if (!navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f) {
+                        Cancel();
+                        callbackOnReachingDestination();
+                        callbackOnReachingDestination = null;
+                        navMeshAgent.stoppingDistance = originalStoppingDistance;
+                    }
+                }
+            }
         }
 
         private float GetPathLength(NavMeshPath path) {
@@ -69,6 +64,35 @@ namespace RPG.Movement {
             Vector3 localVelocity = transform.InverseTransformDirection(velocity);
             float speed = localVelocity.z;
             animator.SetFloat("forwardSpeed", speed);
+        }
+
+        public bool CanMoveTo(Vector3 destination) {
+            NavMeshPath path = new NavMeshPath();
+            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
+            if (!hasPath || path.status != NavMeshPathStatus.PathComplete || GetPathLength(path) > maxNavPathLength) {
+                return false;
+            };
+            return true;
+        }
+
+        public void MoveTo(Vector3 destination, float speedFraction) {
+            navMeshAgent.destination = destination;
+            navMeshAgent.speed = maxSpeed * Mathf.Clamp01(speedFraction);
+            navMeshAgent.isStopped = false;
+        }
+
+        public void InteractWithTarget(Action callback) {
+            callbackOnReachingDestination = callback;
+        }
+
+        public Mover StartMovement(Vector3 destination, float speedFraction) {
+            actionScheduler.StartAction(this);
+            MoveTo(destination, speedFraction);
+
+            return this;
+        }
+        public void Cancel() {
+            navMeshAgent.isStopped = true;
         }
 
         public object CaptureState() {

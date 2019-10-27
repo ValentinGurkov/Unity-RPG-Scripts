@@ -117,12 +117,12 @@ namespace RPG.Stats {
 
             lookupTable = new Dictionary<CharacterClass, Dictionary<Stat, float[]>>();
 
-            foreach (CharacterProgression progressionClass in characterClasses) {
+            for (int progressionClass = 0; progressionClass < characterClasses.Length; progressionClass++) {
                 var statLookupTable = new Dictionary<Stat, float[]>();
-                foreach (ProgressionStat progressionStat in progressionClass.Stats) {
-                    statLookupTable[progressionStat.Stat] = progressionStat.Levels;
+                for (int progressionStat = 0; progressionStat < characterClasses[progressionClass].Stats.Length; progressionStat++) {
+                    statLookupTable[characterClasses[progressionClass].Stats[progressionStat].Stat] = characterClasses[progressionClass].Stats[progressionStat].Levels;
                 }
-                lookupTable[progressionClass.CharacterClass] = statLookupTable;
+                lookupTable[characterClasses[progressionClass].CharacterClass] = statLookupTable;
             }
         }
     }

@@ -12,6 +12,8 @@ namespace RPG.Stats {
         public delegate bool onLevelUpHandler();
         public event onLevelUpHandler onLevelUp;
 
+        public CharacterClass CharacterClass => characterClass;
+
         private LazyValue<int> currentLevel;
         private Experience experience;
 

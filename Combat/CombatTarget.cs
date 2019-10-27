@@ -1,5 +1,6 @@
 ﻿using RPG.Attributes;
 using RPG.Control;
+using RPG.Stats;
 using UnityEngine;
 
 namespace RPG.Combat {
@@ -7,8 +8,15 @@ namespace RPG.Combat {
     [RequireComponent(typeof(Health))]
     public class CombatTarget : MonoBehaviour, IRaycastable {
 
-        public CursorType Cursor =>
-            CursorType.Combat;
+        public CursorType Cursor => CursorType.Combat;
+
+        public CharacterClass Type => baseStats.CharacterClass;
+
+        private BaseStats baseStats;
+
+        void Awake() {
+            baseStats = GetComponent<BaseStats>();
+        }
 
         public bool HandleRaycast(PlayerController callingController) {
             Fighter fighter = callingController.GetComponent<Fighter>();
@@ -22,5 +30,6 @@ namespace RPG.Combat {
 
             return true;
         }
+
     }
 }
