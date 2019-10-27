@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RPG.UI {
+namespace RPG.Dialogue {
     public class DialogueSystem : MonoBehaviour {
         private GameObject dialoguePanel;
         private Button continueButton;
