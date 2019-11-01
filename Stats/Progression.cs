@@ -19,17 +19,9 @@ namespace RPG.Stats {
 
             private CharacterClass characteClass = (CharacterClass) GetActiveInstances();
 
-            public CharacterClass CharacterClass {
-                get {
-                    return characteClass;
-                }
-            }
+            public CharacterClass CharacterClass => characteClass;
 
-            public ProgressionStat[] Stats {
-                get {
-                    return stats;
-                }
-            }
+            public ProgressionStat[] Stats => stats;
 
             public CharacterProgression() {
                 Instances++;
@@ -55,17 +47,9 @@ namespace RPG.Stats {
 
             [SerializeField] private float[] levels = new float[5];
 
-            public Stat Stat {
-                get {
-                    return stat;
-                }
-            }
+            public Stat Stat => stat;
 
-            public float[] Levels {
-                get {
-                    return levels;
-                }
-            }
+            public float[] Levels => levels;
 
             public float GetStat(int level) {
                 if (level > levels.Length) {

@@ -21,10 +21,6 @@ namespace RPG.Stats {
       experiencePoints = (float) state;
     }
 
-    public float ExperiencePoints {
-      get {
-        return experiencePoints;
-      }
-    }
+    public float ExperiencePoints => experiencePoints;
   }
 }

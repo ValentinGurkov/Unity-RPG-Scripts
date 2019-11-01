@@ -1,7 +1,7 @@
 ﻿using RPG.Core;
 using RPG.Saving;
 using RPG.Stats;
-using RPG.Utility;
+using RPG.Util;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -53,29 +53,13 @@ namespace RPG.Attributes {
 
         public bool IsDead { get; private set; } = false;
 
-        public float Percentage {
-            get {
-                return Fraction * 100;
-            }
-        }
+        public float Percentage => Fraction * 100;
 
-        public float HealthPoints {
-            get {
-                return healthPoints.value;
-            }
-        }
+        public float HealthPoints => healthPoints.value;
 
-        public float MaxHealthPoints {
-            get {
-                return baseStats.GetStat(Stat.Health);
-            }
-        }
+        public float MaxHealthPoints => baseStats.GetStat(Stat.Health);
 
-        public float Fraction {
-            get {
-                return healthPoints.value / baseStats.GetStat(Stat.Health);
-            }
-        }
+        public float Fraction => healthPoints.value / baseStats.GetStat(Stat.Health);
 
         public void TakeDamage(GameObject instigator, float damage) {
             if (IsDead) {

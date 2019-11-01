@@ -9,7 +9,7 @@ namespace RPG.Combat {
         [SerializeField] private float respawnTime = 5f;
 
         private void OnTriggerEnter(Collider other) {
-            if (other.gameObject.tag == "Player") {
+            if (other.gameObject.CompareTag("Player")) {
                 Pickup(other.GetComponent<Health>(), healFX, healthPercentToRestore, respawnable, respawnTime);
             }
         }

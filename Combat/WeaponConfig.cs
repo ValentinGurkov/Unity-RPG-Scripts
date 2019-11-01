@@ -59,22 +59,10 @@ namespace RPG.Combat {
             projectileInstance.SetTarget(target, instigator, calculatedDamage);
         }
 
-        public float Range {
-            get {
-                return weaponRange;
-            }
-        }
+        public float Range => weaponRange;
 
-        public float Damage {
-            get {
-                return weaponDamage;
-            }
-        }
+        public float Damage => weaponDamage;
 
-        public float PercentageBous {
-            get {
-                return percentageBonus;
-            }
-        }
+        public float PercentageBous => percentageBonus;
     }
 }

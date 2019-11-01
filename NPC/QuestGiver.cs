@@ -1,31 +1,23 @@
 ﻿using RPG.Control;
 using RPG.Core;
-using RPG.Dialogue;
 using RPG.Movement;
 using UnityEngine;
-using static RPG.Utility.Utility;
+using static RPG.Util.Utility;
 
 namespace RPG.NPC {
-    public class QuestGiver : NPC, IRaycastable {
-        [SerializeField] private string[] dialogue;
-
+    public class QuestGiver : DialogueInitiator, IRaycastable {
         public CursorType Cursor => CursorType.Quest;
-        private DialogueSystem dialogueSystem;
 
         //TODO issue quest & save state (implement ISaveable)
         private bool quiestIssued = false;
 
-        void Start() {
-            dialogueSystem = FindObjectOfType<DialogueSystem>();
-        }
-
         public override void Interact() {
-            dialogueSystem.AddNewDialogue(dialogue, this.name);
+            TriggerDialogue();
         }
 
         public bool HandleRaycast(PlayerController callingController) {
             if (Input.GetMouseButtonDown(0)) {
-                if (IsTargetInRange(callingController.transform, transform, 1f)) {
+                if (IsTargetInRange(callingController.transform, transform, 2.5f)) {
                     callingController.GetComponent<CharacterBehaviour>().LookAtTarget(transform);
                     Interact();
                 } else {

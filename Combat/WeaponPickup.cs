@@ -7,7 +7,7 @@ public class WeaponPickup : PickupBase {
     [SerializeField] private bool respawnable = true;
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "Player") {
+        if (other.gameObject.CompareTag("Player")) {
             Pickup(other.GetComponent<Fighter>(), weapon, respawnable, respawnTime);
         }
     }

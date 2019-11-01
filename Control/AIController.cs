@@ -2,9 +2,9 @@
 using RPG.Combat;
 using RPG.Core;
 using RPG.Movement;
-using RPG.Utility;
+using RPG.Util;
 using UnityEngine;
-using static RPG.Utility.Utility;
+using static RPG.Util.Utility;
 
 namespace RPG.Control {
 
@@ -31,11 +31,7 @@ namespace RPG.Control {
         private ActionScheduler actionScheduler;
         private LazyValue<Vector3> guardPosition;
 
-        public PatrolPath PatrolPath {
-            get {
-                return patrolPath;
-            }
-        }
+        public PatrolPath PatrolPath => patrolPath;
 
         private void Awake() {
             player = GameObject.FindWithTag("Player");

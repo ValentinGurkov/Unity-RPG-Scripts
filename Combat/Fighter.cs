@@ -5,9 +5,9 @@ using RPG.Core;
 using RPG.Movement;
 using RPG.Saving;
 using RPG.Stats;
-using RPG.Utility;
+using RPG.Util;
 using UnityEngine;
-using static RPG.Utility.Utility;
+using static RPG.Util.Utility;
 
 namespace RPG.Combat {
 

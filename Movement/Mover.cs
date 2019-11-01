@@ -34,7 +34,6 @@ namespace RPG.Movement {
             if (callbackOnReachingDestination != null && !navMeshAgent.pathPending) {
                 navMeshAgent.stoppingDistance = interactStoppingDistance;
                 if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance) {
-                    print(navMeshAgent.remainingDistance);
                     if (!navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f) {
                         Cancel();
                         callbackOnReachingDestination();

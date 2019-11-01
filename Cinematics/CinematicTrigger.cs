@@ -13,7 +13,7 @@ namespace RPG.Cinematics {
         }
 
         private void OnTriggerEnter(Collider other) {
-            if (!isAlreadyTriggered && other.gameObject.tag == "Player") {
+            if (!isAlreadyTriggered && other.gameObject.CompareTag("Player")) {
                 playableDirector.Play();
                 isAlreadyTriggered = true;
             }

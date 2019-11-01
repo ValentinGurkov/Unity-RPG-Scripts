@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RPG.Utility {
+namespace RPG.Util {
 
     public static class Utility {
 

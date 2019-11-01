@@ -10,11 +10,7 @@ namespace RPG.Saving {
         private static Dictionary<string, SaveableEntity> globalLookUp = new Dictionary<string, SaveableEntity>();
         private ISaveable[] saveables;
 
-        public string UUID {
-            get {
-                return uniqueIdentifier;
-            }
-        }
+        public string UUID => uniqueIdentifier;
 
         private void Awake() {
             saveables = GetComponents<ISaveable>();

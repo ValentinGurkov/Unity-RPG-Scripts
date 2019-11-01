@@ -1,4 +1,4 @@
-namespace RPG.Utility {
+namespace RPG.Util {
     /// <summary>
     /// Container class that wraps a value and ensures initialisation is
     /// called just before first use.

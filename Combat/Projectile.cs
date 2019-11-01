@@ -14,12 +14,14 @@ namespace RPG.Combat {
         [SerializeField] private float afterHitTTL = 0.2f;
         [SerializeField] private GameObject[] destroyAfterHit;
         [SerializeField] private UnityEvent onHit;
+        [SerializeField] private UnityEvent onLaunch;
         private Health target = null;
         private GameObject instigator = null;
         private float damage = 0;
 
         void Start() {
             transform.LookAt(GetAimLocation());
+            onLaunch.Invoke();
         }
 
         private void Update() {
@@ -34,7 +36,7 @@ namespace RPG.Combat {
 
         void OnTriggerEnter(Collider other) {
             // make projectiles go trough cinematic triggers and items on the ground
-            if (other.gameObject.tag == TAG_CINEMATIC || other.gameObject.tag == TAG_PICKUP) {
+            if (other.gameObject.CompareTag(TAG_CINEMATIC) || other.gameObject.CompareTag(TAG_PICKUP)) {
                 return;
             }
 

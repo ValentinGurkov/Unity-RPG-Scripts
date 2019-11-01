@@ -23,14 +23,10 @@ namespace RPG.SceneManagement {
             E
         }
 
-        public Transform SpawnPoint {
-            get {
-                return spawnPoint;
-            }
-        }
+        public Transform SpawnPoint => spawnPoint;
 
         private void OnTriggerEnter(Collider other) {
-            if (other.tag == "Player") {
+            if (other.CompareTag("Player")) {
                 StartCoroutine(Transition(other.GetComponent<PlayerController>()));
             }
         }
