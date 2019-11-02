@@ -5,6 +5,8 @@ namespace RPG.Control {
     Combat,
     UI,
     Pickup,
-    Quest
+    Quest,
+    Converse,
+    NPC
   }
 }

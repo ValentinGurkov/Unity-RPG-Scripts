@@ -2,7 +2,7 @@
 using RPG.Events;
 using RPG.Stats;
 
-namespace RPG.Quests {
+namespace RPG.Questing {
     public class KillGoal : Goal {
         public CharacterClass EnemyType { get; set; }
 

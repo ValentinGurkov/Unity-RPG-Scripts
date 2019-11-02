@@ -1,26 +1,35 @@
-﻿using RPG.Conversing;
+﻿using RPG.Control;
+using RPG.Conversing;
 using UnityEngine;
 
 namespace RPG.NPC {
     public class DialogueInitiator : NPC {
         [SerializeField] private Dialogue dialogue;
+        [SerializeField] private DialogueManager dialogueManager;
 
-        private DialogueManager dialogueManager;
+        public new CursorType Cursor => CursorType.Converse;
+        public DialogueManager DialogueManager => dialogueManager;
+
         private bool isInteracting = false;
+
         private void Start() {
-            dialogueManager = FindObjectOfType<DialogueManager>();
             dialogueManager.onDialogueClose += EndInteraction;
         }
 
-        public void TriggerDialogue() {
+        public override void Interact() {
             if (!isInteracting) {
-                dialogueManager.StartDialogue(dialogue);
-                isInteracting = true;
+                StartDialogue(dialogue);
             }
         }
 
-        private void EndInteraction() {
+        public void StartDialogue(Dialogue dialogue) {
+            dialogueManager.StartDialogue(dialogue);
+            isInteracting = true;
+        }
+
+        void EndInteraction() {
             isInteracting = false;
         }
+
     }
 }

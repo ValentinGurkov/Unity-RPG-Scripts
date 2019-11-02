@@ -1,4 +1,4 @@
-using RPG.Quests;
+using RPG.Questing;
 using RPG.Stats;
 
 public class UltimateSlayer : Quest {

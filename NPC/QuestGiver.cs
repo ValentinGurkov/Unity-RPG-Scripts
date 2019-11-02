@@ -1,30 +1,57 @@
 ﻿using RPG.Control;
-using RPG.Core;
-using RPG.Movement;
+using RPG.Conversing;
+using RPG.Questing;
 using UnityEngine;
-using static RPG.Util.Utility;
 
 namespace RPG.NPC {
     public class QuestGiver : DialogueInitiator, IRaycastable {
-        public CursorType Cursor => CursorType.Quest;
+        [SerializeField] private string questType;
+        [SerializeField] private GameObject player;
+        [SerializeField] private Dialogue questPendingDialogue;
+        [SerializeField] private Dialogue questCompletedDialogue;
+        [SerializeField] private Dialogue afterQuestDialogue;
 
         //TODO issue quest & save state (implement ISaveable)
-        private bool quiestIssued = false;
+        private bool assignedQuest = false;
+        private bool hasBeenHelped = false;
+        private QuestManager questManager;
+        private Quest quest;
 
-        public override void Interact() {
-            TriggerDialogue();
+        public new CursorType Cursor => CursorType.Quest;
+
+        private void Start() {
+            questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
         }
 
-        public bool HandleRaycast(PlayerController callingController) {
-            if (Input.GetMouseButtonDown(0)) {
-                if (IsTargetInRange(callingController.transform, transform, 2.5f)) {
-                    callingController.GetComponent<CharacterBehaviour>().LookAtTarget(transform);
-                    Interact();
-                } else {
-                    callingController.GetComponent<Mover>().StartMovement(transform.position, 1f).InteractWithTarget(delegate { Interact(); });
-                }
+        public override void Interact() {
+            if (!assignedQuest && !hasBeenHelped) {
+                base.Interact();
+                base.DialogueManager.onDialogueClose += AssignQuest;
+            } else if (assignedQuest && !hasBeenHelped) {
+                CheckQuest();
+            } else {
+                StartDialogue(afterQuestDialogue);
             }
-            return true;
+        }
+
+        private void AssignQuest() {
+            Debug.Log("Quest assigned");
+            assignedQuest = true;
+            quest = questManager.AddQuest(questType);
+        }
+
+        private void CheckQuest() {
+            Debug.Log("Checking quest");
+            if (quest.Completed) {
+                Debug.Log("Quest completed");
+                quest.GiveReward();
+                hasBeenHelped = true;
+                assignedQuest = true;
+                StartDialogue(questCompletedDialogue);
+            } else {
+                Debug.Log("Quest not yet completed");
+                StartDialogue(questPendingDialogue);
+            }
         }
     }
 

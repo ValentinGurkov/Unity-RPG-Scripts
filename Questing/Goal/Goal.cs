@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-namespace RPG.Quests {
-    public class Goal : MonoBehaviour {
+namespace RPG.Questing {
+    public class Goal {
         public Quest Quest { get; set; }
         public bool Completed { get; set; } = false;
         public string Description { get; set; }

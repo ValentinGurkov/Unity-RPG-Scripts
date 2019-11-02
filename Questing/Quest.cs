@@ -3,7 +3,7 @@ using RPG.Combat;
 using RPG.Stats;
 using UnityEngine;
 
-namespace RPG.Quests {
+namespace RPG.Questing {
     //[CreateAssetMenu(fileName = "Quest", menuName = "Quest/Create New  Quest", order = 0)]
     public class Quest : MonoBehaviour {
         public List<Goal> Goals { get; set; } = new List<Goal>();
@@ -40,14 +40,16 @@ namespace RPG.Quests {
             }
         }
 
-        void GiveReward() {
-            Debug.Log("giving item reward");
+        public void GiveReward() {
+            Debug.Log("Giving quest reward");
             if (ItemReward != null) {
+                Debug.Log("Giving item reward");
                 // ItemReward.Spawn(...);
             }
+            GiveExperience();
         }
 
-        void GiveExperience() {
+        private void GiveExperience() {
             Debug.Log("giving experience reward");
             if (experience == null && ExperienceReward == 0) {
                 return;
