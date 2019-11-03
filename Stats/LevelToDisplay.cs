@@ -12,9 +12,17 @@ namespace RPG.Stats {
             text = GetComponent<Text>();
         }
 
-        private void Update() {
-            var test = baseStats.GetLevel();
+        private void OnEnable() {
+            baseStats.onLevelUp += UpdateLevel;
+        }
+
+        private void OnDisable() {
+            baseStats.onLevelUp -= UpdateLevel;
+        }
+
+        private bool UpdateLevel() {
             text.text = String.Format("{0:0}", baseStats.GetLevel());
+            return true;
         }
     }
 

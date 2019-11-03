@@ -11,8 +11,8 @@ namespace RPG.Attributes {
 
         [SerializeField] private float regenerationPercentage = 70f;
         [SerializeField] private TakeDamageEvent takeDamage;
-        [SerializeField] private UnityEvent onDie;
         [SerializeField] private bool startDead = false;
+        [SerializeField] public OnDieEvent onDie;
 
         private const string DIE_TRIGGER = "die";
         private LazyValue<float> healthPoints;
@@ -21,9 +21,12 @@ namespace RPG.Attributes {
         private BaseStats baseStats;
 
         [System.Serializable]
-        public class TakeDamageEvent : UnityEvent<float> {
+        public class TakeDamageEvent : UnityEvent<float> { }
 
-        }
+        [System.Serializable]
+        public class OnDieEvent : UnityEvent<Health> { }
+
+        public CharacterClass Type => baseStats.CharacterClass;
 
         private void Awake() {
             animator = GetComponent<Animator>();
@@ -68,7 +71,7 @@ namespace RPG.Attributes {
             healthPoints.value = Mathf.Max(healthPoints.value - damage, 0);
             takeDamage.Invoke(damage);
             if (healthPoints.value == 0) {
-                onDie.Invoke();
+                onDie.Invoke(this);
                 Die();
                 AwardExperience(instigator);
             }

@@ -8,7 +8,7 @@ using UnityEngine.AI;
 namespace RPG.Movement {
 
     public class Mover : MonoBehaviour, IAction, ISaveable {
-        [SerializeField] private float maxSpeed = 5.66f;
+        [SerializeField] private float maxSpeed = 6f;
         [SerializeField] private float maxNavPathLength = 40f;
         private NavMeshAgent navMeshAgent;
         private Animator animator;
@@ -61,7 +61,7 @@ namespace RPG.Movement {
         private void UpdateAnimator() {
             Vector3 velocity = navMeshAgent.velocity;
             Vector3 localVelocity = transform.InverseTransformDirection(velocity);
-            float speed = localVelocity.z;
+            float speed = Math.Abs(localVelocity.z);
             animator.SetFloat("forwardSpeed", speed);
         }
 

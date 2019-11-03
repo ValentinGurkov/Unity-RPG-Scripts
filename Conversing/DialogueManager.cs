@@ -10,19 +10,10 @@ namespace RPG.Conversing {
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private Animator animator;
         private Queue<string> dialogLines = new Queue<string>();
-        private const string IS_OPEN_TRIGGER = "IsOpen";
         private Coroutine currentDialogue = null;
+        private const string IS_OPEN_TRIGGER = "IsOpen";
 
         public event Action onDialogueClose;
-        public static DialogueManager Instance { get; set; }
-
-        private void Awake() {
-            if (Instance != null && Instance != this) {
-                Destroy(gameObject);
-            } else {
-                Instance = this;
-            }
-        }
 
         private void Show(bool shouldShow) {
             for (int i = 0; i < transform.childCount; i++) {

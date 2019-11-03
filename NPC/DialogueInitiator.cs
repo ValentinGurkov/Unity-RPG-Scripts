@@ -12,8 +12,12 @@ namespace RPG.NPC {
 
         private bool isInteracting = false;
 
-        private void Start() {
+        private void OnEnable() {
             dialogueManager.onDialogueClose += EndInteraction;
+        }
+
+        private void OnDisable() {
+            dialogueManager.onDialogueClose -= EndInteraction;
         }
 
         public override void Interact() {
