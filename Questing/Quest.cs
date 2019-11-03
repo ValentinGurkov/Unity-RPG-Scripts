@@ -14,12 +14,10 @@ namespace RPG.Questing {
         public bool Completed { get; set; }
 
         private GameObject player;
-        private BaseStats baseStats;
         private Experience experience;
 
         private void Awake() {
             player = GameObject.FindWithTag("Player");
-            baseStats = player.GetComponent<BaseStats>();
             experience = player.GetComponent<Experience>();
         }
 
@@ -44,7 +42,9 @@ namespace RPG.Questing {
             Debug.Log("Giving quest reward");
             if (ItemReward != null) {
                 Debug.Log("Giving item reward");
-                // ItemReward.Spawn(...);
+                /* TODO Item rewards after inventory system is implemented
+                ItemReward.Spawn(...);
+                */
             }
             GiveExperience();
         }

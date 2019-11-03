@@ -6,7 +6,6 @@ using UnityEngine;
 namespace RPG.NPC {
     public class QuestGiver : DialogueInitiator, IRaycastable {
         [SerializeField] private string questType;
-        [SerializeField] private GameObject player;
         [SerializeField] private Dialogue questPendingDialogue;
         [SerializeField] private Dialogue questCompletedDialogue;
         [SerializeField] private Dialogue afterQuestDialogue;
@@ -19,7 +18,7 @@ namespace RPG.NPC {
 
         public new CursorType Cursor => CursorType.Quest;
 
-        private void Start() {
+        private void Awake() {
             questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
         }
 
@@ -41,16 +40,18 @@ namespace RPG.NPC {
         }
 
         private void CheckQuest() {
-            Debug.Log("Checking quest");
-            if (quest.Completed) {
-                Debug.Log("Quest completed");
-                quest.GiveReward();
-                hasBeenHelped = true;
-                assignedQuest = true;
-                StartDialogue(questCompletedDialogue);
-            } else {
-                Debug.Log("Quest not yet completed");
-                StartDialogue(questPendingDialogue);
+            if (quest != null) {
+                Debug.Log("Checking quest");
+                if (quest.Completed) {
+                    Debug.Log("Quest completed");
+                    quest.GiveReward();
+                    hasBeenHelped = true;
+                    assignedQuest = true;
+                    StartDialogue(questCompletedDialogue);
+                } else {
+                    Debug.Log("Quest not yet completed");
+                    StartDialogue(questPendingDialogue);
+                }
             }
         }
     }

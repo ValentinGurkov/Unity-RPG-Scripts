@@ -2,24 +2,26 @@
 
 namespace RPG.Questing {
     public class Goal {
-        public Quest Quest { get; set; }
         public bool Completed { get; set; } = false;
         public string Description { get; set; }
-        public int CurrentAmount { get; set; }
-        public int RequiredAmount { get; set; }
+        protected Quest Quest { get; set; }
+        protected int CurrentAmount { get; set; }
+        protected int RequiredAmount { get; set; }
 
         public virtual void Init() { }
 
-        public void Evaluate() {
+        protected bool Evaluate() {
             if (CurrentAmount >= RequiredAmount) {
                 Complete();
             }
+
+            return Completed;
         }
 
         void Complete() {
-            Quest.CheckGols();
-            Debug.Log("Goal " + Description + " has been completed!");
             Completed = true;
+            Debug.Log("Goal " + Description + " has been completed!");
+            Quest.CheckGols();
         }
     }
 }

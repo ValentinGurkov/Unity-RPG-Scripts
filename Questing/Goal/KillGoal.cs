@@ -1,14 +1,15 @@
-﻿using RPG.Combat;
+﻿using RPG.Attributes;
 using RPG.Events;
 using RPG.Stats;
+using UnityEngine;
 
 namespace RPG.Questing {
     public class KillGoal : Goal {
-        public CharacterClass EnemyType { get; set; }
+        private string Enemy;
 
-        public KillGoal(Quest quest, CharacterClass enemyType, string description, bool completed, int currentAmount, int requiredAmount) {
+        public KillGoal(Quest quest, string enemy, string description, bool completed, int currentAmount, int requiredAmount) {
             this.Quest = quest;
-            this.EnemyType = enemyType;
+            this.Enemy = enemy;
             this.Description = description;
             this.Completed = completed;
             this.CurrentAmount = currentAmount;
@@ -20,12 +21,14 @@ namespace RPG.Questing {
             CombatEvents.OnEnemyDeath += EnemyDied;
         }
 
-        void EnemyDied(CombatTarget enemy) {
-            if (enemy.Type == this.EnemyType) {
+        private void EnemyDied(Health enemy) {
+            Debug.Log($"Enemy has died: {enemy.name}!");
+            if (enemy.name == Enemy) {
                 this.CurrentAmount++;
-                Evaluate();
+                if (Evaluate()) {
+                    CombatEvents.OnEnemyDeath -= EnemyDied;
+                }
             }
         }
     }
-
 }
