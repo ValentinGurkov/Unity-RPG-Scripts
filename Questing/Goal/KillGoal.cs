@@ -1,6 +1,5 @@
 ﻿using RPG.Attributes;
 using RPG.Events;
-using RPG.Stats;
 using UnityEngine;
 
 namespace RPG.Questing {
@@ -18,7 +17,7 @@ namespace RPG.Questing {
 
         public override void Init() {
             base.Init();
-            CombatEvents.OnEnemyDeath += EnemyDied;
+            EventSystem.OnEnemyDeath += EnemyDied;
         }
 
         private void EnemyDied(Health enemy) {
@@ -26,7 +25,7 @@ namespace RPG.Questing {
             if (enemy.name == Enemy) {
                 this.CurrentAmount++;
                 if (Evaluate()) {
-                    CombatEvents.OnEnemyDeath -= EnemyDied;
+                    EventSystem.OnEnemyDeath -= EnemyDied;
                 }
             }
         }

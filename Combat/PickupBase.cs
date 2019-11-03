@@ -3,11 +3,16 @@ using RPG.Attributes;
 using RPG.Control;
 using RPG.Movement;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.Combat {
     public class PickupBase : MonoBehaviour, IRaycastable {
+        [SerializeField] public OnPickupEvent onPickup;
 
         public CursorType Cursor => CursorType.Pickup;
+
+        [System.Serializable]
+        public class OnPickupEvent : UnityEvent<PickupBase> { }
 
         private Collider objectCollider;
 
@@ -45,6 +50,7 @@ namespace RPG.Combat {
             } else {
                 Destroy(gameObject);
             }
+            onPickup.Invoke(this);
         }
 
         public bool HandleRaycast(PlayerController callingController) {

@@ -3,11 +3,11 @@ using RPG.Questing;
 public class UltimateSlayer : Quest {
   private void Awake() {
     QuestName = "Ultimate Slayer";
-    Description = "Kill some things";
+    Description = "Liberate the village from bandits.";
     ItemReward = null;
-    ExperienceReward = 1;
-    Goals.Add(new KillGoal(this, "Windmill Bandit", "KIll 1 Enemy Bandit", false, 0, 1));
-    //Goals.Add(new KillGoal(this, CharacterClass.Archer, "KIll 1 Enemy Archer", false, 0, 1));
+    ExperienceReward = 100;
+    Goals.Add(new KillGoal(this, "Windmill Bandit", "KIll the bandit at the windmill", false, 0, 1));
+    Goals.Add(new PickuppGoal(this, "Sunflower", "Pick up the Sunflower at the windmill", false, 0, 1));
     for (int goal = 0; goal < Goals.Count; goal++) {
       Goals[goal].Init();
     }

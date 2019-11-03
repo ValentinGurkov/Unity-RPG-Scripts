@@ -46,11 +46,10 @@ namespace RPG.Questing {
                 ItemReward.Spawn(...);
                 */
             }
-            GiveExperience();
         }
 
         private void GiveExperience() {
-            Debug.Log("giving experience reward");
+            Debug.Log("Giving experience reward");
             if (experience == null && ExperienceReward == 0) {
                 return;
             }
