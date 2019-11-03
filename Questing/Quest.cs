@@ -16,7 +16,7 @@ namespace RPG.Questing {
         private GameObject player;
         private Experience experience;
 
-        private void Awake() {
+        private void Start() {
             player = GameObject.FindWithTag("Player");
             experience = player.GetComponent<Experience>();
         }
