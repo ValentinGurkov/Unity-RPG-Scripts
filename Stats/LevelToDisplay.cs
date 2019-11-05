@@ -1,7 +1,6 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RPG.Stats {
     public class LevelToDisplay : MonoBehaviour {

@@ -1,7 +1,6 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RPG.Attributes {
     public class HealthDisplay : MonoBehaviour {

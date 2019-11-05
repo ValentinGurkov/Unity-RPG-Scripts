@@ -1,11 +1,9 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RPG.Questing {
     public class QuestToDisplay : MonoBehaviour {
-        // private Text text;
         private TextMeshProUGUI text;
         private string originalText;
         private QuestManager questManager;
