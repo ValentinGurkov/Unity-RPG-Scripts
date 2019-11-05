@@ -1,15 +1,17 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RPG.Questing {
     public class QuestToDisplay : MonoBehaviour {
-        private Text text;
+        // private Text text;
+        private TextMeshProUGUI text;
         private string originalText;
         private QuestManager questManager;
 
         private void Awake() {
-            text = GetComponent<Text>();
+            text = GetComponent<TextMeshProUGUI>();
             originalText = text.text;
         }
 
@@ -25,11 +27,20 @@ namespace RPG.Questing {
             }
         }
 
+        //TODO veryfiy this - migrate UI to textmesh pro
         private void UpdateQuestDisplay(Quest quest) {
             text.text = "";
-            text.text += quest.Goals[0].Description;
+            if (quest.Goals[0].Completed) {
+                text.text += "<s>" + quest.Goals[0].Description + "</s>";
+            } else {
+                text.text += quest.Goals[0].Description;
+            }
             for (int i = 1; i < quest.Goals.Count; i++) {
-                text.text += String.Concat("\n", quest.Goals[i].Description);
+                if (quest.Goals[1].Completed) {
+                    text.text += "<s>" + String.Concat("\n", quest.Goals[i].Description) + "</s>";
+                } else {
+                    text.text += String.Concat("\n", quest.Goals[i].Description);
+                }
             }
         }
 

@@ -1,16 +1,17 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RPG.Combat {
     public class EnemyHealthDisplay : MonoBehaviour {
         private Fighter fighter;
-        private Text text;
+        private TextMeshProUGUI text;
         private string originalText;
 
         private void Awake() {
             fighter = GameObject.FindWithTag("Player").GetComponent<Fighter>();
-            text = GetComponent<Text>();
+            text = GetComponent<TextMeshProUGUI>();
             originalText = text.text;
         }
 

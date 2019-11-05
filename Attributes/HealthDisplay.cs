@@ -1,15 +1,16 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RPG.Attributes {
     public class HealthDisplay : MonoBehaviour {
         private Health health;
-        private Text text;
+        private TextMeshProUGUI text;
 
         private void Awake() {
             health = GameObject.FindWithTag("Player").GetComponent<Health>();
-            text = GetComponent<Text>();
+            text = GetComponent<TextMeshProUGUI>();
         }
 
         private void Update() {

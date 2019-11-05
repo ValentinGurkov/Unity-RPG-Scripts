@@ -1,15 +1,16 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace RPG.Stats {
     public class ExperienceDisplay : MonoBehaviour {
         private Experience experience;
-        private Text text;
+        private TextMeshProUGUI text;
 
         private void Awake() {
             experience = GameObject.FindWithTag("Player").GetComponent<Experience>();
-            text = GetComponent<Text>();
+            text = GetComponent<TextMeshProUGUI>();
         }
 
         private void Update() {
