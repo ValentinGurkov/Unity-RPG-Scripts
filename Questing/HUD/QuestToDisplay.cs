@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace RPG.Questing {
         private TextMeshProUGUI text;
         private string originalText;
         private QuestManager questManager;
+        private StringBuilder sb = new StringBuilder();
 
         private void Awake() {
             text = GetComponent<TextMeshProUGUI>();
@@ -25,21 +27,25 @@ namespace RPG.Questing {
             }
         }
 
-        //TODO veryfiy this - migrate UI to textmesh pro
         private void UpdateQuestDisplay(Quest quest) {
-            text.text = "";
+            sb.Clear();
             if (quest.Goals[0].Completed) {
-                text.text += "<s>" + quest.Goals[0].Description + "</s>";
+                sb.Append("<s>");
+                sb.Append(quest.Goals[0].Description);
+                sb.Append("</s>");
             } else {
-                text.text += quest.Goals[0].Description;
+                sb.Append(quest.Goals[0].Description);
             }
             for (int i = 1; i < quest.Goals.Count; i++) {
                 if (quest.Goals[1].Completed) {
-                    text.text += "<s>" + String.Concat("\n", quest.Goals[i].Description) + "</s>";
+                    sb.Append("<s>");
+                    sb.Append(String.Concat("\n", quest.Goals[i].Description));
+                    sb.Append("</s>");
                 } else {
-                    text.text += String.Concat("\n", quest.Goals[i].Description);
+                    sb.Append(String.Concat("\n", quest.Goals[i].Description));
                 }
             }
+            text.text = sb.ToString();
         }
 
     }
