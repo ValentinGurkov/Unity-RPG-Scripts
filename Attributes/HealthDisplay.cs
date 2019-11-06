@@ -12,7 +12,15 @@ namespace RPG.Attributes {
             text = GetComponent<TextMeshProUGUI>();
         }
 
-        private void Update() {
+        private void OnEnable() {
+            health.onHealthUpdate += UpdateHealth;
+        }
+
+        private void OnDisable() {
+            health.onHealthUpdate -= UpdateHealth;
+        }
+
+        private void UpdateHealth() {
             text.text = String.Format("{0:0}/{1:0}", health.HealthPoints, health.MaxHealthPoints);
         }
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace RPG.Combat {
     public class EnemyHealthDisplay : MonoBehaviour {
         private Fighter fighter;
+
         private TextMeshProUGUI text;
         private string originalText;
 
@@ -14,7 +15,15 @@ namespace RPG.Combat {
             originalText = text.text;
         }
 
-        private void Update() {
+        private void OnEnable() {
+            fighter.updateTargetUI += UpdateTargetHealth;
+        }
+
+        private void OnDisable() {
+            fighter.updateTargetUI -= UpdateTargetHealth;
+        }
+
+        private void UpdateTargetHealth() {
             if (fighter.Target == null) {
                 text.text = originalText;
             } else {

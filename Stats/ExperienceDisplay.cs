@@ -12,7 +12,15 @@ namespace RPG.Stats {
             text = GetComponent<TextMeshProUGUI>();
         }
 
-        private void Update() {
+        private void OnEnable() {
+            experience.onExperienceGained += UpdateExperience;
+        }
+
+        private void OnDisable() {
+            experience.onExperienceGained -= UpdateExperience;
+        }
+
+        private void UpdateExperience() {
             text.text = String.Format("{0:0}", experience.ExperiencePoints);
         }
     }

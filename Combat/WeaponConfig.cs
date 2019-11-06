@@ -1,4 +1,5 @@
-﻿using RPG.Attributes;
+﻿using System;
+using RPG.Attributes;
 using UnityEngine;
 
 namespace RPG.Combat {
@@ -54,9 +55,9 @@ namespace RPG.Combat {
             return projectile != null;
         }
 
-        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage) {
+        public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage, Action updateUI) {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
-            projectileInstance.SetTarget(target, instigator, calculatedDamage);
+            projectileInstance.SetTarget(target, instigator, calculatedDamage, updateUI);
         }
 
         public float Range => weaponRange;

@@ -1,4 +1,5 @@
-﻿using RPG.Core;
+﻿using System;
+using RPG.Core;
 using RPG.Saving;
 using RPG.Stats;
 using RPG.Util;
@@ -12,13 +13,15 @@ namespace RPG.Attributes {
         [SerializeField] private float regenerationPercentage = 70f;
         [SerializeField] private TakeDamageEvent takeDamage;
         [SerializeField] private bool startDead = false;
-        [SerializeField] public OnDieEvent onDie;
+        [SerializeField] private OnDieEvent onDie;
 
         private const string DIE_TRIGGER = "die";
         private LazyValue<float> healthPoints;
         private Animator animator;
         private ActionScheduler actionScheduler;
         private BaseStats baseStats;
+
+        public event Action onHealthUpdate;
 
         [System.Serializable]
         public class TakeDamageEvent : UnityEvent<float> { }
@@ -70,6 +73,9 @@ namespace RPG.Attributes {
             }
             healthPoints.value = Mathf.Max(healthPoints.value - damage, 0);
             takeDamage.Invoke(damage);
+            if (onHealthUpdate != null) {
+                onHealthUpdate();
+            }
             if (healthPoints.value == 0) {
                 onDie.Invoke(this);
                 Die();
@@ -92,6 +98,9 @@ namespace RPG.Attributes {
             }
             float regenHealthPoints = baseStats.GetStat(Stat.Health) * (regenerationPercentage / 100);
             healthPoints.value = Mathf.Max(healthPoints.value, regenHealthPoints);
+            if (onHealthUpdate != null) {
+                onHealthUpdate();
+            }
             return true;
         }
 
@@ -106,6 +115,9 @@ namespace RPG.Attributes {
 
         public void Heal(float healthPercentToRestore) {
             healthPoints.value = Mathf.Min(healthPoints.value + (MaxHealthPoints * healthPercentToRestore / 100), MaxHealthPoints);
+            if (onHealthUpdate != null) {
+                onHealthUpdate();
+            }
         }
 
         public object CaptureState() {

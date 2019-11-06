@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RPG.Attributes;
 using RPG.Cinematics;
 using RPG.Core;
@@ -31,6 +32,8 @@ namespace RPG.Combat {
         private WeaponConfig currentWeaponConfig;
         private LazyValue<Weapon> currentWeapon;
         private bool attackDisabled = false;
+
+        public event Action updateTargetUI;
 
         private void Awake() {
             mover = GetComponent<Mover>();
@@ -106,10 +109,13 @@ namespace RPG.Combat {
                 }
                 float damage = baseStats.GetStat(Stat.Damage);
                 if (currentWeaponConfig.HasProjectile()) {
-                    currentWeaponConfig.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage);
+                    currentWeaponConfig.LaunchProjectile(rightHandTransform, leftHandTransform, target, gameObject, damage, updateTargetUI);
                 } else {
                     target.TakeDamage(gameObject, damage);
                 }
+            }
+            if (updateTargetUI != null) {
+                updateTargetUI();
             }
         }
 
@@ -148,6 +154,9 @@ namespace RPG.Combat {
             StopAttack();
             target = null;
             mover.Cancel();
+            if (updateTargetUI != null) {
+                updateTargetUI();
+            }
         }
 
         public object CaptureState() {

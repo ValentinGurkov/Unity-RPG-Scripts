@@ -1,4 +1,5 @@
-﻿using RPG.Attributes;
+﻿using System;
+using RPG.Attributes;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +18,7 @@ namespace RPG.Combat {
         [SerializeField] private UnityEvent onLaunch;
         private Health target = null;
         private GameObject instigator = null;
+        private Action updateUI = null;
         private float damage = 0;
 
         void Start() {
@@ -73,6 +75,10 @@ namespace RPG.Combat {
 
             onHit.Invoke();
 
+            if (updateUI != null) {
+                updateUI();
+            }
+
             Destroy(gameObject, afterHitTTL);
         }
 
@@ -84,10 +90,11 @@ namespace RPG.Combat {
             return target.transform.position + Vector3.up * targetCollider.height / 2;
         }
 
-        public void SetTarget(Health target, GameObject instigator, float damage) {
+        public void SetTarget(Health target, GameObject instigator, float damage, Action updateUI) {
             this.target = target;
             this.damage = damage;
             this.instigator = instigator;
+            this.updateUI = updateUI;
         }
     }
 }
