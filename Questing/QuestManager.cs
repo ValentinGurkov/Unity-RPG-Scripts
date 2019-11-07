@@ -10,7 +10,6 @@ namespace RPG.Questing {
         public event Action<Stage> onQuestAdded;
         public event Action onQuestComplete;
 
-        //TODO make quest stage to be index
         public Quest AddQuest(string quest) {
             latestQuest = gameObject.AddComponent(Type.GetType(quest)) as Quest;
             latestQuest.onComplete += onQuestComplete;
@@ -28,23 +27,12 @@ namespace RPG.Questing {
             return latestQuest;
         }
 
-        private Stage GetActiveQuestStage(Quest quest) {
-            for (int i = 0; i < quest.Stages.Count; i++) {
-                if (quest.Stages[i].Active) {
-                    return quest.Stages[i];
-                }
-            }
-
-            return quest.Stages[0];
-        }
-
         private void UpdateUIOnCompletedGoal(Stage stage, Goal goal) {
             goal.onComplete -= UpdateUIOnCompletedGoal;
             onQuestAdded(stage);
         }
 
         private void UpdateUIOnCompletedStage(Stage stage) {
-            latestStage = stage;
             stage.onActive -= UpdateUIOnCompletedStage;
             onQuestAdded(stage);
         }

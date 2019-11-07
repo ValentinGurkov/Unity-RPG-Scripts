@@ -49,28 +49,6 @@ namespace RPG.Questing {
             text.text = defaultText;
         }
 
-        //TODO maybe remake the event to work with the current active quest stage instead of looping the quest stages? Check quest manager if it can control this
-        // private void UpdateQuestDisplay(Quest quest) {
-        //     for (int i = 0; i < quest.Stages.Count; i++) {
-        //         if (quest.Stages[i].Active) {
-        //             if (quest.Stages[i].Goals[0].Completed) {
-        //                 tmp += "<s>" + quest.Stages[i].Goals[0].Description + "</s>";
-        //             } else {
-        //                 tmp += quest.Stages[i].Goals[0].Description;
-        //             }
-        //             for (int j = 1; j < quest.Stages[i].Goals.Count; j++) {
-        //                 if (quest.Stages[i].Goals[j].Completed) {
-        //                     tmp += "<s>" + String.Concat("\n", quest.Stages[i].Goals[j].Description) + "</s>";
-        //                 } else {
-        //                     tmp += String.Concat("\n", quest.Stages[i].Goals[j].Description);
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     text.text = tmp;
-        //     tmp = "";
-        // }
-
     }
 
 }
