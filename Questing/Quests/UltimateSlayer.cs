@@ -6,10 +6,17 @@ public class UltimateSlayer : Quest {
     Description = "Liberate the village from bandits.";
     ItemReward = null;
     ExperienceReward = 100;
-    Goals.Add(new KillGoal(this, "Windmill Bandit", "KIll the bandit at the windmill", false, 0, 1));
-    Goals.Add(new PickuppGoal(this, "Sunflower", "Pick up the Sunflower at the windmill", false, 0, 1));
-    for (int goal = 0; goal < Goals.Count; goal++) {
-      Goals[goal].Init();
+    Stage firstStage = new Stage(this);
+    Stage secondStage = new Stage(this, false, false, "Clear the bridge from bandits");
+    firstStage.AddGoal(new KillGoal(firstStage, "Windmill Bandit", 0, 1, "KIll the bandit at the windmill"));
+    firstStage.AddGoal(new PickuppGoal(firstStage, "Sunflower", 0, 1, "Pick up the Sunflower at the windmill"));
+    secondStage.AddGoal(new KillGoal(firstStage, "Sunflower", 0, 1));
+
+    Stages.Add(firstStage);
+    Stages.Add(secondStage);
+
+    for (int i = 0; i < Stages.Count; i++) {
+      Stages[i].Init(i);
     }
   }
 }

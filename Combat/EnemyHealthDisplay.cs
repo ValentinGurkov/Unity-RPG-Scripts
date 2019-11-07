@@ -7,12 +7,12 @@ namespace RPG.Combat {
         private Fighter fighter;
 
         private TextMeshProUGUI text;
-        private string originalText;
+        private string defaultText;
 
         private void Awake() {
             fighter = GameObject.FindWithTag("Player").GetComponent<Fighter>();
             text = GetComponent<TextMeshProUGUI>();
-            originalText = text.text;
+            defaultText = text.text;
         }
 
         private void OnEnable() {
@@ -25,7 +25,7 @@ namespace RPG.Combat {
 
         private void UpdateTargetHealth() {
             if (fighter.Target == null) {
-                text.text = originalText;
+                text.text = defaultText;
             } else {
                 text.text = String.Format("{0:0}/{1:0}", fighter.Target.HealthPoints, fighter.Target.MaxHealthPoints);
             }

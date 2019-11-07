@@ -6,13 +6,13 @@ namespace RPG.Questing {
     public class KillGoal : Goal {
         private string Enemy;
 
-        public KillGoal(Quest quest, string enemy, string description, bool completed, int currentAmount, int requiredAmount) {
-            this.Quest = quest;
+        public KillGoal(Stage stage, string enemy, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
+            this.Stage = stage;
             this.Enemy = enemy;
-            this.Description = description;
-            this.Completed = completed;
             this.CurrentAmount = currentAmount;
             this.RequiredAmount = requiredAmount;
+            this.Description = description;
+            this.Completed = completed;
         }
 
         public override void Init() {

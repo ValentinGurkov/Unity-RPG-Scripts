@@ -5,13 +5,13 @@ using UnityEngine;
 namespace RPG.Questing {
   public class PickuppGoal : Goal {
     private string Pickup;
-    public PickuppGoal(Quest quest, string pickup, string description, bool completed, int currentAmount, int requiredAmount) {
-      this.Quest = quest;
+    public PickuppGoal(Stage stage, string pickup, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
+      this.Stage = stage;
       this.Pickup = pickup;
-      this.Description = description;
-      this.Completed = completed;
       this.CurrentAmount = currentAmount;
       this.RequiredAmount = requiredAmount;
+      this.Description = description;
+      this.Completed = completed;
     }
 
     public override void Init() {
