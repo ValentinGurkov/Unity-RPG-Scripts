@@ -46,7 +46,7 @@ namespace RPG.Questing {
       onActive(this);
     }
 
-    public void CheckGols() {
+    public void CheckGoals() {
       bool goalsCompleted = true;
 
       for (int goal = 0; goal < Goals.Count; goal++) {

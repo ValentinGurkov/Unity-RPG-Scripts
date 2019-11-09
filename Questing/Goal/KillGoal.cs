@@ -7,12 +7,12 @@ namespace RPG.Questing {
         private string Enemy;
 
         public KillGoal(Stage stage, string enemy, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
-            this.Stage = stage;
-            this.Enemy = enemy;
-            this.CurrentAmount = currentAmount;
-            this.RequiredAmount = requiredAmount;
-            this.Description = description;
-            this.Completed = completed;
+            Stage = stage;
+            Enemy = enemy;
+            CurrentAmount = currentAmount;
+            RequiredAmount = requiredAmount;
+            Description = description;
+            Completed = completed;
         }
 
         public override void Init() {
@@ -22,8 +22,8 @@ namespace RPG.Questing {
 
         private void EnemyDied(Health enemy) {
             Debug.Log($"Enemy has died: {enemy.name}!");
-            if (enemy.name == Enemy) {
-                this.CurrentAmount++;
+            if (Stage.Active && enemy.name.Contains(Enemy)) {
+                CurrentAmount++;
                 if (Evaluate()) {
                     EventSystem.OnEnemyDeath -= EnemyDied;
                 }

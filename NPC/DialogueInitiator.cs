@@ -1,11 +1,16 @@
 ﻿using RPG.Control;
 using RPG.Conversing;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.NPC {
     public class DialogueInitiator : NPC {
         [SerializeField] private Dialogue dialogue;
         [SerializeField] private DialogueManager dialogueManager;
+        [SerializeField] public OnPickupEvent onDialogeInitiated;
+
+        [System.Serializable]
+        public class OnPickupEvent : UnityEvent<DialogueInitiator> { }
 
         public new CursorType Cursor => CursorType.Converse;
         public DialogueManager DialogueManager => dialogueManager;
@@ -28,6 +33,7 @@ namespace RPG.NPC {
 
         public void StartDialogue(Dialogue dialogue) {
             dialogueManager.StartDialogue(dialogue);
+            onDialogeInitiated.Invoke(this);
             isInteracting = true;
         }
 

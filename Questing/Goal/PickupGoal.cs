@@ -6,12 +6,12 @@ namespace RPG.Questing {
   public class PickuppGoal : Goal {
     private string Pickup;
     public PickuppGoal(Stage stage, string pickup, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
-      this.Stage = stage;
-      this.Pickup = pickup;
-      this.CurrentAmount = currentAmount;
-      this.RequiredAmount = requiredAmount;
-      this.Description = description;
-      this.Completed = completed;
+      Stage = stage;
+      Pickup = pickup;
+      CurrentAmount = currentAmount;
+      RequiredAmount = requiredAmount;
+      Description = description;
+      Completed = completed;
     }
 
     public override void Init() {
@@ -21,8 +21,8 @@ namespace RPG.Questing {
 
     private void ItemPickedUp(PickupBase pickup) {
       Debug.Log($"Enemy has died: {pickup.name}!");
-      if (pickup.name == Pickup) {
-        this.CurrentAmount++;
+      if (Stage.Active && pickup.name.Contains(Pickup)) {
+        CurrentAmount++;
         if (Evaluate()) {
           EventSystem.OnItemPickedUp -= ItemPickedUp;
         }

@@ -1,5 +1,6 @@
 ﻿using RPG.Attributes;
 using RPG.Combat;
+using RPG.NPC;
 using UnityEngine;
 
 namespace RPG.Events {
@@ -10,6 +11,9 @@ namespace RPG.Events {
 
         public delegate void ItemPickupHandler(PickupBase pickup);
         public static event ItemPickupHandler OnItemPickedUp;
+
+        public delegate void DialogueInitiatedHandler(DialogueInitiator npc);
+        public static event DialogueInitiatedHandler OnTalkedToNPC;
 
         public void EnemyDied(Health enemy) {
             if (OnEnemyDeath != null) {
@@ -22,6 +26,12 @@ namespace RPG.Events {
             if (OnItemPickedUp != null) {
                 Debug.Log($"Item picked up: {pickup.name}");
                 OnItemPickedUp(pickup);
+            }
+        }
+
+        public void InitiatedDialogue(DialogueInitiator npc) {
+            if (OnTalkedToNPC != null) {
+                OnTalkedToNPC(npc);
             }
         }
     }

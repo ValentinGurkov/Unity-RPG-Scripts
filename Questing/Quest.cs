@@ -33,17 +33,18 @@ namespace RPG.Questing {
                 }
             }
             Completed = stagesCompleted;
-
-            if (Completed) {
-                onComplete();
-                GiveReward();
-                GiveExperience();
-            } else if (lastStageIndex < Stages.Count) {
-                Stages[lastStageIndex + 1].Activate();;
+            if (lastStageIndex < Stages.Count) {
+                Stages[lastStageIndex + 1].Activate();
             }
         }
 
-        public void GiveReward() {
+        public void CompleteQuest() {
+            onComplete();
+            GiveReward();
+            GiveExperience();
+        }
+
+        private void GiveReward() {
             Debug.Log("Giving quest reward");
             if (ItemReward != null) {
                 Debug.Log("Giving item reward");
@@ -61,6 +62,7 @@ namespace RPG.Questing {
             experience.GainExperience(ExperienceReward);
 
         }
+
     }
 
 }

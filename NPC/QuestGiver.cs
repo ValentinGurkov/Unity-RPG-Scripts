@@ -42,11 +42,13 @@ namespace RPG.NPC {
         private void CheckQuest() {
             if (quest != null) {
                 Debug.Log("Checking quest");
+                onDialogeInitiated.Invoke(this);
                 if (quest.Completed) {
                     Debug.Log("Quest completed");
-                    quest.GiveReward();
+                    quest.CompleteQuest();
                     hasBeenHelped = true;
                     assignedQuest = true;
+                    base.DialogueManager.onDialogueClose -= AssignQuest;
                     StartDialogue(questCompletedDialogue);
                 } else {
                     Debug.Log("Quest not yet completed");
