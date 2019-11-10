@@ -33,6 +33,10 @@ namespace RPG.Control {
         }
 
         private void Update() {
+            if (Input.GetKey("escape")) {
+                Application.Quit();
+            }
+
             if (InteractWithUI()) {
                 return;
             }

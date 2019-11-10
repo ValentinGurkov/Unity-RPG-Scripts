@@ -5,6 +5,7 @@ namespace RPG.Control {
     public class PatrolPath : MonoBehaviour {
         private const float waypointRadius = 0.3f;
 
+#if UNITY_EDITOR
         private void OnDrawGizmos() {
             Gizmos.color = Color.white;
             var active = UnityEditor.Selection.activeGameObject;
@@ -23,6 +24,7 @@ namespace RPG.Control {
                 Gizmos.DrawLine(GetWayPoint(i).position, GetWayPoint(i + 1).position);
             }
         }
+#endif
 
         public int GetNextIndex(int i) {
             return (i + 1) % transform.childCount;

@@ -19,6 +19,9 @@ namespace RPG.Questing {
             questGiverName = questGiver;
             questName = quest;
             latestQuest = gameObject.AddComponent(Type.GetType(quest)) as Quest;
+            if (latestQuest == null) {
+                return null;
+            }
             latestQuest.onComplete += onQuestComplete;
             for (int i = 0; i < latestQuest.Stages.Count; i++) {
                 latestQuest.Stages[i].onActive += UpdateUIOnCompletedStage;
