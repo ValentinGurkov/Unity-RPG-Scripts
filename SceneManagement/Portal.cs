@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using RPG.Control;
+using RPG.Questing;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -48,6 +49,7 @@ namespace RPG.SceneManagement {
 
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
             PlayerController newPlayerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+            QuestManager questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
             newPlayerController.enabled = false;
             newPlayerController.SetCursor(CursorType.None);
 
@@ -60,6 +62,7 @@ namespace RPG.SceneManagement {
 
             yield return new WaitForSeconds(fadeWaitTime);
             fader.FadeIn(fadeInTime);
+            questManager.Restore();
             newPlayerController.enabled = true;
             newPlayerController.SetCursor(CursorType.Movement);
             Destroy(gameObject);

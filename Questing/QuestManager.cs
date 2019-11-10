@@ -1,16 +1,23 @@
 ﻿using System;
+using RPG.Saving;
 using UnityEngine;
 
 namespace RPG.Questing {
 
-    public class QuestManager : MonoBehaviour {
-        private Quest latestQuest;
-        private Stage latestStage;
+    public class QuestManager : MonoBehaviour, ISaveable {
+        private Quest latestQuest = null;
+        private Stage latestStage = null;
+        private string questName = null;
+        private string questGiverName = null;
 
         public event Action<Stage> onQuestAdded;
         public event Action onQuestComplete;
 
-        public Quest AddQuest(string quest) {
+        public Stage LatestStage => latestStage;
+
+        public Quest AddQuest(string questGiver, string quest) {
+            questGiverName = questGiver;
+            questName = quest;
             latestQuest = gameObject.AddComponent(Type.GetType(quest)) as Quest;
             latestQuest.onComplete += onQuestComplete;
             for (int i = 0; i < latestQuest.Stages.Count; i++) {
@@ -23,18 +30,85 @@ namespace RPG.Questing {
                 }
             }
 
-            onQuestAdded(latestStage);
+            if (onQuestAdded != null) {
+                onQuestAdded(latestStage);
+            }
+
             return latestQuest;
+        }
+
+        private void OnDisable() {
+            for (int i = 0; i < latestQuest.Stages.Count; i++) {
+                latestQuest.Stages[i].onActive -= UpdateUIOnCompletedStage;
+                for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
+                    latestQuest.Stages[i].Goals[j].onComplete -= UpdateUIOnCompletedGoal;
+                }
+            }
+        }
+
+        public object CaptureState() {
+            (int, bool[], int[]) stageInfo = GetActiveStageInfo();
+            return new Tuple<string, string, int, bool[], int[]>(questName, questGiverName, stageInfo.Item1, stageInfo.Item2, stageInfo.Item3);
+        }
+
+        public void RestoreState(object state) {
+            var t = (Tuple<string, string, int, bool[], int[]>) state;
+            questName = t.Item1;
+            if (GetComponent(questName) == null) {
+                questGiverName = t.Item2;
+                GameObject qgObj = GameObject.Find(questGiverName);
+                if (qgObj != null) {
+                    QuestGiver qg = qgObj.GetComponent<QuestGiver>();
+                    latestQuest = AddQuest(qg.name, questName);
+                    latestQuest.SetActiveStage(t.Item3, t.Item4, t.Item5);
+                    qg.SetQuest(latestQuest);
+                }
+            }
+        }
+
+        public void Restore() {
+            if (questGiverName != null && questName != null) {
+                GameObject qgObj = GameObject.Find(questGiverName);
+                if (qgObj != null) {
+                    QuestGiver qg = qgObj.GetComponent<QuestGiver>();
+                    latestQuest.RefreshRefernces();
+                    qg.SetQuest(latestQuest);
+                }
+            }
+        }
+
+        // used to update deferences between scenes
+        public Stage Subscribe() {
+            if (latestQuest != null) {
+                latestQuest.onComplete += onQuestComplete;
+            }
+            return latestStage;
+        }
+
+        private(int, bool[], int[]) GetActiveStageInfo() {
+            int len = latestStage != null ? latestStage.Goals.Count : 0;
+            bool[] goalsCompleted = new bool[len];
+            int[] goalsCurrentAmount = new int[len];
+            for (int i = 0; i < len; i++) {
+                goalsCompleted[i] = latestStage.Goals[i].Completed;
+                goalsCurrentAmount[i] = latestStage.Goals[i].CurrentAmount;
+            }
+            return (latestStage != null ? latestStage.Index : 0, goalsCompleted, goalsCurrentAmount);
         }
 
         private void UpdateUIOnCompletedGoal(Stage stage, Goal goal) {
             goal.onComplete -= UpdateUIOnCompletedGoal;
-            onQuestAdded(stage);
+            if (onQuestAdded != null) {
+                onQuestAdded(stage);
+            }
         }
 
         private void UpdateUIOnCompletedStage(Stage stage) {
             stage.onActive -= UpdateUIOnCompletedStage;
-            onQuestAdded(stage);
+            latestStage = stage;
+            if (onQuestAdded != null) {
+                onQuestAdded(stage);
+            }
         }
     }
 

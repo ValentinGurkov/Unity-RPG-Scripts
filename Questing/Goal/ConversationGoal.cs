@@ -18,7 +18,6 @@ namespace RPG.Questing {
     }
 
     private void TalkedToNPC(DialogueInitiator npc) {
-      Debug.Log($"Talked to: {npc.name}!");
       if (Stage.Active && npc.name.Contains(Target)) {
         Complete();
         EventSystem.OnTalkedToNPC -= TalkedToNPC;

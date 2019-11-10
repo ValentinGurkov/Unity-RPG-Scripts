@@ -7,7 +7,7 @@ namespace RPG.Questing {
         public bool Completed { get; set; } = false;
         public string Description { get; set; } = "";
         protected Stage Stage { get; set; } = null;
-        protected int CurrentAmount { get; set; } = 0;
+        public int CurrentAmount { get; set; } = 0;
         protected int RequiredAmount { get; set; } = 1;
 
         public virtual void Init() { }

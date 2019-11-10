@@ -12,6 +12,10 @@ namespace RPG.Stats {
             text = GetComponent<TextMeshProUGUI>();
         }
 
+        private void Start() {
+            UpdateLevel();
+        }
+
         private void OnEnable() {
             baseStats.onLevelUp += UpdateLevel;
         }

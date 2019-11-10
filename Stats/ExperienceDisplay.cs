@@ -12,6 +12,10 @@ namespace RPG.Stats {
             text = GetComponent<TextMeshProUGUI>();
         }
 
+        private void Start() {
+            UpdateExperience();
+        }
+
         private void OnEnable() {
             experience.onExperienceGained += UpdateExperience;
         }

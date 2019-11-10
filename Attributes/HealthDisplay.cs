@@ -12,6 +12,10 @@ namespace RPG.Attributes {
             text = GetComponent<TextMeshProUGUI>();
         }
 
+        private void Start() {
+            UpdateHealth();
+        }
+
         private void OnEnable() {
             health.onHealthUpdate += UpdateHealth;
         }

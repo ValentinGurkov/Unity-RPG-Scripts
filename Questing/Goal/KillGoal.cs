@@ -21,7 +21,6 @@ namespace RPG.Questing {
         }
 
         private void EnemyDied(Health enemy) {
-            Debug.Log($"Enemy has died: {enemy.name}!");
             if (Stage.Active && enemy.name.Contains(Enemy)) {
                 CurrentAmount++;
                 if (Evaluate()) {

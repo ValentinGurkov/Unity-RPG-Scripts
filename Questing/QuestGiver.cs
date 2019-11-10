@@ -1,16 +1,17 @@
-﻿using RPG.Control;
+﻿using System;
+using RPG.Control;
 using RPG.Conversing;
-using RPG.Questing;
+using RPG.NPC;
+using RPG.Saving;
 using UnityEngine;
 
-namespace RPG.NPC {
-    public class QuestGiver : DialogueInitiator, IRaycastable {
+namespace RPG.Questing {
+    public class QuestGiver : DialogueInitiator, IRaycastable, ISaveable {
         [SerializeField] private string questType;
         [SerializeField] private Dialogue questPendingDialogue;
         [SerializeField] private Dialogue questCompletedDialogue;
         [SerializeField] private Dialogue afterQuestDialogue;
 
-        //TODO issue quest & save state (implement ISaveable)
         private bool assignedQuest = false;
         private bool hasBeenHelped = false;
         private QuestManager questManager;
@@ -34,9 +35,12 @@ namespace RPG.NPC {
         }
 
         private void AssignQuest() {
-            Debug.Log("Quest assigned");
-            assignedQuest = true;
-            quest = questManager.AddQuest(questType);
+            if (!assignedQuest) {
+                Debug.Log("Quest assigned");
+                assignedQuest = true;
+                quest = questManager.AddQuest(gameObject.name, questType);
+                base.DialogueManager.onDialogueClose -= AssignQuest;
+            }
         }
 
         private void CheckQuest() {
@@ -48,13 +52,26 @@ namespace RPG.NPC {
                     quest.CompleteQuest();
                     hasBeenHelped = true;
                     assignedQuest = true;
-                    base.DialogueManager.onDialogueClose -= AssignQuest;
                     StartDialogue(questCompletedDialogue);
                 } else {
                     Debug.Log("Quest not yet completed");
                     StartDialogue(questPendingDialogue);
                 }
             }
+        }
+
+        public object CaptureState() {
+            return new Tuple<bool, bool>(assignedQuest, hasBeenHelped);
+        }
+
+        public void RestoreState(object state) {
+            var t = (Tuple<bool, bool>) state;
+            assignedQuest = t.Item1;
+            hasBeenHelped = t.Item2;
+        }
+
+        public void SetQuest(Quest quest) {
+            this.quest = quest;
         }
     }
 

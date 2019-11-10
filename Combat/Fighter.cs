@@ -32,6 +32,7 @@ namespace RPG.Combat {
         private WeaponConfig currentWeaponConfig;
         private LazyValue<Weapon> currentWeapon;
         private bool attackDisabled = false;
+        private CinematicControlRemover[] cinematicControlRemovers;
 
         public event Action updateTargetUI;
 
@@ -44,14 +45,24 @@ namespace RPG.Combat {
             baseStats = GetComponent<BaseStats>();
             currentWeaponConfig = defaultWeapon;
             currentWeapon = new LazyValue<Weapon>(SetupDefaultWeapon);
+            cinematicControlRemovers = FindObjectsOfType<CinematicControlRemover>();
         }
 
         private void Start() {
             currentWeapon.ForceInit();
-            CinematicControlRemover[] cinematicControlRemovers = FindObjectsOfType<CinematicControlRemover>();
+        }
+
+        private void OnEnable() {
             for (int i = 0; i < cinematicControlRemovers.Length; i++) {
                 cinematicControlRemovers[i].onCinematicStart += DisableAttack;
                 cinematicControlRemovers[i].onCinematicEnd += EnableAttack;
+            }
+        }
+
+        private void OnDisable() {
+            for (int i = 0; i < cinematicControlRemovers.Length; i++) {
+                cinematicControlRemovers[i].onCinematicStart -= DisableAttack;
+                cinematicControlRemovers[i].onCinematicEnd -= EnableAttack;
             }
         }
 

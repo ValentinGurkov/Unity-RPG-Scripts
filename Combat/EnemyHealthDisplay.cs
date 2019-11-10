@@ -15,6 +15,10 @@ namespace RPG.Combat {
             defaultText = text.text;
         }
 
+        private void Start() {
+            UpdateTargetHealth();
+        }
+
         private void OnEnable() {
             fighter.updateTargetUI += UpdateTargetHealth;
         }

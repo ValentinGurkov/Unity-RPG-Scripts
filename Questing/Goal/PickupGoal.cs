@@ -20,7 +20,6 @@ namespace RPG.Questing {
     }
 
     private void ItemPickedUp(PickupBase pickup) {
-      Debug.Log($"Enemy has died: {pickup.name}!");
       if (Stage.Active && pickup.name.Contains(Pickup)) {
         CurrentAmount++;
         if (Evaluate()) {

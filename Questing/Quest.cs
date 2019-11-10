@@ -33,7 +33,7 @@ namespace RPG.Questing {
                 }
             }
             Completed = stagesCompleted;
-            if (lastStageIndex < Stages.Count) {
+            if (lastStageIndex < Stages.Count - 1) {
                 Stages[lastStageIndex + 1].Activate();
             }
         }
@@ -42,6 +42,30 @@ namespace RPG.Questing {
             onComplete();
             GiveReward();
             GiveExperience();
+        }
+
+        public void RefreshRefernces() {
+            player = GameObject.FindWithTag("Player");
+            experience = player.GetComponent<Experience>();
+        }
+
+        public void SetActiveStage(int stage, bool[] goalsCompleted, int[] goalsCurrentAmount) {
+            for (int i = 0; i < Stages.Count; i++) {
+                if (i == stage) {
+                    Stages[i].Activate();
+                } else {
+                    Stages[i].Active = false;
+                    if (i < stage) {
+                        Stages[i].Completed = true;
+                    }
+                }
+            }
+            if (goalsCompleted.Length != 0 && goalsCurrentAmount.Length != 0) {
+                for (int i = 0; i < Stages[stage].Goals.Count; i++) {
+                    Stages[stage].Goals[i].Completed = goalsCompleted[i];
+                    Stages[stage].Goals[i].CurrentAmount = goalsCurrentAmount[i];
+                }
+            }
         }
 
         private void GiveReward() {
@@ -53,7 +77,6 @@ namespace RPG.Questing {
                 */
             }
         }
-
         private void GiveExperience() {
             Debug.Log("Giving experience reward");
             if (experience == null && ExperienceReward == 0) {
@@ -62,7 +85,5 @@ namespace RPG.Questing {
             experience.GainExperience(ExperienceReward);
 
         }
-
     }
-
 }

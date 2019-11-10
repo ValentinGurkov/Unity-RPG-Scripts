@@ -10,13 +10,13 @@ namespace RPG.Movement {
     public class Mover : MonoBehaviour, IAction, ISaveable {
         [SerializeField] private float maxSpeed = 6f;
         [SerializeField] private float maxNavPathLength = 40f;
+        [SerializeField] private float interactStoppingDistance = 3f;
         private NavMeshAgent navMeshAgent;
         private Animator animator;
         private ActionScheduler actionScheduler;
         private Health health;
         private Action callbackOnReachingDestination = null;
         private float originalStoppingDistance = 0;
-        private float interactStoppingDistance = 3f;
 
         private void Awake() {
             navMeshAgent = GetComponent<NavMeshAgent>();
