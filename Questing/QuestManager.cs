@@ -38,10 +38,12 @@ namespace RPG.Questing {
         }
 
         private void OnDisable() {
-            for (int i = 0; i < latestQuest.Stages.Count; i++) {
-                latestQuest.Stages[i].onActive -= UpdateUIOnCompletedStage;
-                for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
-                    latestQuest.Stages[i].Goals[j].onComplete -= UpdateUIOnCompletedGoal;
+            if (latestQuest != null) {
+                for (int i = 0; i < latestQuest.Stages.Count; i++) {
+                    latestQuest.Stages[i].onActive -= UpdateUIOnCompletedStage;
+                    for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
+                        latestQuest.Stages[i].Goals[j].onComplete -= UpdateUIOnCompletedGoal;
+                    }
                 }
             }
         }
@@ -56,9 +58,9 @@ namespace RPG.Questing {
             questName = t.Item1;
             if (GetComponent(questName) == null) {
                 questGiverName = t.Item2;
-                GameObject qgObj = GameObject.Find(questGiverName);
-                if (qgObj != null) {
-                    QuestGiver qg = qgObj.GetComponent<QuestGiver>();
+                GameObject qgGObj = GameObject.Find(questGiverName);
+                if (qgGObj != null) {
+                    QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
                     latestQuest = AddQuest(qg.name, questName);
                     latestQuest.SetActiveStage(t.Item3, t.Item4, t.Item5);
                     qg.SetQuest(latestQuest);
@@ -68,16 +70,16 @@ namespace RPG.Questing {
 
         public void Restore() {
             if (questGiverName != null && questName != null) {
-                GameObject qgObj = GameObject.Find(questGiverName);
-                if (qgObj != null) {
-                    QuestGiver qg = qgObj.GetComponent<QuestGiver>();
+                GameObject qgGObj = GameObject.Find(questGiverName);
+                if (qgGObj != null) {
+                    QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
                     latestQuest.RefreshRefernces();
                     qg.SetQuest(latestQuest);
                 }
             }
         }
 
-        // used to update deferences between scenes
+        // used to update references between scenes
         public Stage Subscribe() {
             if (latestQuest != null) {
                 latestQuest.onComplete += onQuestComplete;
