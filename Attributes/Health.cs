@@ -29,8 +29,6 @@ namespace RPG.Attributes {
         [System.Serializable]
         public class OnDieEvent : UnityEvent<Health> { }
 
-        public CharacterClass Type => baseStats.CharacterClass;
-
         private void Awake() {
             animator = GetComponent<Animator>();
             actionScheduler = GetComponent<ActionScheduler>();
