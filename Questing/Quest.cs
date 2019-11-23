@@ -5,7 +5,6 @@ using RPG.Stats;
 using UnityEngine;
 
 namespace RPG.Questing {
-    //[CreateAssetMenu(fileName = "Quest", menuName = "Quest/Create New  Quest", order = 0)]
     public class Quest : MonoBehaviour {
         public List<Stage> Stages { get; set; } = new List<Stage>();
         public string QuestName { get; set; }

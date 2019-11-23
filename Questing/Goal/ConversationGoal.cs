@@ -1,6 +1,5 @@
 using RPG.Events;
 using RPG.NPC;
-using UnityEngine;
 
 namespace RPG.Questing {
     public class ConversationGoal : Goal {

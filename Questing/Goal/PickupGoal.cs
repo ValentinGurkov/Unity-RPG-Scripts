@@ -1,6 +1,5 @@
 using RPG.Combat;
 using RPG.Events;
-using UnityEngine;
 
 namespace RPG.Questing {
   public class PickuppGoal : Goal {
