@@ -18,8 +18,7 @@ namespace RPG.Combat {
         private enum HAND { LEFT, RIGHT }
 
         public Transform GetTransform(Transform rightHand, Transform leftHand) {
-            Transform handTransform;
-            return handTransform = hand == HAND.RIGHT ? rightHand : leftHand;
+            return hand == HAND.RIGHT ? rightHand : leftHand;
         }
 
         public Weapon Spawn(Transform rightHand, Transform leftHand, Animator animator) {

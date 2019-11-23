@@ -1,6 +1,7 @@
 ﻿using System;
 using RPG.Attributes;
 using RPG.Movement;
+using RPG.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -69,7 +70,7 @@ namespace RPG.Control {
             foreach (RaycastHit hit in hits) {
                 IRaycastable[] raycastables = hit.transform.GetComponents<IRaycastable>();
                 foreach (IRaycastable raycastable in raycastables) {
-                    if (raycastable.HandleRaycast(this)) {
+                    if (raycastable.HandleRaycast(gameObject)) {
                         SetCursor(raycastable.Cursor);
                         return true;
                     }

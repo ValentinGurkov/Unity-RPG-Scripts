@@ -1,6 +1,8 @@
-﻿namespace RPG.Control {
+﻿using UnityEngine;
+
+namespace RPG.UI {
     public interface IRaycastable {
-        bool HandleRaycast(PlayerController callingController);
+        bool HandleRaycast(GameObject callingObject);
 
         CursorType Cursor {
             get;

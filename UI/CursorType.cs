@@ -1,4 +1,4 @@
-namespace RPG.Control {
+namespace RPG.UI {
   public enum CursorType {
     None,
     Movement,

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using RPG.Attributes;
-using RPG.Control;
 using RPG.Movement;
+using RPG.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -53,9 +53,9 @@ namespace RPG.Combat {
             onPickup.Invoke(this);
         }
 
-        public bool HandleRaycast(PlayerController callingController) {
+        public bool HandleRaycast(GameObject callingObject) {
             if (Input.GetMouseButtonDown(0)) {
-                callingController.GetComponent<Mover>().StartMovement(transform.position, 1f);
+                callingObject.GetComponent<Mover>().StartMovement(transform.position, 1f);
             }
             return true;
         }

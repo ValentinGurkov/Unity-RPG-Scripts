@@ -1,5 +1,5 @@
 ﻿using RPG.Attributes;
-using RPG.Control;
+using RPG.UI;
 using UnityEngine;
 
 namespace RPG.Combat {
@@ -9,8 +9,8 @@ namespace RPG.Combat {
 
         public CursorType Cursor => CursorType.Combat;
 
-        public bool HandleRaycast(PlayerController callingController) {
-            Fighter fighter = callingController.GetComponent<Fighter>();
+        public bool HandleRaycast(GameObject callingObject) {
+            Fighter fighter = callingObject.GetComponent<Fighter>();
             if (!fighter.CanAttack(gameObject)) {
                 return false;
             }
