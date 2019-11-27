@@ -1,8 +1,9 @@
 ﻿using System;
+using RPG.Questing;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.Questing {
+namespace RPG.UI {
     public class QuestToDisplay : MonoBehaviour {
         private TextMeshProUGUI text;
         private string defaultText;

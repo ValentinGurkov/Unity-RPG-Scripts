@@ -1,8 +1,9 @@
 ﻿using System;
+using RPG.Attributes;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.Attributes {
+namespace RPG.UI {
     public class HealthDisplay : MonoBehaviour {
         private Health health;
         private TextMeshProUGUI text;

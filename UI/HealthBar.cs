@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using RPG.Attributes;
+using UnityEngine;
 
-namespace RPG.Attributes {
+namespace RPG.UI {
     public class HealthBar : MonoBehaviour {
 
         [SerializeField] private Health healthComponent = null;

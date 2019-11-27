@@ -14,5 +14,11 @@ namespace RPG.Combat {
             }
         }
 
+        private void Pickup(Health health, GameObject healFX, float healthPercentToRestore, bool respawnable, float respawnTime) {
+            Instantiate(healFX, health.transform);
+            health.Heal(healthPercentToRestore);
+            base.Pickup(respawnable, respawnTime);
+        }
+
     }
 }

@@ -1,5 +1,5 @@
 ﻿using RPG.Conversing;
-using RPG.UI;
+using RPG.Core;
 using UnityEngine;
 using UnityEngine.Events;
 

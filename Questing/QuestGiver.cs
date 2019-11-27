@@ -1,8 +1,8 @@
 ﻿using System;
 using RPG.Conversing;
+using RPG.Core;
 using RPG.NPC;
 using RPG.Saving;
-using RPG.UI;
 using UnityEngine;
 
 namespace RPG.Questing {

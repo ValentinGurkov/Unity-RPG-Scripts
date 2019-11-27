@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using RPG.Attributes;
+using RPG.Core;
 using RPG.Movement;
-using RPG.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,18 +33,7 @@ namespace RPG.Combat {
             }
         }
 
-        public void Pickup(Health health, GameObject healFX, float healthPercentToRestore, bool respawnable, float respawnTime) {
-            Instantiate(healFX, health.transform);
-            health.Heal(healthPercentToRestore);
-            if (respawnable) {
-                StartCoroutine(HideForSeconds(respawnTime));
-            } else {
-                Destroy(gameObject);
-            }
-        }
-
-        public void Pickup(Fighter fighter, WeaponConfig weapon, bool respawnable, float respawnTime) {
-            fighter.EquipWeapon(weapon);
+        public void Pickup(bool respawnable, float respawnTime) {
             if (respawnable) {
                 StartCoroutine(HideForSeconds(respawnTime));
             } else {

@@ -1,8 +1,9 @@
 ﻿using System;
+using RPG.Stats;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.Stats {
+namespace RPG.UI {
     public class LevelToDisplay : MonoBehaviour {
         private BaseStats baseStats;
         private TextMeshProUGUI text;

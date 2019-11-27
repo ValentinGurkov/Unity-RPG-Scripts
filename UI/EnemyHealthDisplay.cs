@@ -1,8 +1,9 @@
 ﻿using System;
+using RPG.Combat;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.Combat {
+namespace RPG.UI {
     public class EnemyHealthDisplay : MonoBehaviour {
         private Fighter fighter;
 

@@ -81,6 +81,24 @@ namespace RPG.Attributes {
             }
         }
 
+        public void Heal(float healthPercentToRestore) {
+            healthPoints.value = Mathf.Min(healthPoints.value + (MaxHealthPoints * healthPercentToRestore / 100), MaxHealthPoints);
+            if (onHealthUpdate != null) {
+                onHealthUpdate();
+            }
+        }
+
+        public object CaptureState() {
+            return healthPoints.value;
+        }
+
+        public void RestoreState(object state) {
+            healthPoints.value = (float) state;
+            if (healthPoints.value <= 0) {
+                Die();
+            }
+        }
+
         private void AwardExperience(GameObject instigator) {
             Experience experience = instigator.GetComponent<Experience>();
             if (experience == null) {
@@ -109,24 +127,6 @@ namespace RPG.Attributes {
             animator.SetTrigger(DIE_TRIGGER);
             actionScheduler.CancelCurrentAction();
             IsDead = true;
-        }
-
-        public void Heal(float healthPercentToRestore) {
-            healthPoints.value = Mathf.Min(healthPoints.value + (MaxHealthPoints * healthPercentToRestore / 100), MaxHealthPoints);
-            if (onHealthUpdate != null) {
-                onHealthUpdate();
-            }
-        }
-
-        public object CaptureState() {
-            return healthPoints.value;
-        }
-
-        public void RestoreState(object state) {
-            healthPoints.value = (float) state;
-            if (healthPoints.value <= 0) {
-                Die();
-            }
         }
     }
 }

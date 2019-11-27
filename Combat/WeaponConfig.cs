@@ -17,6 +17,10 @@ namespace RPG.Combat {
         private const string DESTORYING = "Destroying";
         private enum HAND { LEFT, RIGHT }
 
+        public float Range => weaponRange;
+        public float Damage => weaponDamage;
+        public float PercentageBous => percentageBonus;
+
         public Transform GetTransform(Transform rightHand, Transform leftHand) {
             return hand == HAND.RIGHT ? rightHand : leftHand;
         }
@@ -58,11 +62,5 @@ namespace RPG.Combat {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
             projectileInstance.SetTarget(target, instigator, calculatedDamage, updateUI);
         }
-
-        public float Range => weaponRange;
-
-        public float Damage => weaponDamage;
-
-        public float PercentageBous => percentageBonus;
     }
 }

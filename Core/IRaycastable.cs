@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RPG.UI {
+namespace RPG.Core {
     public interface IRaycastable {
         bool HandleRaycast(GameObject callingObject);
 

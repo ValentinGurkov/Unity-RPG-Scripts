@@ -92,7 +92,6 @@ namespace RPG.Control {
                     continue;
                 }
                 ai.Aggrevate();
-
             }
         }
 
@@ -108,7 +107,7 @@ namespace RPG.Control {
             Vector3 nextPosition = guardPosition.value;
 
             if (patrolPath != null) {
-                if (AtWayPoint()) {
+                if (IsAtWayPoint()) {
                     if (dwellTime < timeSinceLastWaypoint) {
                         timeSinceLastWaypoint = 0f;
                         CycleWaypoint();
@@ -121,7 +120,7 @@ namespace RPG.Control {
             mover.StartMovement(nextPosition, patrolSpeedFraction);
         }
 
-        private bool AtWayPoint() {
+        private bool IsAtWayPoint() {
             return IsTargetInRange(transform, GetCurrentWaypoint(), wayPointTolerance);
         }
 
@@ -141,6 +140,5 @@ namespace RPG.Control {
         public void Aggrevate() {
             timeSinceAggrevated = 0;
         }
-
     }
 }

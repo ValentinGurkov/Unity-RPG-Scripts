@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using RPG.Control;
+using RPG.Core;
 using RPG.Questing;
-using RPG.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;

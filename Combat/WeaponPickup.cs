@@ -10,5 +10,11 @@ public class WeaponPickup : PickupBase {
         if (other.gameObject.CompareTag("Player")) {
             Pickup(other.GetComponent<Fighter>(), weapon, respawnable, respawnTime);
         }
+
+    }
+
+    public void Pickup(Fighter fighter, WeaponConfig weapon, bool respawnable, float respawnTime) {
+        fighter.EquipWeapon(weapon);
+        base.Pickup(respawnable, respawnTime);
     }
 }
