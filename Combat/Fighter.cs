@@ -22,6 +22,7 @@ namespace RPG.Combat {
         private const string ATTACK_TRIGGER = "attack";
         private const string STOP_ATTACK_TRIGGER = "stopAttack";
         private Health target;
+        private Health prevTarget;
         private Mover mover;
         private ActionScheduler actionScheduler;
         private Animator animator;
@@ -73,6 +74,10 @@ namespace RPG.Combat {
                 return;
             }
 
+            if (CombatTargetChanged(target)) {
+                StopAttack();
+            }
+
             if (!GetIsInRange(target.transform)) {
                 mover.MoveTo(target.transform.position, 1f);
                 stopped = false;
@@ -83,6 +88,18 @@ namespace RPG.Combat {
                 }
                 AttackBehaviour();
             }
+        }
+
+        private bool CombatTargetChanged(Health newTarget) {
+            if (prevTarget == null) {
+                prevTarget = newTarget;
+                return false;
+            }
+            if (newTarget != prevTarget) {
+                prevTarget = newTarget;
+                return true;
+            }
+            return false;
         }
 
         private Weapon SetupDefaultWeapon() {
