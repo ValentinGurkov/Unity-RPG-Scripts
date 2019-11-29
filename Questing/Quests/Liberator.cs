@@ -1,5 +1,6 @@
 using RPG.Questing;
 
+//TODO Turn quests into scriptable objects
 public class Liberator : Quest {
     private void Awake() {
         QuestName = "Ultimate Slayer";

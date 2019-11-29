@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace RPG.UI {
     public class EnemyHealthDisplay : MonoBehaviour {
-        private Fighter fighter;
 
+        private Fighter fighter;
         private TextMeshProUGUI text;
         private string defaultText;
 

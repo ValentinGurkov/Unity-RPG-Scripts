@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace RPG.UI {
     public class HealthDisplay : MonoBehaviour {
+
         private Health health;
         private TextMeshProUGUI text;
 

@@ -1,15 +1,16 @@
 ﻿using RPG.Attributes;
 using RPG.Core;
+using RPG.NPC;
 using UnityEngine;
 
 namespace RPG.Combat {
 
     [RequireComponent(typeof(Health))]
-    public class CombatTarget : MonoBehaviour, IRaycastable {
+    public class CombatTarget : NPCBase {
 
-        public CursorType Cursor => CursorType.Combat;
+        public new CursorType Cursor => CursorType.Combat;
 
-        public bool HandleRaycast(GameObject callingObject) {
+        public new bool HandleRaycast(GameObject callingObject) {
             Fighter fighter = callingObject.GetComponent<Fighter>();
             if (!fighter.CanAttack(gameObject)) {
                 return false;

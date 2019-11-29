@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace RPG.UI {
     public class DamageText : MonoBehaviour {
-        [SerializeField] Text damageText = null;
+        [SerializeField] private Text damageText = null;
 
         public void DestroyText() {
             Destroy(gameObject);

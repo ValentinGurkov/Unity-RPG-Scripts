@@ -35,6 +35,7 @@ namespace RPG.Combat {
         private CinematicControlRemover[] cinematicControlRemovers;
 
         public event Action updateTargetUI;
+        public Health Target => target;
 
         private void Awake() {
             mover = GetComponent<Mover>();
@@ -72,7 +73,7 @@ namespace RPG.Combat {
                 return;
             }
 
-            if (!GetIsInRange()) {
+            if (!GetIsInRange(target.transform)) {
                 mover.MoveTo(target.transform.position, 1f);
                 stopped = false;
             } else {
@@ -99,7 +100,7 @@ namespace RPG.Combat {
 
         private void MakeEyeContact() {
             characterBehaviour.LookAtTarget(target.transform);
-            target.GetComponent<CharacterBehaviour>().AttackedBy(gameObject);
+            target.GetComponent<CharacterBehaviour>().LookAtTarget(gameObject.transform);
         }
 
         private void TriggerAttack() {
@@ -107,8 +108,8 @@ namespace RPG.Combat {
             animator.SetTrigger(ATTACK_TRIGGER);
         }
 
-        private bool GetIsInRange() {
-            return IsTargetInRange(transform, target.transform, currentWeaponConfig.Range);
+        private bool GetIsInRange(Transform targetTransform) {
+            return IsTargetInRange(transform, targetTransform, currentWeaponConfig.Range);
         }
 
         // Animation Trigger
@@ -140,15 +141,13 @@ namespace RPG.Combat {
             animator.SetTrigger(STOP_ATTACK_TRIGGER);
         }
 
-        public Health Target => target;
-
         public void EquipWeapon(WeaponConfig weapon) {
             currentWeaponConfig = weapon;
             currentWeapon.value = weapon.Spawn(rightHandTransform, leftHandTransform, animator);
         }
 
         public bool CanAttack(GameObject target) {
-            if (target == null || !mover.CanMoveTo(target.transform.position)) {
+            if (target == null || (!mover.CanMoveTo(target.transform.position) && !GetIsInRange(target.transform))) {
                 return false;
             }
 

@@ -1,5 +1,6 @@
 ﻿using RPG.Attributes;
 using RPG.Combat;
+using RPG.Core;
 using RPG.NPC;
 using UnityEngine;
 
@@ -32,6 +33,7 @@ namespace RPG.Events {
         public void InitiatedDialogue(DialogueInitiator npc) {
             if (OnTalkedToNPC != null) {
                 OnTalkedToNPC(npc);
+                GetComponent<ActionScheduler>().CancelCurrentAction();
             }
         }
     }

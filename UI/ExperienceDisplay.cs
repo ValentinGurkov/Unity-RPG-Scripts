@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace RPG.UI {
     public class ExperienceDisplay : MonoBehaviour {
+
         private Experience experience;
         private TextMeshProUGUI text;
 

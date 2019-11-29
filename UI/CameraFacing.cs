@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RPG.Control {
+namespace RPG.UI {
     public class CameraFacing : MonoBehaviour {
 
         private void LateUpdate() {

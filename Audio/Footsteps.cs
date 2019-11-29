@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 
 namespace RPG.Audio {
+    //TODO
+    /// <summary>
+    /// The implementation for footsteps sounds is still TODO
+    /// </summary>
     public class Footsteps : MonoBehaviour {
         [SerializeField] private AudioClip walkClip;
         [SerializeField] private AudioClip runClip;

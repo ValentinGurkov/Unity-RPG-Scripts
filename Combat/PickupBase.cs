@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using RPG.Attributes;
 using RPG.Core;
 using RPG.Movement;
 using UnityEngine;
@@ -7,14 +6,14 @@ using UnityEngine.Events;
 
 namespace RPG.Combat {
     public class PickupBase : MonoBehaviour, IRaycastable {
-        [SerializeField] public OnPickupEvent onPickup;
+        private Collider objectCollider;
 
-        public CursorType Cursor => CursorType.Pickup;
+        [SerializeField] public OnPickupEvent onPickup;
 
         [System.Serializable]
         public class OnPickupEvent : UnityEvent<PickupBase> { }
 
-        private Collider objectCollider;
+        public CursorType Cursor => CursorType.Pickup;
 
         private void Awake() {
             objectCollider = GetComponent<Collider>();
@@ -33,7 +32,7 @@ namespace RPG.Combat {
             }
         }
 
-        public void Pickup(bool respawnable, float respawnTime) {
+        protected void Pickup(bool respawnable, float respawnTime) {
             if (respawnable) {
                 StartCoroutine(HideForSeconds(respawnTime));
             } else {

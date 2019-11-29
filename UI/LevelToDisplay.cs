@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace RPG.UI {
     public class LevelToDisplay : MonoBehaviour {
+
         private BaseStats baseStats;
         private TextMeshProUGUI text;
 

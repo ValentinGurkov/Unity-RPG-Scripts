@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace RPG.NPC {
-    public class DialogueInitiator : NPC {
+    public class DialogueInitiator : NPCBase {
         [SerializeField] private Dialogue dialogue;
         [SerializeField] private DialogueManager dialogueManager;
-        [SerializeField] public OnPickupEvent onDialogeInitiated;
+        [SerializeField] public OnDialogueInitiatedEvent onDialogeInitiated;
 
         [System.Serializable]
-        public class OnPickupEvent : UnityEvent<DialogueInitiator> { }
+        public class OnDialogueInitiatedEvent : UnityEvent<DialogueInitiator> { }
 
         public new CursorType Cursor => CursorType.Converse;
         public DialogueManager DialogueManager => dialogueManager;

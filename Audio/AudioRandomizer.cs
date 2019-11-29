@@ -2,8 +2,7 @@
 
 namespace RPG.Audio {
     public class AudioRandomizer : MonoBehaviour {
-        [SerializeField]
-        private AudioClip[] audioClips;
+        [SerializeField] private AudioClip[] audioClips;
 
         private AudioSource audioSource;
 
