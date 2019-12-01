@@ -3,7 +3,9 @@ using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat {
-
+    /// <summary>
+    /// GameObjects with this component will become attackable.
+    /// </summary>
     [RequireComponent(typeof(Health))]
     public class CombatTarget : MonoBehaviour, IRaycastable {
 

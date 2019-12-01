@@ -32,9 +32,9 @@ namespace RPG.Combat {
         private float timeSinceLastAttack = Mathf.Infinity;
         private WeaponConfig currentWeaponConfig;
         private LazyValue<Weapon> currentWeapon;
-        private bool attackDisabled = false;
         private CinematicControlRemover[] cinematicControlRemovers;
 
+        public bool attackDisabled = false;
         public event Action updateTargetUI;
         public Health Target => target;
 
@@ -56,15 +56,15 @@ namespace RPG.Combat {
 
         private void OnEnable() {
             for (int i = 0; i < cinematicControlRemovers.Length; i++) {
-                cinematicControlRemovers[i].onCinematicStart += DisableAttack;
-                cinematicControlRemovers[i].onCinematicEnd += EnableAttack;
+                cinematicControlRemovers[i].onCinematicStart += ToggleAttack;
+                cinematicControlRemovers[i].onCinematicEnd += ToggleAttack;
             }
         }
 
         private void OnDisable() {
             for (int i = 0; i < cinematicControlRemovers.Length; i++) {
-                cinematicControlRemovers[i].onCinematicStart -= DisableAttack;
-                cinematicControlRemovers[i].onCinematicEnd -= EnableAttack;
+                cinematicControlRemovers[i].onCinematicStart -= ToggleAttack;
+                cinematicControlRemovers[i].onCinematicEnd -= ToggleAttack;
             }
         }
 
@@ -208,12 +208,8 @@ namespace RPG.Combat {
             }
         }
 
-        public void EnableAttack() {
-            attackDisabled = false;
-        }
-
-        public void DisableAttack() {
-            attackDisabled = true;
+        private void ToggleAttack(bool disabled) {
+            attackDisabled = disabled;
         }
     }
 }

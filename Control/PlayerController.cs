@@ -14,11 +14,7 @@ namespace RPG.Control {
         struct CursorMapping {
             public CursorType type;
             public Texture2D texture;
-            private Vector2 hotspot;
-
-            public Vector2 HotSpot {
-                get;
-            }
+            public Vector2 hotspot;
         }
 
         [SerializeField] private CursorMapping[] mappings = null;
@@ -138,7 +134,7 @@ namespace RPG.Control {
 
         public void SetCursor(CursorType type) {
             CursorMapping mapping = GetCursorMapping(type);
-            Cursor.SetCursor(mapping.texture, mapping.HotSpot, CursorMode.Auto);
+            Cursor.SetCursor(mapping.texture, mapping.hotspot, CursorMode.Auto);
         }
     }
 }

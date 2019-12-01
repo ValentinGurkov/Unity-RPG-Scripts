@@ -64,6 +64,11 @@ namespace RPG.Control {
             UpdateTimers();
         }
 
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, chaseDistance);
+        }
+
         private void UpdateTimers() {
             timeSinceLastSawPlayer += Time.deltaTime;
             timeSinceLastWaypoint += Time.deltaTime;
@@ -130,11 +135,6 @@ namespace RPG.Control {
 
         private Transform GetCurrentWaypoint() {
             return patrolPath.GetWayPoint(currentWaypointIndex);
-        }
-
-        private void OnDrawGizmosSelected() {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, chaseDistance);
         }
 
         public void Aggrevate() {

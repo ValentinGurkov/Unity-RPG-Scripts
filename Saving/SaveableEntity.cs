@@ -3,7 +3,9 @@ using UnityEditor;
 using UnityEngine;
 
 namespace RPG.Saving {
-
+    /// <summary>
+    /// GameObjects with this component will allow saving the state of its' components.
+    /// </summary>
     [ExecuteAlways]
     public class SaveableEntity : MonoBehaviour {
         [SerializeField] private string uniqueIdentifier = "";

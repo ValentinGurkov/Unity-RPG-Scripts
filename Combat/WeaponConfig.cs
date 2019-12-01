@@ -21,7 +21,19 @@ namespace RPG.Combat {
         public float Damage => weaponDamage;
         public float PercentageBous => percentageBonus;
 
-        public Transform GetTransform(Transform rightHand, Transform leftHand) {
+        private void DestroyOldWeapon(Transform rightHand, Transform leftHand) {
+            Transform currentWeapon = rightHand.Find(WEAPON_NAME);
+            if (currentWeapon == null) {
+                currentWeapon = leftHand.Find(WEAPON_NAME);
+            }
+            if (currentWeapon == null) {
+                return;
+            }
+            currentWeapon.name = DESTORYING;
+            Destroy(currentWeapon.gameObject);
+        }
+
+        private Transform GetTransform(Transform rightHand, Transform leftHand) {
             return hand == HAND.RIGHT ? rightHand : leftHand;
         }
 
@@ -42,22 +54,20 @@ namespace RPG.Combat {
             return weapon;
         }
 
-        private void DestroyOldWeapon(Transform rightHand, Transform leftHand) {
-            Transform currentWeapon = rightHand.Find(WEAPON_NAME);
-            if (currentWeapon == null) {
-                currentWeapon = leftHand.Find(WEAPON_NAME);
-            }
-            if (currentWeapon == null) {
-                return;
-            }
-            currentWeapon.name = DESTORYING;
-            Destroy(currentWeapon.gameObject);
-        }
-
         public bool HasProjectile() {
             return projectile != null;
         }
 
+        //TODO finish this
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="rightHand"></param>
+        /// <param name="leftHand"></param>
+        /// <param name="target"></param>
+        /// <param name="instigator"></param>
+        /// <param name="calculatedDamage"></param>
+        /// <param name="updateUI"></param>
         public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage, Action updateUI) {
             Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
             projectileInstance.SetTarget(target, instigator, calculatedDamage, updateUI);

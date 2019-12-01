@@ -6,22 +6,25 @@ using UnityEngine.Events;
 namespace RPG.Combat {
 
     public class Projectile : MonoBehaviour {
-        private const string TAG_CINEMATIC = "Cinematic";
-        private const string TAG_PICKUP = "Pickup";
         [SerializeField] private float speed = 1f;
         [SerializeField] private bool isHoming = false;
-        [SerializeField] private GameObject hitEffect = null;
         [SerializeField] private float projectileTTL = 10f;
         [SerializeField] private float afterHitTTL = 0.2f;
+        [SerializeField] private GameObject hitEffect = null;
         [SerializeField] private GameObject[] destroyAfterHit;
         [SerializeField] private UnityEvent onHit;
         [SerializeField] private UnityEvent onLaunch;
+        private const string TAG_CINEMATIC = "Cinematic";
+        private const string TAG_PICKUP = "Pickup";
+        private float damage = 0;
         private Health target = null;
         private GameObject instigator = null;
+        /// <summary>
+        /// Can update UI when damaging an enemy (e.g. update enemy health on HUD)
+        /// </summary>
         private Action updateUI = null;
-        private float damage = 0;
 
-        void Start() {
+        private void Start() {
             transform.LookAt(GetAimLocation());
             onLaunch.Invoke();
         }
@@ -36,7 +39,7 @@ namespace RPG.Combat {
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
         }
 
-        void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other) {
             // make projectiles go trough cinematic triggers and items on the ground
             if (other.gameObject.CompareTag(TAG_CINEMATIC) || other.gameObject.CompareTag(TAG_PICKUP)) {
                 return;

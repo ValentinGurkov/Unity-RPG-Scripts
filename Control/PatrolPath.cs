@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
 namespace RPG.Control {
-
+    /// <summary>
+    /// Used for calculating patrol path of NPCs and visualizing it with gizmos in the editor.
+    /// </summary>
     public class PatrolPath : MonoBehaviour {
         private const float waypointRadius = 0.3f;
 

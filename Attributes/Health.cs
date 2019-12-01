@@ -29,6 +29,12 @@ namespace RPG.Attributes {
         [System.Serializable]
         public class OnDieEvent : UnityEvent<Health> { }
 
+        public bool IsDead { get; private set; } = false;
+        public float Percentage => Fraction * 100;
+        public float HealthPoints => healthPoints.value;
+        public float MaxHealthPoints => baseStats.GetStat(Stat.Health);
+        public float Fraction => healthPoints.value / baseStats.GetStat(Stat.Health);
+
         private void Awake() {
             animator = GetComponent<Animator>();
             actionScheduler = GetComponent<ActionScheduler>();
@@ -54,16 +60,6 @@ namespace RPG.Attributes {
         private float GetInitialHealth() {
             return baseStats.GetStat(Stat.Health);
         }
-
-        public bool IsDead { get; private set; } = false;
-
-        public float Percentage => Fraction * 100;
-
-        public float HealthPoints => healthPoints.value;
-
-        public float MaxHealthPoints => baseStats.GetStat(Stat.Health);
-
-        public float Fraction => healthPoints.value / baseStats.GetStat(Stat.Health);
 
         public void TakeDamage(GameObject instigator, float damage) {
             if (IsDead) {

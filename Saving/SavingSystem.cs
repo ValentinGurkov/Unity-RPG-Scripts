@@ -6,7 +6,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace RPG.Saving {
-
+    /// <summary>
+    /// Core saving system functionallity based on the BinaryFormatter.
+    /// </summary>
     public class SavingSystem : MonoBehaviour {
 
         private const string LAST_SCENE_BUILD_INDEX = "lastSceneBuildIndex";

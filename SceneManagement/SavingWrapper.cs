@@ -3,7 +3,9 @@ using RPG.Saving;
 using UnityEngine;
 
 namespace RPG.SceneManagement {
-
+    /// <summary>
+    /// Leverages the core saving functionality to match the game's designed way of saving.
+    /// </summary>
     public class SavingWrapper : MonoBehaviour {
         [SerializeField] private float fadeOutTime = 0.5f;
         private const string defaultSaveFile = "save";

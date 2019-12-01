@@ -9,15 +9,17 @@ namespace RPG.Conversing {
         [SerializeField] private TextMeshProUGUI dialogueText;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private Animator animator;
+        private const string IS_OPEN_TRIGGER = "IsOpen";
         private Queue<string> dialogLines = new Queue<string>();
         private Coroutine currentDialogue = null;
-        private const string IS_OPEN_TRIGGER = "IsOpen";
 
         public event Action onDialogueClose;
 
-        private void Show(bool shouldShow) {
-            for (int i = 0; i < transform.childCount; i++) {
-                transform.GetChild(i).gameObject.SetActive(shouldShow);
+        private IEnumerator TypeSentance(char[] dialogLine) {
+            dialogueText.text = "";
+            for (int i = 0; i < dialogLine.Length; i++) {
+                dialogueText.text += dialogLine[i];
+                yield return new WaitForSecondsRealtime(0.01f);
             }
         }
 
@@ -32,14 +34,6 @@ namespace RPG.Conversing {
             nameText.text = dialogue.Name;
             animator.SetBool(IS_OPEN_TRIGGER, true);
             ContinueDialogue();
-        }
-
-        IEnumerator TypeSentance(char[] dialogLine) {
-            dialogueText.text = "";
-            for (int i = 0; i < dialogLine.Length; i++) {
-                dialogueText.text += dialogLine[i];
-                yield return new WaitForSecondsRealtime(0.01f);
-            }
         }
 
         public void ContinueDialogue() {

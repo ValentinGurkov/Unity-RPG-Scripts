@@ -7,8 +7,8 @@ using UnityEngine.Playables;
 namespace RPG.Cinematics {
 
     public class CinematicControlRemover : MonoBehaviour {
-        public event Action onCinematicStart;
-        public event Action onCinematicEnd;
+        public event Action<bool> onCinematicStart;
+        public event Action<bool> onCinematicEnd;
         private PlayableDirector playableDirector;
         private ActionScheduler actionScheduler;
         private GameObject player;
@@ -35,13 +35,13 @@ namespace RPG.Cinematics {
             if (playableDirector != null) {
                 playerController.enabled = true;
             }
-            onCinematicEnd();
+            onCinematicEnd(false);
         }
 
         public void DisableControl(PlayableDirector pd) {
             actionScheduler.CancelCurrentAction();
             playerController.enabled = false;
-            onCinematicStart();
+            onCinematicStart(true);
         }
     }
 }

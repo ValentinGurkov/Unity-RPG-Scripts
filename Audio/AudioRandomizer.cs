@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
 namespace RPG.Audio {
+    /// <summary>
+    /// Allows playing random audio FX from a collection.
+    /// </summary>
     public class AudioRandomizer : MonoBehaviour {
         [SerializeField] private AudioClip[] audioClips;
 
