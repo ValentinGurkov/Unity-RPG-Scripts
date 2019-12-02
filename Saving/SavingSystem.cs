@@ -13,30 +13,6 @@ namespace RPG.Saving {
 
         private const string LAST_SCENE_BUILD_INDEX = "lastSceneBuildIndex";
 
-        public IEnumerator LoadLastScene(string fileName) {
-            Dictionary<string, object> state = LoadFile(fileName);
-            int buildIndex = SceneManager.GetActiveScene().buildIndex;
-            if (state.ContainsKey(LAST_SCENE_BUILD_INDEX)) {
-                buildIndex = (int) state[LAST_SCENE_BUILD_INDEX];
-            }
-            yield return SceneManager.LoadSceneAsync(buildIndex);
-            RestoreState(state);
-        }
-
-        public void Save(string fileName) {
-            Dictionary<string, object> state = LoadFile(fileName);
-            CaptureState(state);
-            SaveFile(fileName, state);
-        }
-
-        public void Load(string fileName) {
-            RestoreState(LoadFile(fileName));
-        }
-
-        public void Delete(string fileName) {
-            File.Delete(GetPathFromSaveFile(fileName));
-        }
-
         private void SaveFile(string fileName, object state) {
             string path = GetPathFromSaveFile(fileName);
             print("Saving to " + path);
@@ -75,6 +51,30 @@ namespace RPG.Saving {
 
         private string GetPathFromSaveFile(string fileName) {
             return Path.Combine(Application.persistentDataPath, fileName + ".sav");
+        }
+
+        public IEnumerator LoadLastScene(string fileName) {
+            Dictionary<string, object> state = LoadFile(fileName);
+            int buildIndex = SceneManager.GetActiveScene().buildIndex;
+            if (state.ContainsKey(LAST_SCENE_BUILD_INDEX)) {
+                buildIndex = (int) state[LAST_SCENE_BUILD_INDEX];
+            }
+            yield return SceneManager.LoadSceneAsync(buildIndex);
+            RestoreState(state);
+        }
+
+        public void Save(string fileName) {
+            Dictionary<string, object> state = LoadFile(fileName);
+            CaptureState(state);
+            SaveFile(fileName, state);
+        }
+
+        public void Load(string fileName) {
+            RestoreState(LoadFile(fileName));
+        }
+
+        public void Delete(string fileName) {
+            File.Delete(GetPathFromSaveFile(fileName));
         }
     }
 }

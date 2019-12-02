@@ -48,7 +48,7 @@ namespace RPG.Conversing {
 
         }
 
-        //TODO Implement close dialogue on moving away from NPC
+        // TODO Implement close dialogue on moving away from NPC
         public void CloseDialogue() {
             Debug.Log("End of conversation with.");
             animator.SetBool(IS_OPEN_TRIGGER, false);

@@ -13,7 +13,7 @@ namespace RPG.NPC {
         public bool HandleRaycast(GameObject callingObject) {
             if (Input.GetMouseButtonDown(0)) {
                 if (IsTargetInRange(callingObject.transform, transform, 2.5f)) {
-                    //TODO make this work with CharacterBehaviour's smooth LookAt. Maybe use a Coroutine?
+                    // TODO make this work with CharacterBehaviour's smooth LookAt. Maybe use a Coroutine?
                     transform.LookAt(callingObject.transform);
                     callingObject.transform.LookAt(transform);
                     Interact();

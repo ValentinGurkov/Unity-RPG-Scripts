@@ -39,8 +39,8 @@ namespace RPG.Questing {
 
         public void CompleteQuest() {
             onComplete();
-            GiveReward();
-            GiveExperience();
+            GiveItemReward();
+            GiveExperienceReward();
         }
 
         public void RefreshRefernces() {
@@ -67,18 +67,18 @@ namespace RPG.Questing {
             }
         }
 
-        private void GiveReward() {
+        private void GiveItemReward() {
             Debug.Log("Giving quest reward");
             if (ItemReward != null) {
                 Debug.Log("Giving item reward");
-                /* TODO Item rewards after inventory system is implemented
-                ItemReward.Spawn(...);
-                */
+                // TODO Item rewards after inventory system is implemented
+                // ItemReward.Spawn(...);
             }
         }
-        private void GiveExperience() {
+
+        private void GiveExperienceReward() {
             Debug.Log("Giving experience reward");
-            if (experience == null && ExperienceReward == 0) {
+            if (experience == null || ExperienceReward == 0) {
                 return;
             }
             experience.GainExperience(ExperienceReward);

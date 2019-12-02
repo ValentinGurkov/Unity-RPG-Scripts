@@ -8,6 +8,7 @@ namespace RPG.NPC {
         [SerializeField] private Dialogue dialogue;
         [SerializeField] private DialogueManager dialogueManager;
         [SerializeField] public OnDialogueInitiatedEvent onDialogeInitiated;
+        private bool isInteracting = false;
 
         [System.Serializable]
         public class OnDialogueInitiatedEvent : UnityEvent<DialogueInitiator> { }
@@ -15,14 +16,16 @@ namespace RPG.NPC {
         public new CursorType Cursor => CursorType.Converse;
         public DialogueManager DialogueManager => dialogueManager;
 
-        private bool isInteracting = false;
-
         private void OnEnable() {
             dialogueManager.onDialogueClose += EndInteraction;
         }
 
         private void OnDisable() {
             dialogueManager.onDialogueClose -= EndInteraction;
+        }
+
+        private void EndInteraction() {
+            isInteracting = false;
         }
 
         public override void Interact() {
@@ -36,10 +39,5 @@ namespace RPG.NPC {
             onDialogeInitiated.Invoke(this);
             isInteracting = true;
         }
-
-        void EndInteraction() {
-            isInteracting = false;
-        }
-
     }
 }

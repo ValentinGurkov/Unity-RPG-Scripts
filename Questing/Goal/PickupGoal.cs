@@ -2,9 +2,9 @@ using RPG.Combat;
 using RPG.Events;
 
 namespace RPG.Questing {
-  public class PickuppGoal : Goal {
-    private string Pickup;
-    public PickuppGoal(Stage stage, string pickup, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
+  public class PickupGoal : Goal {
+    public string Pickup;
+    public PickupGoal(Stage stage, string pickup, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
       Stage = stage;
       Pickup = pickup;
       CurrentAmount = currentAmount;
@@ -25,7 +25,6 @@ namespace RPG.Questing {
           EventSystem.OnItemPickedUp -= ItemPickedUp;
         }
       }
-
     }
   }
 }

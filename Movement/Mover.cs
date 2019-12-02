@@ -11,12 +11,12 @@ namespace RPG.Movement {
         [SerializeField] private float maxSpeed = 6f;
         [SerializeField] private float maxNavPathLength = 40f;
         [SerializeField] private float interactStoppingDistance = 3f;
+        private float originalStoppingDistance = 0;
+        private Action callbackOnReachingDestination = null;
         private NavMeshAgent navMeshAgent;
         private Animator animator;
         private ActionScheduler actionScheduler;
         private Health health;
-        private Action callbackOnReachingDestination = null;
-        private float originalStoppingDistance = 0;
 
         private void Awake() {
             navMeshAgent = GetComponent<NavMeshAgent>();
@@ -90,6 +90,7 @@ namespace RPG.Movement {
 
             return this;
         }
+
         public void Cancel() {
             navMeshAgent.isStopped = true;
         }

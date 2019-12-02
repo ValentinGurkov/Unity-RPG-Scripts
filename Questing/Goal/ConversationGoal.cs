@@ -11,16 +11,16 @@ namespace RPG.Questing {
             Description = description;
         }
 
-        public override void Init() {
-            base.Init();
-            EventSystem.OnTalkedToNPC += TalkedToNPC;
-        }
-
         private void TalkedToNPC(DialogueInitiator npc) {
             if (Stage.Active && npc.name.Contains(Target)) {
                 Complete();
                 EventSystem.OnTalkedToNPC -= TalkedToNPC;
             }
+        }
+
+        public override void Init() {
+            base.Init();
+            EventSystem.OnTalkedToNPC += TalkedToNPC;
         }
     }
 }

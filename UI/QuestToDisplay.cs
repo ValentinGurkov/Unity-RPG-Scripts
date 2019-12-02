@@ -61,7 +61,5 @@ namespace RPG.UI {
             questManager.onQuestComplete -= DisplayDefaultText;
             text.text = defaultText;
         }
-
     }
-
 }

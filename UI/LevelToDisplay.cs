@@ -27,7 +27,7 @@ namespace RPG.UI {
         }
 
         private bool UpdateLevel() {
-            text.text = String.Format("{0:0}", baseStats.GetLevel());
+            text.text = String.Format("{0:0}", baseStats.Level);
             return true;
         }
     }

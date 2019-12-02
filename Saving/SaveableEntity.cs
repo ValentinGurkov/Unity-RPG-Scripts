@@ -18,6 +18,35 @@ namespace RPG.Saving {
             saveables = GetComponents<ISaveable>();
         }
 
+#if UNITY_EDITOR
+        private void Update() {
+            if (Application.IsPlaying(gameObject) || string.IsNullOrEmpty(gameObject.scene.path)) {
+                return;
+            }
+
+            SerializedObject serializedObject = new SerializedObject(this);
+            SerializedProperty property = serializedObject.FindProperty("uniqueIdentifier");
+
+            if (property.stringValue == "" || !IsUnique(property.stringValue)) {
+                property.stringValue = System.Guid.NewGuid().ToString();
+                serializedObject.ApplyModifiedProperties();
+            }
+            globalLookUp[property.stringValue] = this;
+        }
+#endif
+        private bool IsUnique(string candidate) {
+            if (!globalLookUp.ContainsKey(candidate) || globalLookUp[candidate] == this) {
+                return true;
+            }
+
+            if (globalLookUp[candidate] == null || globalLookUp[candidate].UUID != candidate) {
+                globalLookUp.Remove(candidate);
+                return true;
+            }
+
+            return false;
+        }
+
         public object CaptureState() {
             Dictionary<string, object> state = new Dictionary<string, object>();
             foreach (ISaveable saveable in saveables) {
@@ -35,38 +64,6 @@ namespace RPG.Saving {
                     saveable.RestoreState(state[type]);
                 }
             }
-        }
-
-#if UNITY_EDITOR
-
-        private void Update() {
-            if (Application.IsPlaying(gameObject) || string.IsNullOrEmpty(gameObject.scene.path)) {
-                return;
-            }
-
-            SerializedObject serializedObject = new SerializedObject(this);
-            SerializedProperty property = serializedObject.FindProperty("uniqueIdentifier");
-
-            if (property.stringValue == "" || !IsUnique(property.stringValue)) {
-                property.stringValue = System.Guid.NewGuid().ToString();
-                serializedObject.ApplyModifiedProperties();
-            }
-            globalLookUp[property.stringValue] = this;
-        }
-
-#endif
-
-        private bool IsUnique(string candidate) {
-            if (!globalLookUp.ContainsKey(candidate) || globalLookUp[candidate] == this) {
-                return true;
-            }
-
-            if (globalLookUp[candidate] == null || globalLookUp[candidate].UUID != candidate) {
-                globalLookUp.Remove(candidate);
-                return true;
-            }
-
-            return false;
         }
     }
 }

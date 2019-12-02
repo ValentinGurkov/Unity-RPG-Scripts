@@ -1,6 +1,6 @@
 using RPG.Questing;
 
-//TODO Turn quests into scriptable objects
+// TODO Turn quests into scriptable objects
 public class Liberator : Quest {
     private void Awake() {
         QuestName = "Ultimate Slayer";
@@ -9,7 +9,7 @@ public class Liberator : Quest {
         ExperienceReward = 1000;
         Stage firstStage = new Stage(this);
         firstStage.AddGoal(new KillGoal(firstStage, "Windmill Bandit", 0, 1, "KIll the bandit at the windmill"));
-        firstStage.AddGoal(new PickuppGoal(firstStage, "Sunflower", 0, 1, "Pick up the Sunflower at the windmill"));
+        firstStage.AddGoal(new PickupGoal(firstStage, "Sunflower", 0, 1, "Pick up the Sunflower at the windmill"));
         Stage secondStage = new Stage(this, false, false);
         secondStage.AddGoal(new KillGoal(secondStage, "Entrance", 0, 3, "Clear the bridge to the village from the bandits"));
         Stage thirdStage = new Stage(this, false, false);

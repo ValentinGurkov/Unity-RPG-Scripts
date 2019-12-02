@@ -58,7 +58,7 @@ namespace RPG.Combat {
             return projectile != null;
         }
 
-        //TODO finish this
+        // TODO finish this
         /// <summary>
         ///
         /// </summary>

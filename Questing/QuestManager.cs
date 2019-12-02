@@ -15,6 +15,43 @@ namespace RPG.Questing {
 
         public Stage LatestStage => latestStage;
 
+        private void OnDisable() {
+            if (latestQuest != null) {
+                for (int i = 0; i < latestQuest.Stages.Count; i++) {
+                    latestQuest.Stages[i].onActive -= UpdateUIOnCompletedStage;
+                    for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
+                        latestQuest.Stages[i].Goals[j].onComplete -= UpdateUIOnCompletedGoal;
+                    }
+                }
+            }
+        }
+
+        private(int, bool[], int[]) GetActiveStageInfo() {
+            int len = latestStage != null ? latestStage.Goals.Count : 0;
+            bool[] goalsCompleted = new bool[len];
+            int[] goalsCurrentAmount = new int[len];
+            for (int i = 0; i < len; i++) {
+                goalsCompleted[i] = latestStage.Goals[i].Completed;
+                goalsCurrentAmount[i] = latestStage.Goals[i].CurrentAmount;
+            }
+            return (latestStage != null ? latestStage.Index : 0, goalsCompleted, goalsCurrentAmount);
+        }
+
+        private void UpdateUIOnCompletedGoal(Stage stage, Goal goal) {
+            goal.onComplete -= UpdateUIOnCompletedGoal;
+            if (onQuestAdded != null) {
+                onQuestAdded(stage);
+            }
+        }
+
+        private void UpdateUIOnCompletedStage(Stage stage) {
+            stage.onActive -= UpdateUIOnCompletedStage;
+            latestStage = stage;
+            if (onQuestAdded != null) {
+                onQuestAdded(stage);
+            }
+        }
+
         public Quest AddQuest(string questGiver, string quest) {
             questGiverName = questGiver;
             questName = quest;
@@ -40,15 +77,12 @@ namespace RPG.Questing {
             return latestQuest;
         }
 
-        private void OnDisable() {
+        // used to update references between scenes
+        public Stage Subscribe() {
             if (latestQuest != null) {
-                for (int i = 0; i < latestQuest.Stages.Count; i++) {
-                    latestQuest.Stages[i].onActive -= UpdateUIOnCompletedStage;
-                    for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
-                        latestQuest.Stages[i].Goals[j].onComplete -= UpdateUIOnCompletedGoal;
-                    }
-                }
+                latestQuest.onComplete += onQuestComplete;
             }
+            return latestStage;
         }
 
         public object CaptureState() {
@@ -79,40 +113,6 @@ namespace RPG.Questing {
                     latestQuest.RefreshRefernces();
                     qg.SetQuest(latestQuest);
                 }
-            }
-        }
-
-        // used to update references between scenes
-        public Stage Subscribe() {
-            if (latestQuest != null) {
-                latestQuest.onComplete += onQuestComplete;
-            }
-            return latestStage;
-        }
-
-        private(int, bool[], int[]) GetActiveStageInfo() {
-            int len = latestStage != null ? latestStage.Goals.Count : 0;
-            bool[] goalsCompleted = new bool[len];
-            int[] goalsCurrentAmount = new int[len];
-            for (int i = 0; i < len; i++) {
-                goalsCompleted[i] = latestStage.Goals[i].Completed;
-                goalsCurrentAmount[i] = latestStage.Goals[i].CurrentAmount;
-            }
-            return (latestStage != null ? latestStage.Index : 0, goalsCompleted, goalsCurrentAmount);
-        }
-
-        private void UpdateUIOnCompletedGoal(Stage stage, Goal goal) {
-            goal.onComplete -= UpdateUIOnCompletedGoal;
-            if (onQuestAdded != null) {
-                onQuestAdded(stage);
-            }
-        }
-
-        private void UpdateUIOnCompletedStage(Stage stage) {
-            stage.onActive -= UpdateUIOnCompletedStage;
-            latestStage = stage;
-            if (onQuestAdded != null) {
-                onQuestAdded(stage);
             }
         }
     }

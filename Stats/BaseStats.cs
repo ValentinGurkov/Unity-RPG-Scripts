@@ -4,17 +4,17 @@ using UnityEngine;
 namespace RPG.Stats {
     public class BaseStats : MonoBehaviour {
         [Range(1, 99)][SerializeField] private int startingLevel = 1;
+        [SerializeField] private bool shouldUseModifiers = false;
         [SerializeField] private CharacterClass characterClass;
         [SerializeField] private Progression progression = null;
         [SerializeField] private GameObject levelUpParticleEffect = null;
-        [SerializeField] private bool shouldUseModifiers = false;
-        public delegate bool onLevelUpHandler();
-        public event onLevelUpHandler onLevelUp;
-
-        public CharacterClass CharacterClass => characterClass;
-
         private LazyValue<int> currentLevel;
         private Experience experience;
+
+        public delegate bool LevelUpHandler();
+        public event LevelUpHandler onLevelUp;
+        public CharacterClass CharacterClass => characterClass;
+        public int Level => currentLevel.value;
 
         private void Awake() {
             experience = GetComponent<Experience>();
@@ -37,24 +37,17 @@ namespace RPG.Stats {
             }
         }
 
-        public float GetStat(Stat stat) {
-            return (progression.GetStat(stat, characterClass, currentLevel.value) + GetAdditiveModifiers(stat)) * (1 + GetPercentageModifier(stat) / 100);
-        }
-
-        public int GetLevel() {
-            return currentLevel.value;
-        }
-
         private void UpdateLevel() {
             int newLevel = CalculateLevel();
             if (newLevel > currentLevel.value) {
                 currentLevel.value = newLevel;
-                if (onLevelUp()) {
+                if (onLevelUp != null && onLevelUp()) {
                     LevelUpEffect();
                 }
             }
 
         }
+
         private float GetAdditiveModifiers(Stat stat) {
             if (!shouldUseModifiers) {
                 return 0;
@@ -101,6 +94,10 @@ namespace RPG.Stats {
                 }
             }
             return penultimateLevel + 1;
+        }
+
+        public float GetStat(Stat stat) {
+            return (progression.GetStat(stat, characterClass, currentLevel.value) + GetAdditiveModifiers(stat)) * (1 + GetPercentageModifier(stat) / 100);
         }
     }
 

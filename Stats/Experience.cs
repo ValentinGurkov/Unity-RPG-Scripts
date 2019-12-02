@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RPG.Stats {
 
   public class Experience : MonoBehaviour, ISaveable {
-    [SerializeField] float experiencePoints = 0f;
+    [SerializeField] float experiencePoints = 0;
 
     public float ExperiencePoints => experiencePoints;
     public event Action onExperienceGained;

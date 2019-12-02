@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace RPG.Audio {
-    //TODO
+    // TODO
     /// <summary>
     /// The implementation for footsteps sounds is still TODO
     /// </summary>

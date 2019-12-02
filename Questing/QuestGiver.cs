@@ -23,17 +23,6 @@ namespace RPG.Questing {
             questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
         }
 
-        public override void Interact() {
-            if (!assignedQuest && !hasBeenHelped) {
-                base.Interact();
-                base.DialogueManager.onDialogueClose += AssignQuest;
-            } else if (assignedQuest && !hasBeenHelped) {
-                CheckQuest();
-            } else {
-                StartDialogue(afterQuestDialogue);
-            }
-        }
-
         private void AssignQuest() {
             if (!assignedQuest) {
                 Debug.Log("Quest assigned");
@@ -57,6 +46,17 @@ namespace RPG.Questing {
                     Debug.Log("Quest not yet completed");
                     StartDialogue(questPendingDialogue);
                 }
+            }
+        }
+
+        public override void Interact() {
+            if (!assignedQuest && !hasBeenHelped) {
+                base.Interact();
+                base.DialogueManager.onDialogueClose += AssignQuest;
+            } else if (assignedQuest && !hasBeenHelped) {
+                CheckQuest();
+            } else {
+                StartDialogue(afterQuestDialogue);
             }
         }
 
