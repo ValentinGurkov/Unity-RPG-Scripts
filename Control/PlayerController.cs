@@ -23,10 +23,15 @@ namespace RPG.Control {
 
         private Mover mover;
         private Health playerHealth;
+        private Camera mainCamera;
 
         private void Awake() {
             mover = GetComponent<Mover>();
             playerHealth = GetComponent<Health>();
+        }
+
+        private void Start() {
+            mainCamera = Camera.main;
         }
 
         private void Update() {
@@ -129,7 +134,7 @@ namespace RPG.Control {
         }
 
         private Ray GetMouseRay() {
-            return Camera.main.ScreenPointToRay(Input.mousePosition);
+            return mainCamera.ScreenPointToRay(Input.mousePosition);
         }
 
         public void SetCursor(CursorType type) {
