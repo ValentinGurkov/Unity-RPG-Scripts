@@ -93,7 +93,7 @@ namespace RPG.Stats {
             BuildLookup();
             float[] levels = lookupTable[characterClass][stat];
             if (levels.Length < level) {
-                return 0f;
+                return 0;
             }
             return levels[level - 1];
         }

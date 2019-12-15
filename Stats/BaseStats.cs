@@ -100,5 +100,4 @@ namespace RPG.Stats {
             return (progression.GetStat(stat, characterClass, currentLevel.value) + GetAdditiveModifiers(stat)) * (1 + GetPercentageModifier(stat) / 100);
         }
     }
-
 }

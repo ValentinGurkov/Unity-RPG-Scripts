@@ -52,7 +52,7 @@ namespace RPG.Control {
                 return;
             }
             if (IsAggrevated()) {
-                timeSinceLastSawPlayer = 0f;
+                timeSinceLastSawPlayer = 0;
                 AttackBehaviour();
             } else if (timeSinceLastSawPlayer < suspicionTime) {
                 SuspicionBehaviour();
@@ -114,7 +114,7 @@ namespace RPG.Control {
             if (patrolPath != null) {
                 if (IsAtWayPoint()) {
                     if (dwellTime < timeSinceLastWaypoint) {
-                        timeSinceLastWaypoint = 0f;
+                        timeSinceLastWaypoint = 0;
                         CycleWaypoint();
                     }
                 }
