@@ -34,13 +34,6 @@ namespace RPG.Combat {
             originalSpeed = speed;
         }
 
-        private void LookTowardsTarget() {
-            if (target != null) {
-                transform.LookAt(GetAimLocation());
-                onLaunch.Invoke();
-            }
-        }
-
         private void Update() {
             if (target == null) {
                 return;
@@ -102,6 +95,13 @@ namespace RPG.Combat {
             StartCoroutine(ReturnToPoolWithDelay(afterHitTTL));
         }
 
+        private void PointTowardsTarget() {
+            if (target != null) {
+                transform.LookAt(GetAimLocation());
+                onLaunch.Invoke();
+            }
+        }
+
         private Vector3 GetAimLocation() {
             CapsuleCollider targetCollider = target.GetComponent<CapsuleCollider>();
             if (targetCollider == null) {
@@ -133,7 +133,7 @@ namespace RPG.Combat {
             this.instigator = instigator;
             this.updateUI = updateUI;
             speed = originalSpeed;
-            LookTowardsTarget();
+            PointTowardsTarget();
         }
 
         public void SetPoolTag(string tag) {

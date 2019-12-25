@@ -21,5 +21,4 @@ namespace RPG.UI {
             damageText.SetPoolTag(poolTag);
         }
     }
-
 }

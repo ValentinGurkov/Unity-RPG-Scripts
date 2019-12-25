@@ -12,5 +12,4 @@ namespace RPG.UI {
             transform.forward = mainCamera.transform.forward;
         }
     }
-
 }

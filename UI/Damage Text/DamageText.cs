@@ -27,5 +27,4 @@ namespace RPG.UI {
             damageText.text = String.Format("{0:0}", amount);
         }
     }
-
 }
