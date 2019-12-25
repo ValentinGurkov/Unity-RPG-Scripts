@@ -1,12 +1,25 @@
-﻿using UnityEngine;
+﻿using RPG.Util;
+using UnityEngine;
 
 namespace RPG.UI {
     public class DamageTextSpawner : MonoBehaviour {
+        [SerializeField] private string poolTag = "damageText";
         [SerializeField] private DamageText damageTextPrefab = null;
+        private ObjectPooler pooler;
+
+        private void Start() {
+            pooler = ObjectPooler.Instace;
+        }
 
         public void Spawn(float damage) {
-            DamageText instance = Instantiate<DamageText>(damageTextPrefab, transform);
-            instance.SetValue(damage);
+            GameObject instance = pooler.SpawnFromPool(poolTag);
+            if (instance == null) {
+                return;
+            }
+            instance.transform.position = transform.position;
+            DamageText damageText = instance.GetComponent<DamageText>();
+            damageText.SetValue(damage);
+            damageText.SetPoolTag(poolTag);
         }
     }
 

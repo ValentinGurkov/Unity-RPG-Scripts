@@ -1,5 +1,6 @@
 ﻿using System;
 using RPG.Attributes;
+using RPG.Util;
 using UnityEngine;
 
 namespace RPG.Combat {
@@ -8,6 +9,7 @@ namespace RPG.Combat {
     public class WeaponConfig : ScriptableObject {
         [SerializeField] private AnimatorOverrideController animatorOverride = null;
         [SerializeField] private Weapon equippedPrefab = null;
+        [SerializeField] private string projectileTag = "arrow";
         [SerializeField] private Projectile projectile = null;
         [SerializeField] private float weaponRange = 3f;
         [SerializeField] private float weaponDamage = 25f;
@@ -16,7 +18,7 @@ namespace RPG.Combat {
         private const string WEAPON_NAME = "Weapon";
         private const string DESTORYING = "Destroying";
         private enum HAND { LEFT, RIGHT }
-
+        private ObjectPooler pooler = null;
         public float Range => weaponRange;
         public float Damage => weaponDamage;
         public float PercentageBous => percentageBonus;
@@ -35,6 +37,12 @@ namespace RPG.Combat {
 
         private Transform GetTransform(Transform rightHand, Transform leftHand) {
             return hand == HAND.RIGHT ? rightHand : leftHand;
+        }
+
+        private void EstablishPoolerReference() {
+            if (pooler == null) {
+                pooler = ObjectPooler.Instace;
+            }
         }
 
         public Weapon Spawn(Transform rightHand, Transform leftHand, Animator animator) {
@@ -69,8 +77,16 @@ namespace RPG.Combat {
         /// <param name="calculatedDamage"></param>
         /// <param name="updateUI"></param>
         public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage, Action updateUI) {
-            Projectile projectileInstance = Instantiate(projectile, GetTransform(rightHand, leftHand).position, Quaternion.identity);
+            EstablishPoolerReference();
+            GameObject instance = pooler.SpawnFromPool(projectileTag);
+            if (!instance) {
+                return;
+            }
+            Projectile projectileInstance = instance.GetComponent<Projectile>();
+            projectileInstance.transform.position = GetTransform(rightHand, leftHand).position;
+            projectile.transform.rotation = Quaternion.identity;
             projectileInstance.SetTarget(target, instigator, calculatedDamage, updateUI);
+            projectileInstance.SetPoolTag(projectileTag);
         }
     }
 }

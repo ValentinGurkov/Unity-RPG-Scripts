@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using RPG.Attributes;
+using RPG.Util;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,14 +21,24 @@ namespace RPG.Combat {
         private float damage = 0;
         private Health target = null;
         private GameObject instigator = null;
+        private ObjectPooler pooler;
+        private string poolTag;
         /// <summary>
         /// Can update UI when damaging an enemy (e.g. update enemy health on HUD)
         /// </summary>
         private Action updateUI = null;
+        private float originalSpeed;
 
-        private void Start() {
-            transform.LookAt(GetAimLocation());
-            onLaunch.Invoke();
+        private void Awake() {
+            pooler = ObjectPooler.Instace;
+            originalSpeed = speed;
+        }
+
+        private void LookTowardsTarget() {
+            if (target != null) {
+                transform.LookAt(GetAimLocation());
+                onLaunch.Invoke();
+            }
         }
 
         private void Update() {
@@ -37,6 +49,7 @@ namespace RPG.Combat {
                 transform.LookAt(GetAimLocation());
             }
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
+            StartCoroutine(ReturnToPoolWithDelay(projectileTTL));
         }
 
         private void OnTriggerEnter(Collider other) {
@@ -45,15 +58,19 @@ namespace RPG.Combat {
                 return;
             }
 
+            foreach (GameObject toDestroy in destroyAfterHit) {
+                toDestroy.SetActive(true);
+            }
+
             Health targetHealth = other.GetComponent<Health>();
 
             if (targetHealth == null) { // to disallow friendly fire -  || targetHealth != target
-                Destroy(gameObject);
+                ReturnToPool();
                 return;
             }
 
             if (targetHealth.IsDead) {
-                Destroy(gameObject, projectileTTL);
+                StartCoroutine(ReturnToPoolWithDelay(projectileTTL));
                 return;
             }
 
@@ -73,7 +90,7 @@ namespace RPG.Combat {
             }
 
             foreach (GameObject toDestroy in destroyAfterHit) {
-                Destroy(toDestroy);
+                toDestroy.SetActive(false);
             }
 
             onHit.Invoke();
@@ -82,7 +99,7 @@ namespace RPG.Combat {
                 updateUI();
             }
 
-            Destroy(gameObject, afterHitTTL);
+            StartCoroutine(ReturnToPoolWithDelay(afterHitTTL));
         }
 
         private Vector3 GetAimLocation() {
@@ -93,11 +110,36 @@ namespace RPG.Combat {
             return target.transform.position + Vector3.up * targetCollider.height / 2;
         }
 
+        private void ReturnToPool() {
+            pooler.AddToPool(poolTag, gameObject);
+        }
+
+        private IEnumerator ReturnToPoolWithDelay(float delay) {
+            yield return new WaitForSeconds(delay);
+            ReturnToPool();
+        }
+
+        // TODO finish this
+        /// <summary>
+        /// Sets the target for the projectile.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="instigator"></param>
+        /// <param name="damage"></param>
+        /// <param name="updateUI"></param>
         public void SetTarget(Health target, GameObject instigator, float damage, Action updateUI) {
             this.target = target;
             this.damage = damage;
             this.instigator = instigator;
             this.updateUI = updateUI;
+            speed = originalSpeed;
+            LookTowardsTarget();
+        }
+
+        public void SetPoolTag(string tag) {
+            if (string.IsNullOrEmpty(poolTag)) {
+                poolTag = tag;
+            }
         }
     }
 }
