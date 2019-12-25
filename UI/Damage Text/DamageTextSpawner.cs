@@ -4,7 +4,6 @@ using UnityEngine;
 namespace RPG.UI {
     public class DamageTextSpawner : MonoBehaviour {
         [SerializeField] private string poolTag = "damageText";
-        [SerializeField] private DamageText damageTextPrefab = null;
         private ObjectPooler pooler;
 
         private void Start() {
