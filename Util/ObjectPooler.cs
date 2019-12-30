@@ -23,6 +23,19 @@ namespace RPG.Util {
             FillPools();
         }
 
+        private void FillPool(string tag) {
+            if (!poolDict.ContainsKey(tag)) {
+                return;
+            }
+            Pool pool = pools.Find(p => p.tag == tag);
+            for (int j = 0; j < pool.size; j++) {
+                GameObject obj = Instantiate(pool.prefab);
+                obj.transform.SetParent(transform);
+                obj.SetActive(false);
+                poolDict[tag].Enqueue(obj);
+            }
+        }
+
         private void FillPools() {
             for (int i = 0; i < pools.Count; i++) {
                 Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -33,19 +46,6 @@ namespace RPG.Util {
                     objectPool.Enqueue(obj);
                 }
                 poolDict.Add(pools[i].tag, objectPool);
-            }
-        }
-
-        public void FillPool(string tag) {
-            if (!poolDict.ContainsKey(tag)) {
-                return;
-            }
-            Pool pool = pools.Find(p => p.tag == tag);
-            for (int j = 0; j < pool.size; j++) {
-                GameObject obj = Instantiate(pool.prefab);
-                obj.transform.SetParent(transform);
-                obj.SetActive(false);
-                poolDict[tag].Enqueue(obj);
             }
         }
 

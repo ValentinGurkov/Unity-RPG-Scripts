@@ -127,19 +127,16 @@ namespace RPG.Combat {
         /// <param name="instigator"></param>
         /// <param name="damage"></param>
         /// <param name="updateUI"></param>
-        public void SetTarget(Health target, GameObject instigator, float damage, Action updateUI) {
+        public void SetTarget(Health target, GameObject instigator, float damage, Action updateUI, string tag) {
             this.target = target;
             this.damage = damage;
             this.instigator = instigator;
             this.updateUI = updateUI;
             speed = originalSpeed;
-            PointTowardsTarget();
-        }
-
-        public void SetPoolTag(string tag) {
             if (string.IsNullOrEmpty(poolTag)) {
                 poolTag = tag;
             }
+            PointTowardsTarget();
         }
     }
 }
