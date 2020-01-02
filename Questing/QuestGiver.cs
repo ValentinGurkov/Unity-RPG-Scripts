@@ -19,7 +19,7 @@ namespace RPG.Questing {
 
         public new CursorType Cursor => CursorType.Quest;
 
-        private void Awake() {
+        private void Start() {
             questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
         }
 
