@@ -8,7 +8,7 @@ namespace RPG.Combat {
         [SerializeField] private GameObject hitEffect = null;
 
         public void OnHit(Health target) {
-            onHit.Invoke();
+            onHit?.Invoke();
 
             if (hitEffect != null) {
                 GameObject impactObj = Instantiate(hitEffect);

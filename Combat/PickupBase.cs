@@ -38,7 +38,7 @@ namespace RPG.Combat {
             } else {
                 Destroy(gameObject);
             }
-            onPickup.Invoke(this);
+            onPickup?.Invoke(this);
         }
 
         public bool HandleRaycast(GameObject callingObject) {

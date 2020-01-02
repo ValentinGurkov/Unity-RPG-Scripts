@@ -39,17 +39,14 @@ namespace RPG.Questing {
 
         private void UpdateUIOnCompletedGoal(Stage stage, Goal goal) {
             goal.onComplete -= UpdateUIOnCompletedGoal;
-            if (onQuestAdded != null) {
-                onQuestAdded(stage);
-            }
+            onQuestAdded?.Invoke(stage);
+
         }
 
         private void UpdateUIOnCompletedStage(Stage stage) {
             stage.onActive -= UpdateUIOnCompletedStage;
             latestStage = stage;
-            if (onQuestAdded != null) {
-                onQuestAdded(stage);
-            }
+            onQuestAdded?.Invoke(stage);
         }
 
         public Quest AddQuest(string questGiver, string quest) {
@@ -69,10 +66,7 @@ namespace RPG.Questing {
                     latestQuest.Stages[i].Goals[j].onComplete += UpdateUIOnCompletedGoal;
                 }
             }
-
-            if (onQuestAdded != null) {
-                onQuestAdded(latestStage);
-            }
+            onQuestAdded?.Invoke(latestStage);
 
             return latestQuest;
         }

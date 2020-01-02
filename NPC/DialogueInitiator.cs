@@ -36,7 +36,7 @@ namespace RPG.NPC {
 
         public void StartDialogue(Dialogue dialogue) {
             dialogueManager.StartDialogue(dialogue);
-            onDialogeInitiated.Invoke(this);
+            onDialogeInitiated?.Invoke(this);
             isInteracting = true;
         }
     }

@@ -143,9 +143,8 @@ namespace RPG.Combat {
                     target.TakeDamage(gameObject, damage);
                 }
             }
-            if (updateTargetUI != null) {
-                updateTargetUI();
-            }
+            updateTargetUI?.Invoke();
+
         }
 
         // Animation Trigger
@@ -181,9 +180,8 @@ namespace RPG.Combat {
             StopAttack();
             target = null;
             mover.Cancel();
-            if (updateTargetUI != null) {
-                updateTargetUI();
-            }
+            updateTargetUI?.Invoke();
+
         }
 
         public object CaptureState() {

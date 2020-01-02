@@ -12,9 +12,7 @@ namespace RPG.Stats {
 
     public void GainExperience(float xp) {
       experiencePoints += xp;
-      if (onExperienceGained != null) {
-        onExperienceGained();
-      }
+      onExperienceGained?.Invoke();
     }
     public object CaptureState() {
       return experiencePoints;

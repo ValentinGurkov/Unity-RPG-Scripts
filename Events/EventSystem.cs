@@ -17,24 +17,18 @@ namespace RPG.Events {
         public static event DialogueInitiatedHandler OnTalkedToNPC;
 
         public void EnemyDied(Health enemy) {
-            if (OnEnemyDeath != null) {
-                Debug.Log($"Enemy died: {enemy.name}");
-                OnEnemyDeath(enemy);
-            }
+            Debug.Log($"Enemy died: {enemy.name}");
+            OnEnemyDeath?.Invoke(enemy);
         }
 
         public void ItemPickedUp(PickupBase pickup) {
-            if (OnItemPickedUp != null) {
-                Debug.Log($"Item picked up: {pickup.name}");
-                OnItemPickedUp(pickup);
-            }
+            Debug.Log($"Item picked up: {pickup.name}");
+            OnItemPickedUp?.Invoke(pickup);
         }
 
         public void InitiatedDialogue(DialogueInitiator npc) {
-            if (OnTalkedToNPC != null) {
-                OnTalkedToNPC(npc);
-                GetComponent<ActionScheduler>().CancelCurrentAction();
-            }
+            OnTalkedToNPC?.Invoke(npc);
+            GetComponent<ActionScheduler>().CancelCurrentAction();
         }
     }
 }

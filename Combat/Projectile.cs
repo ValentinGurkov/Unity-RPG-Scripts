@@ -86,11 +86,8 @@ namespace RPG.Combat {
                 toDestroy.SetActive(false);
             }
 
-            onHit.Invoke();
-
-            if (updateUI != null) {
-                updateUI();
-            }
+            onHit?.Invoke();
+            updateUI?.Invoke();
 
             StartCoroutine(ReturnToPoolWithDelay(afterHitTTL));
         }
@@ -98,7 +95,7 @@ namespace RPG.Combat {
         private void PointTowardsTarget() {
             if (target != null) {
                 transform.LookAt(GetAimLocation());
-                onLaunch.Invoke();
+                onLaunch?.Invoke();
             }
         }
 

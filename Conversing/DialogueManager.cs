@@ -53,9 +53,7 @@ namespace RPG.Conversing {
             Debug.Log("End of conversation with.");
             animator.SetBool(IS_OPEN_TRIGGER, false);
             dialogLines.Clear();
-            if (onDialogueClose != null) {
-                onDialogueClose();
-            }
+            onDialogueClose?.Invoke();
         }
     }
 

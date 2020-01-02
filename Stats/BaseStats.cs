@@ -41,7 +41,7 @@ namespace RPG.Stats {
             int newLevel = CalculateLevel();
             if (newLevel > currentLevel.value) {
                 currentLevel.value = newLevel;
-                if (onLevelUp != null && onLevelUp()) {
+                if (onLevelUp?.Invoke() == true) {
                     LevelUpEffect();
                 }
             }

@@ -66,12 +66,10 @@ namespace RPG.Attributes {
                 return;
             }
             healthPoints.value = Mathf.Max(healthPoints.value - damage, 0);
-            takeDamage.Invoke(damage);
-            if (onHealthUpdate != null) {
-                onHealthUpdate();
-            }
+            takeDamage?.Invoke(damage);
+            onHealthUpdate?.Invoke();
             if (healthPoints.value == 0) {
-                onDie.Invoke(this);
+                onDie?.Invoke(this);
                 Die();
                 AwardExperience(instigator);
             }
@@ -79,9 +77,7 @@ namespace RPG.Attributes {
 
         public void Heal(float healthPercentToRestore) {
             healthPoints.value = Mathf.Min(healthPoints.value + (MaxHealthPoints * healthPercentToRestore / 100), MaxHealthPoints);
-            if (onHealthUpdate != null) {
-                onHealthUpdate();
-            }
+            onHealthUpdate?.Invoke();
         }
 
         public object CaptureState() {
@@ -110,9 +106,7 @@ namespace RPG.Attributes {
             }
             float regenHealthPoints = baseStats.GetStat(Stat.Health) * (regenerationPercentage / 100);
             healthPoints.value = Mathf.Max(healthPoints.value, regenHealthPoints);
-            if (onHealthUpdate != null) {
-                onHealthUpdate();
-            }
+            onHealthUpdate?.Invoke();
             return true;
         }
 
