@@ -7,11 +7,11 @@ namespace RPG.NPC {
     public class DialogueInitiator : NPCBase {
         [SerializeField] private Dialogue dialogue;
         [SerializeField] private DialogueManager dialogueManager;
-        [SerializeField] public OnDialogueInitiatedEvent onDialogeInitiated;
         private bool isInteracting = false;
+        public DialogueInitiatedEvent onDialogueInitiated;
 
         [System.Serializable]
-        public class OnDialogueInitiatedEvent : UnityEvent<DialogueInitiator> { }
+        public class DialogueInitiatedEvent : UnityEvent<string> { }
 
         public new CursorType Cursor => CursorType.Converse;
         public DialogueManager DialogueManager => dialogueManager;
@@ -36,7 +36,7 @@ namespace RPG.NPC {
 
         public void StartDialogue(Dialogue dialogue) {
             dialogueManager.StartDialogue(dialogue);
-            onDialogeInitiated?.Invoke(this);
+            onDialogueInitiated?.Invoke(gameObject.name);
             isInteracting = true;
         }
     }

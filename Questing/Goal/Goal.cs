@@ -7,12 +7,12 @@ namespace RPG.Questing {
         public bool Completed { get; set; } = false;
         public string Description { get; set; } = "";
         public int CurrentAmount { get; set; } = 0;
-        protected Stage Stage { get; set; } = null;
-        protected int RequiredAmount { get; set; } = 1;
+        public Stage Stage { get; set; } = null;
+        public int RequiredAmount { get; set; } = 1;
 
         public virtual void Init() { }
 
-        protected bool Evaluate() {
+        public bool Evaluate() {
             if (CurrentAmount >= RequiredAmount) {
                 Complete();
             }
@@ -23,7 +23,7 @@ namespace RPG.Questing {
         protected void Complete() {
             Completed = true;
             Debug.Log("Goal " + Description + " has been completed!");
-            onComplete(Stage, this);
+            onComplete?.Invoke(Stage, this);
             Stage.CheckGoals();
         }
     }

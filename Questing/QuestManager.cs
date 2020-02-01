@@ -37,13 +37,22 @@ namespace RPG.Questing {
             return (latestStage != null ? latestStage.Index : 0, goalsCompleted, goalsCurrentAmount);
         }
 
+        public void OnPlayeAction(string context) {
+            Debug.Log($"Player interacted with: {context}");
+            if (latestStage != null) {
+                for (int i = 0; i < latestStage.Goals.Count; i++) {
+                    latestStage.Goals[i].Evaluate(context);
+                }
+            }
+        }
+
         private void UpdateUIOnCompletedGoal(Stage stage, Goal goal) {
             goal.onComplete -= UpdateUIOnCompletedGoal;
             onQuestAdded?.Invoke(stage);
 
         }
 
-        private void UpdateUIOnCompletedStage(Stage stage) {
+        public void UpdateUIOnCompletedStage(Stage stage) {
             stage.onActive -= UpdateUIOnCompletedStage;
             latestStage = stage;
             onQuestAdded?.Invoke(stage);
@@ -87,26 +96,30 @@ namespace RPG.Questing {
         public void RestoreState(object state) {
             var t = (Tuple<string, string, int, bool[], int[]>) state;
             questName = t.Item1;
-            if (GetComponent(questName) == null) {
-                questGiverName = t.Item2;
-                GameObject qgGObj = GameObject.Find(questGiverName);
-                if (qgGObj != null) {
-                    QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
-                    latestQuest = AddQuest(qg.name, questName);
+            if (questName != null) {
+                if (GetComponent(questName) == null) {
+                    questGiverName = t.Item2;
+                    GameObject qgGObj = GameObject.Find(questGiverName);
+                    if (qgGObj != null) {
+                        QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
+                        qg.SetQuest(latestQuest);
+                    }
+                    latestQuest = AddQuest(questGiverName, questName);
                     latestQuest.SetActiveStage(t.Item3, t.Item4, t.Item5);
-                    qg.SetQuest(latestQuest);
                 }
             }
         }
 
         public void Restore() {
-            if (questGiverName != null && questName != null) {
-                GameObject qgGObj = GameObject.Find(questGiverName);
-                if (qgGObj != null) {
-                    QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
-                    latestQuest.RefreshRefernces();
-                    qg.SetQuest(latestQuest);
+            if (questName != null) {
+                if (questGiverName != null) {
+                    GameObject qgGObj = GameObject.Find(questGiverName);
+                    if (qgGObj != null) {
+                        QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
+                        qg.SetQuest(latestQuest);
+                    }
                 }
+                latestQuest.RefreshRefernces();
             }
         }
     }

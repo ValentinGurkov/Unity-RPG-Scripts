@@ -35,7 +35,7 @@ namespace RPG.Questing {
         private void CheckQuest() {
             if (quest != null) {
                 Debug.Log("Checking quest");
-                onDialogeInitiated?.Invoke(this);
+                onDialogueInitiated?.Invoke(gameObject.name);
                 if (quest.Completed) {
                     Debug.Log("Quest completed");
                     quest.CompleteQuest();

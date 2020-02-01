@@ -5,16 +5,16 @@ using UnityEngine;
 namespace RPG.Questing {
   public class Stage {
     protected Quest Quest { get; set; }
-    public List<Goal> Goals { get; set; } = new List<Goal>();
+    public List<IGoal> Goals { get; set; } = new List<IGoal>();
     public bool Active { get; set; } = true;
     public bool Completed { get; set; } = false;
     public string Description { get; set; }
     public int Index { get; set; }
     public event Action<Stage> onActive;
 
-    public Stage(Quest quest, Goal[] goals, bool active = true, bool completed = false, string description = "") {
+    public Stage(Quest quest, IGoal[] goals, bool active = true, bool completed = false, string description = "") {
       Quest = quest;
-      Goals = new List<Goal>(goals.Length);
+      Goals = new List<IGoal>(goals.Length);
       Goals.AddRange(goals);
       Active = active;
       Completed = completed;
@@ -30,7 +30,7 @@ namespace RPG.Questing {
       Description = description;
     }
 
-    public void AddGoal(Goal goal) {
+    public void AddGoal(IGoal goal) {
       Goals.Add(goal);
     }
 
@@ -43,7 +43,7 @@ namespace RPG.Questing {
 
     public void Activate() {
       Active = true;
-      onActive(this);
+      onActive?.Invoke(this);
     }
 
     public void CheckGoals() {

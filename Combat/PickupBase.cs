@@ -8,10 +8,10 @@ namespace RPG.Combat {
     public class PickupBase : MonoBehaviour, IRaycastable {
         private Collider objectCollider;
 
-        [SerializeField] private OnPickupEvent onPickup;
+        [SerializeField] public OnPickupEvent onPickUp;
 
         [System.Serializable]
-        public class OnPickupEvent : UnityEvent<PickupBase> { }
+        public class OnPickupEvent : UnityEvent<string> { }
 
         public CursorType Cursor => CursorType.Pickup;
 
@@ -38,7 +38,8 @@ namespace RPG.Combat {
             } else {
                 Destroy(gameObject);
             }
-            onPickup?.Invoke(this);
+
+            onPickUp?.Invoke(gameObject.name);
         }
 
         public bool HandleRaycast(GameObject callingObject) {

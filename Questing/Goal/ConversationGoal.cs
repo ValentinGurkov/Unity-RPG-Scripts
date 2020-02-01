@@ -1,8 +1,5 @@
-using RPG.Events;
-using RPG.NPC;
-
 namespace RPG.Questing {
-    public class ConversationGoal : Goal {
+    public class ConversationGoal : Goal, IGoal {
         public string Target;
 
         public ConversationGoal(Stage stage, string target, string description) {
@@ -11,16 +8,16 @@ namespace RPG.Questing {
             Description = description;
         }
 
-        private void TalkedToNPC(DialogueInitiator npc) {
-            if (Stage.Active && npc.name.Contains(Target)) {
+        public bool Evaluate(string npc) {
+            if (Stage.Active && npc.Contains(Target)) {
                 Complete();
-                EventSystem.OnTalkedToNPC -= TalkedToNPC;
+                return true;
             }
+            return false;
         }
 
         public override void Init() {
             base.Init();
-            EventSystem.OnTalkedToNPC += TalkedToNPC;
         }
     }
 }

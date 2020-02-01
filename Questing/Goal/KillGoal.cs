@@ -1,8 +1,5 @@
-﻿using RPG.Attributes;
-using RPG.Events;
-
-namespace RPG.Questing {
-    public class KillGoal : Goal {
+﻿namespace RPG.Questing {
+    public class KillGoal : Goal, IGoal {
         private string Enemy;
 
         public KillGoal(Stage stage, string enemy, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
@@ -16,16 +13,14 @@ namespace RPG.Questing {
 
         public override void Init() {
             base.Init();
-            EventSystem.OnEnemyDeath += EnemyDied;
         }
 
-        private void EnemyDied(Health enemy) {
-            if (Stage.Active && enemy.name.Contains(Enemy)) {
+        public bool Evaluate(string enemy) {
+            if (Stage.Active && enemy.Contains(Enemy)) {
                 CurrentAmount++;
-                if (Evaluate()) {
-                    EventSystem.OnEnemyDeath -= EnemyDied;
-                }
+                return base.Evaluate();
             }
+            return false;
         }
     }
 }

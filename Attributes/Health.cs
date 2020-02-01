@@ -27,7 +27,7 @@ namespace RPG.Attributes {
         public class TakeDamageEvent : UnityEvent<float> { }
 
         [System.Serializable]
-        public class OnDieEvent : UnityEvent<Health> { }
+        public class OnDieEvent : UnityEvent<String> { }
 
         public bool IsDead { get; private set; } = false;
         public float Percentage => Fraction * 100;
@@ -69,7 +69,7 @@ namespace RPG.Attributes {
             takeDamage?.Invoke(damage);
             onHealthUpdate?.Invoke();
             if (healthPoints.value == 0) {
-                onDie?.Invoke(this);
+                onDie?.Invoke(gameObject.name);
                 Die();
                 AwardExperience(instigator);
             }

@@ -1,8 +1,5 @@
-using RPG.Combat;
-using RPG.Events;
-
 namespace RPG.Questing {
-  public class PickupGoal : Goal {
+  public class PickupGoal : Goal, IGoal {
     public string Pickup;
     public PickupGoal(Stage stage, string pickup, int currentAmount, int requiredAmount, string description = "", bool completed = false) {
       Stage = stage;
@@ -15,16 +12,14 @@ namespace RPG.Questing {
 
     public override void Init() {
       base.Init();
-      EventSystem.OnItemPickedUp += ItemPickedUp;
     }
 
-    private void ItemPickedUp(PickupBase pickup) {
-      if (Stage.Active && pickup.name.Contains(Pickup)) {
+    public bool Evaluate(string item) {
+      if (Stage.Active && item.Contains(Pickup)) {
         CurrentAmount++;
-        if (Evaluate()) {
-          EventSystem.OnItemPickedUp -= ItemPickedUp;
-        }
+        return base.Evaluate();
       }
+      return false;
     }
   }
 }
