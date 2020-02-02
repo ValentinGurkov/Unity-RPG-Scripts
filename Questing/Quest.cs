@@ -43,11 +43,6 @@ namespace RPG.Questing {
             GiveExperienceReward();
         }
 
-        public void RefreshRefernces() {
-            player = GameObject.FindWithTag("Player");
-            experience = player.GetComponent<Experience>();
-        }
-
         public void SetActiveStage(int stage, bool[] goalsCompleted, int[] goalsCurrentAmount) {
             for (int i = 0; i < Stages.Count; i++) {
                 if (i == stage) {

@@ -63,7 +63,6 @@ namespace RPG.SceneManagement {
 
             yield return new WaitForSeconds(fadeWaitTime);
             fader.FadeIn(fadeInTime);
-            questManager.Restore();
             newPlayerController.enabled = true;
             newPlayerController.SetCursor(CursorType.Movement);
             Destroy(gameObject);

@@ -11,16 +11,16 @@ namespace RPG.UI {
         private string tmp = "";
 
         private void Awake() {
+            questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
             text = GetComponent<TextMeshProUGUI>();
             defaultText = text.text;
         }
 
         // Need to find a neat way to handle the refernce to QuestManager as it is instaced dynamically
         private void Start() {
-            questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
             questManager.onQuestAdded += UpdateQuestDisplay;
             questManager.onQuestComplete += DisplayDefaultText;
-            UpdateQuestDisplay(questManager.Subscribe());
+            UpdateQuestDisplay(questManager.LatestStage);
         }
 
         private void OnEnable() {

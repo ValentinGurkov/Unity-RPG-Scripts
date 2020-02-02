@@ -80,14 +80,6 @@ namespace RPG.Questing {
             return latestQuest;
         }
 
-        // used to update references between scenes
-        public Stage Subscribe() {
-            if (latestQuest != null) {
-                latestQuest.onComplete += onQuestComplete;
-            }
-            return latestStage;
-        }
-
         public object CaptureState() {
             (int, bool[], int[]) stageInfo = GetActiveStageInfo();
             return new Tuple<string, string, int, bool[], int[]>(questName, questGiverName, stageInfo.Item1, stageInfo.Item2, stageInfo.Item3);
@@ -109,19 +101,5 @@ namespace RPG.Questing {
                 }
             }
         }
-
-        public void Restore() {
-            if (questName != null) {
-                if (questGiverName != null) {
-                    GameObject qgGObj = GameObject.Find(questGiverName);
-                    if (qgGObj != null) {
-                        QuestGiver qg = qgGObj.GetComponent<QuestGiver>();
-                        qg.SetQuest(latestQuest);
-                    }
-                }
-                latestQuest.RefreshRefernces();
-            }
-        }
     }
-
 }
