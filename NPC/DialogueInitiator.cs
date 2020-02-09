@@ -13,7 +13,7 @@ namespace RPG.NPC {
         [System.Serializable]
         public class DialogueInitiatedEvent : UnityEvent<string> { }
 
-        public new CursorType Cursor => CursorType.Converse;
+        public override CursorType Cursor => CursorType.Converse;
         public DialogueManager DialogueManager => dialogueManager;
 
         private void OnEnable() {

@@ -15,7 +15,7 @@ public class Liberator : Quest {
         Stage thirdStage = new Stage(this, false, false);
         thirdStage.AddGoal(new KillGoal(thirdStage, "Campfire", 0, 2, "Retake the campfire area from the bandits"));
         Stage fourthStage = new Stage(this, false, false);
-        fourthStage.AddGoal(new KillGoal(fourthStage, "Tough Bandit", 0, 1, "There's a very tough bandit guarding the village exit "));
+        fourthStage.AddGoal(new KillGoal(fourthStage, "Tough Bandit", 0, 1, "There's a very tough bandit guarding the village exit"));
         fourthStage.AddGoal(new KillGoal(fourthStage, "Backside", 0, 2, "There are two more bandits near the old ruined castle"));
         Stage fifthStage = new Stage(this, false, false);
         fifthStage.AddGoal(new ConversationGoal(fifthStage, "Old Jerry", "Talk to Old Jerry"));
