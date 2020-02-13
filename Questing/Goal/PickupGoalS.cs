@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace RPG.Questing {
-    [CreateAssetMenu(fileName = "GoalS", menuName = "Quest/Goals/New Pickup Goal", order = 0)]
+    [System.Serializable]
     public class PickupGoalS : GoalS, IGoalS {
         [SerializeField] private string pickup;
 

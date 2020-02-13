@@ -1,5 +1,5 @@
 ﻿using System;
-using FullSerializer;
+using System.IO;
 using RPG.Saving;
 using RPG.UI;
 using UnityEngine;
@@ -31,10 +31,17 @@ namespace RPG.Questing {
         }
 
         private void OnEnable() {
+            AttachEvents();
+        }
+
+        private void AttachEvents() {
             if (latestQuest != null) {
                 latestQuest.onQuestCompleted += QuestHasBeenCompleted;
                 for (int i = 0; i < latestQuest.Stages.Count; i++) {
                     latestQuest.Stages[i].onStageActivated += StageHasBeenActivated;
+                    if (latestQuest.Stages[i].Active) {
+                        latestStage = latestQuest.Stages[i];
+                    }
                     for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
                         latestQuest.Stages[i].Goals[j].onGoalCompleted += questHUD.UpdateQuestDisplay;
                     }
@@ -42,23 +49,12 @@ namespace RPG.Questing {
             }
         }
 
-        private(int, bool[], int[]) GetActiveStageInfo() {
-            int len = latestStage != null ? latestStage.Goals.Count : 0;
-            bool[] goalsCompleted = new bool[len];
-            int[] goalsCurrentAmount = new int[len];
-            for (int i = 0; i < len; i++) {
-                goalsCompleted[i] = latestStage.Goals[i].Completed;
-                goalsCurrentAmount[i] = latestStage.Goals[i].CurrentAmount;
-            }
-            return (latestStage != null ? latestQuest.Stages.IndexOf(latestStage) : 0, goalsCompleted, goalsCurrentAmount);
-        }
-
         public void OnPlayeAction(string context) {
             Debug.Log($"Player interacted with: {context}");
             if (latestStage != null && !latestQuest.Completed) {
                 for (int i = 0; i < latestStage.Goals.Count; i++) {
                     if (!latestStage.Goals[i].Completed) {
-                        (latestStage.Goals[i] as IGoalS).Evaluate(context);
+                        latestStage.Goals[i].Evaluate(context);
                     }
                 }
             }
@@ -78,39 +74,48 @@ namespace RPG.Questing {
             if (qg == null || quest == null) {
                 return;
             }
+            questName = quest.QuestName;
+            questGiverName = qg.name;
             questGiver = qg;
-            latestQuest = quest;
+            latestQuest = Instantiate(quest);
             latestQuest.Init();
-            latestQuest.onQuestCompleted += QuestHasBeenCompleted;
-            for (int i = 0; i < latestQuest.Stages.Count; i++) {
-                latestQuest.Stages[i].onStageActivated += StageHasBeenActivated;
-                if (latestQuest.Stages[i].Active) {
-                    latestStage = latestQuest.Stages[i];
-                }
-                for (int j = 0; j < latestQuest.Stages[i].Goals.Count; j++) {
-                    latestQuest.Stages[i].Goals[j].onGoalCompleted += questHUD.UpdateQuestDisplay;
-                }
-            }
             questHUD.UpdateQuestDisplay(latestStage);
+            AttachEvents();
         }
 
         public object CaptureState() {
-            (int, bool[], int[]) stageInfo = GetActiveStageInfo();
-            return new Tuple<string, string, int, bool[], int[]>(latestQuest.QuestName, questGiver.name, stageInfo.Item1, stageInfo.Item2, stageInfo.Item3);
+            if (latestQuest != null) {
+                // create a quest saver class!
+                // fix scene prefab overrides!
+                string json = JsonUtility.ToJson(latestQuest);
+                File.WriteAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + questName + ".json", json);
+                return new Tuple<string, string, int>(questName, questGiverName, latestQuest.Stages.IndexOf(latestStage));
+            }
+            return new Tuple<string, string, int>("", "", 0);
         }
 
         public void RestoreState(object state) {
-            var t = (Tuple<string, string, int, bool[], int[]>) state;
+            var t = (Tuple<string, string, int>) state;
             questName = t.Item1;
-            if (questName != null) {
+            if (!string.IsNullOrEmpty(questName)) {
                 if (latestQuest == null) {
-                    latestQuest = Resources.Load<QuestS>(questName);
+                    if (File.Exists(Application.persistentDataPath + Path.DirectorySeparatorChar + questName + ".json")) {
+                        latestQuest = ScriptableObject.CreateInstance<QuestS>();
+                        string json = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + questName + ".json");
+                        JsonUtility.FromJsonOverwrite(json, latestQuest);
+                    } else {
+                        latestQuest = Resources.Load<QuestS>(questName);
+                    }
                     questGiverName = t.Item2;
-                    GameObject qgGObj = GameObject.Find(questGiverName);
-                    if (qgGObj != null) {
-                        QuestGiverS qg = qgGObj.GetComponent<QuestGiverS>();
-                        qg.SetQuest(latestQuest);
-                        questGiver = qg;
+                    if (!string.IsNullOrEmpty(questGiverName)) {
+                        GameObject qgGObj = GameObject.Find(questGiverName);
+                        if (qgGObj != null) {
+                            questGiver = qgGObj.GetComponent<QuestGiverS>();
+                        }
+                        latestQuest.Init();
+                        latestStage = latestQuest.Stages[t.Item3];
+                        questHUD.UpdateQuestDisplay(latestStage);
+                        AttachEvents();
                     }
                 }
             }

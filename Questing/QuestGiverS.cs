@@ -34,6 +34,7 @@ namespace RPG.Questing {
         private void CheckQuest() {
             if (quest != null) {
                 Debug.Log("Checking quest");
+                onDialogueInitiated?.Invoke(gameObject.name);
                 if (quest.Completed) {
                     hasBeenHelped = true;
                     Debug.Log("Quest completed");
@@ -56,11 +57,9 @@ namespace RPG.Questing {
             }
         }
 
-        public void SetQuest(QuestS quest) {
-            this.quest = quest;
+        public void MarkQuestCompleted() {
+            hasBeenHelped = true;
         }
-
-        public void MarkQuestCompleted() { }
 
         public object CaptureState() {
             return new Tuple<bool, bool>(assignedQuest, hasBeenHelped);

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace RPG.Questing {
-    [CreateAssetMenu(fileName = "GoalS", menuName = "Quest/Goals/New Conversation Goal", order = 0)]
+    [System.Serializable]
     public class ConversationGoalS : GoalS, IGoalS {
         [SerializeField] private string target;
 

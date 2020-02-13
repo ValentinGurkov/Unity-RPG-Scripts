@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
-using RPG.Util;
 using UnityEngine;
 
 namespace RPG.Questing {
-    [CreateAssetMenu(fileName = "StageS", menuName = "Quest/New Stage", order = 0)]
-    public class StageS : ScriptableObject, IUnloadedSceneHandler {
+    [Serializable]
+    public class StageS {
         [SerializeField] private bool active;
         [SerializeField] private bool completed;
         [SerializeField] private string description;
-        [SerializeField] private List<GoalS> goals;
+        [SerializeReference]
+        [SerializeReferenceButton] private List<IGoalS> goals;
 
         public bool Active => active;
         public string Description => description;
         public bool Completed => completed;
-        public List<GoalS> Goals => goals;
+        public List<IGoalS> Goals => goals;
 
         public event Action<StageS> onStageActivated;
         public event Action<StageS> onStageCompleted;
@@ -27,7 +27,15 @@ namespace RPG.Questing {
 
         public void Activate() {
             active = true;
-            onStageActivated?.Invoke(this);
+            onStageActivated?.Invoke(this); // maybe find a way to not use ?
+        }
+
+        public void Complete() {
+            active = false;
+            completed = true;
+            for (int i = 0; i < Goals.Count; i++) {
+                Goals[i].Completed = true;
+            }
         }
 
         public void Evalute(GoalS lastCompletedGoal) {
@@ -53,14 +61,6 @@ namespace RPG.Questing {
                 for (int i = 0; i < completedDelegates.Length; i++) {
                     onStageCompleted -= completedDelegates[i] as Action<StageS>;
                 }
-            }
-        }
-
-        public void OnSceneUnloaded() {
-            active = false;
-            completed = false;
-            for (int i = 0; i < Goals.Count; i++) {
-                Goals[i].OnSceneUnloaded();
             }
         }
     }

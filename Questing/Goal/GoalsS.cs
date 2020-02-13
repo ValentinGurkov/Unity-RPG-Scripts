@@ -1,19 +1,18 @@
 using System;
-using RPG.Util;
 using UnityEngine;
 
 namespace RPG.Questing {
-    public class GoalS : ScriptableObject, IUnloadedSceneHandler {
+    [Serializable]
+    public abstract class GoalS {
         [SerializeField] private bool active;
-        [SerializeField] private bool completed;
         [SerializeField] private string description;
         [SerializeField] private int currentAmmount = 0;
-        public int CurrentAmount = 0;
-        public int RequiredAmount = 1;
+        [SerializeField] private int RequiredAmount = 1;
 
+        public int CurrentAmount { get; set; } = 0;
+        public bool Completed { get; set; } = false;
         public bool Active => active; //maybe we dont need active
         public string Description => description;
-        public bool Completed => completed;
 
         public event Action<GoalS> onGoalCompleted;
 
@@ -26,18 +25,13 @@ namespace RPG.Questing {
         }
 
         protected void Complete() {
-            completed = true;
+            Completed = true;
             Debug.Log("Goal " + Description + " has been completed!");
             onGoalCompleted(this);
             Delegate[] delegates = onGoalCompleted.GetInvocationList();
             for (int i = 0; i < delegates.Length; i++) {
                 onGoalCompleted -= delegates[i] as Action<GoalS>;
             }
-        }
-
-        public void OnSceneUnloaded() {
-            active = false;
-            completed = false;
         }
     }
 

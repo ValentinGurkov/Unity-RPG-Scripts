@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RPG.Questing {
     [CreateAssetMenu(fileName = "QuestS", menuName = "Quest/New Quest", order = 0)]
-    public class QuestS : ScriptableObject, IUnloadedSceneHandler {
+    public class QuestS : ScriptableObject {
         [SerializeField] private string id;
         [SerializeField] private string questName;
         [SerializeField] private string description;
@@ -92,12 +92,19 @@ namespace RPG.Questing {
             }
         }
 
-        public void OnSceneUnloaded() {
-            active = false;
-            assigned = false;
-            completed = false;
-            for (int i = 0; i < stages.Count; i++) {
-                stages[i].OnSceneUnloaded();
+        public void SetActiveStage(int stage, bool[] goalsCompleted, int[] goalsCurrentAmount) {
+            for (int i = 0; i < Stages.Count; i++) {
+                if (i == stage) {
+                    Stages[i].Activate();
+                } else if (i < stage) {
+                    Stages[i].Complete();
+                }
+            }
+            if (goalsCompleted.Length != 0 && goalsCurrentAmount.Length != 0) {
+                for (int i = 0; i < Stages[stage].Goals.Count; i++) {
+                    Stages[stage].Goals[i].Completed = goalsCompleted[i];
+                    Stages[stage].Goals[i].CurrentAmount = goalsCurrentAmount[i];
+                }
             }
         }
     }
