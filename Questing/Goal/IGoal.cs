@@ -1,14 +1,11 @@
 using System;
 
 namespace RPG.Questing {
-  public interface IGoal {
-    event Action<Stage, Goal> onComplete;
-    bool Completed { get; set; }
-    string Description { get; set; }
-    int CurrentAmount { get; set; }
-    Stage Stage { get; set; }
-    int RequiredAmount { get; set; }
-    void Init();
-    bool Evaluate(string context);
-  }
+    public interface IGoal {
+        string Description { get; }
+        bool Completed { get; set; }
+        int CurrentAmount { get; set; }
+        event Action<Goal> onGoalCompleted;
+        bool Evaluate(string context);
+    }
 }

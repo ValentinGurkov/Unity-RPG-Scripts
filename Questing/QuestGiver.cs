@@ -7,19 +7,18 @@ using UnityEngine;
 
 namespace RPG.Questing {
     public class QuestGiver : DialogueInitiator, IRaycastable, ISaveable {
-        [SerializeField] private string questType;
-        [SerializeField] private Dialogue questPendingDialogue;
-        [SerializeField] private Dialogue questCompletedDialogue;
-        [SerializeField] private Dialogue afterQuestDialogue;
+        [SerializeField] private Quest quest = default;
+        [SerializeField] private Dialogue questPendingDialogue = default;
+        [SerializeField] private Dialogue questCompletedDialogue = default;
+        [SerializeField] private Dialogue afterQuestDialogue = default;
 
         private bool assignedQuest = false;
         private bool hasBeenHelped = false;
         private QuestManager questManager;
-        private Quest quest;
 
-        public new CursorType Cursor => CursorType.Quest;
+        public override CursorType Cursor => CursorType.Quest;
 
-        private void Start() {
+        private void Awake() {
             questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
         }
 
@@ -27,7 +26,7 @@ namespace RPG.Questing {
             if (!assignedQuest) {
                 Debug.Log("Quest assigned");
                 assignedQuest = true;
-                quest = questManager.AddQuest(gameObject.name, questType);
+                questManager.AddQuest(this, quest);
                 base.DialogueManager.onDialogueClose -= AssignQuest;
             }
         }
@@ -35,11 +34,9 @@ namespace RPG.Questing {
         private void CheckQuest() {
             if (quest != null) {
                 Debug.Log("Checking quest");
-                if (quest.Completed) {
+                onDialogueInitiated?.Invoke(gameObject.name);
+                if (hasBeenHelped) {
                     Debug.Log("Quest completed");
-                    quest.CompleteQuest();
-                    hasBeenHelped = true;
-                    assignedQuest = true;
                     StartDialogue(questCompletedDialogue);
                 } else {
                     Debug.Log("Quest not yet completed");
@@ -55,8 +52,13 @@ namespace RPG.Questing {
             } else if (assignedQuest && !hasBeenHelped) {
                 CheckQuest();
             } else {
+                onDialogueInitiated?.Invoke(gameObject.name);
                 StartDialogue(afterQuestDialogue);
             }
+        }
+
+        public void MarkQuestCompleted() {
+            hasBeenHelped = true;
         }
 
         public object CaptureState() {
@@ -67,10 +69,6 @@ namespace RPG.Questing {
             var t = (Tuple<bool, bool>) state;
             assignedQuest = t.Item1;
             hasBeenHelped = t.Item2;
-        }
-
-        public void SetQuest(Quest quest) {
-            this.quest = quest;
         }
     }
 

@@ -2,6 +2,4 @@
 using UnityEngine;
 
 [AttributeUsage(AttributeTargets.Field)]
-public class SerializeReferenceButtonAttribute : PropertyAttribute {
-
-}
+public class SerializeReferenceButtonAttribute : PropertyAttribute { }

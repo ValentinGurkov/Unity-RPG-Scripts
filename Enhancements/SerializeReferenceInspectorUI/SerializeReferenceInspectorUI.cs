@@ -4,7 +4,9 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-//created by Unity forum user TextusGames
+/// <summary>
+///  created by Unity forum user TextusGames
+/// </summary>
 public static class SerializeReferenceInspectorUI {
     public static void ShowContextMenuForManagedReferenceOnMouseMiddleButton(this SerializedProperty property, Rect position) {
         var e = Event.current;
@@ -87,5 +89,4 @@ public static class SerializeReferenceInspectorUI {
         }
     }
 }
-
 #endif

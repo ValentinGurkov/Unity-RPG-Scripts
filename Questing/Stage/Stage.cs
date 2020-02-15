@@ -3,65 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace RPG.Questing {
-  public class Stage {
-    protected Quest Quest { get; set; }
-    public List<IGoal> Goals { get; set; } = new List<IGoal>();
-    public bool Active { get; set; } = true;
-    public bool Completed { get; set; } = false;
-    public string Description { get; set; }
-    public int Index { get; set; }
-    public event Action<Stage> onActive;
+    [Serializable]
+    public class StageS {
+        [SerializeField] private bool active = default;
+        [SerializeField] private bool completed = default;
+        [SerializeField] private string description = default;
+        [SerializeReference]
+        [SerializeReferenceButton] private List<IGoal> goals = default;
 
-    public Stage(Quest quest, IGoal[] goals, bool active = true, bool completed = false, string description = "") {
-      Quest = quest;
-      Goals = new List<IGoal>(goals.Length);
-      Goals.AddRange(goals);
-      Active = active;
-      Completed = completed;
-      Description = description;
+        public bool Active => active;
+        public string Description => description;
+        public bool Completed => completed;
+        public List<IGoal> Goals => goals;
 
-      Init();
-    }
+        public event Action<StageS> onStageActivated;
+        public event Action<StageS> onStageCompleted;
 
-    public Stage(Quest quest, bool active = true, bool completed = false, string description = "") {
-      Quest = quest;
-      Active = active;
-      Completed = completed;
-      Description = description;
-    }
-
-    public void AddGoal(IGoal goal) {
-      Goals.Add(goal);
-    }
-
-    public void Init(int index = 0) {
-      Index = index;
-      for (int i = 0; i < Goals.Count; i++) {
-        Goals[i].Init();
-      }
-    }
-
-    public void Activate() {
-      Active = true;
-      onActive?.Invoke(this);
-    }
-
-    public void CheckGoals() {
-      bool goalsCompleted = true;
-
-      for (int goal = 0; goal < Goals.Count; goal++) {
-        if (!Goals[goal].Completed) {
-          goalsCompleted = false;
-          break;
+        public void Init() {
+            for (int i = 0; i < Goals.Count; i++) {
+                Goals[i].onGoalCompleted += Evalute;
+            }
         }
-      }
-      Completed = goalsCompleted;
 
-      if (Completed) {
-        Active = false;
-        Debug.Log("Stage " + Index + " has been completed!");
-        Quest.CheckStages(Index);
-      }
+        public void Activate() {
+            active = true;
+            onStageActivated?.Invoke(this); // maybe find a way to not use ?
+        }
+
+        public void Complete() {
+            active = false;
+            completed = true;
+            for (int i = 0; i < Goals.Count; i++) {
+                Goals[i].Completed = true;
+            }
+        }
+
+        public void Evalute(Goal lastCompletedGoal) {
+            bool goalsCompleted = true;
+
+            for (int goal = 0; goal < Goals.Count; goal++) {
+                if (!Goals[goal].Completed) {
+                    goalsCompleted = false;
+                    break;
+                }
+            }
+            completed = goalsCompleted;
+
+            if (completed) {
+                Debug.Log("Stage has been completed!");
+                active = false;
+                onStageCompleted(this);
+                Delegate[] activatedDelegates = onStageActivated.GetInvocationList();
+                Delegate[] completedDelegates = onStageCompleted.GetInvocationList();
+                for (int i = 0; i < activatedDelegates.Length; i++) {
+                    onStageActivated -= activatedDelegates[i] as Action<StageS>;
+                }
+                for (int i = 0; i < completedDelegates.Length; i++) {
+                    onStageCompleted -= completedDelegates[i] as Action<StageS>;
+                }
+            }
+        }
     }
-  }
+
 }

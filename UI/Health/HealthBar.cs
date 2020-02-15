@@ -4,9 +4,9 @@ using UnityEngine;
 namespace RPG.UI {
     public class HealthBar : MonoBehaviour {
 
-        [SerializeField] private Health health = null;
-        [SerializeField] private RectTransform foreground = null;
-        [SerializeField] private Canvas rootCanvas = null;
+        [SerializeField] private Health health = default;
+        [SerializeField] private RectTransform foreground = default;
+        [SerializeField] private Canvas rootCanvas = default;
 
         private void Update() {
             if (Mathf.Approximately(health.Fraction, 0) || Mathf.Approximately(health.Fraction, 1)) {

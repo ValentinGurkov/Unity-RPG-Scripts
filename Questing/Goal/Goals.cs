@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace RPG.Questing {
     [Serializable]
-    public abstract class GoalS {
-        [SerializeField] private bool active;
-        [SerializeField] private string description;
-        [SerializeField] private int currentAmmount = 0;
-        [SerializeField] private int RequiredAmount = 1;
+    public abstract class Goal {
+        [SerializeField] private string description = default;
+        [SerializeField] private bool completed = false;
+        [SerializeField] private int currentAmount = 0;
+        [SerializeField] private int requiredAmount = 1;
 
-        public int CurrentAmount { get; set; } = 0;
-        public bool Completed { get; set; } = false;
-        public bool Active => active; //maybe we dont need active
+        public int CurrentAmount { get => currentAmount; set => currentAmount = value; }
+        public bool Completed { get => completed; set => completed = value; }
+        public int RequiredAmount => requiredAmount;
         public string Description => description;
 
-        public event Action<GoalS> onGoalCompleted;
+        public event Action<Goal> onGoalCompleted;
 
         public bool Evaluate() {
             if (CurrentAmount >= RequiredAmount) {
@@ -30,7 +30,7 @@ namespace RPG.Questing {
             onGoalCompleted(this);
             Delegate[] delegates = onGoalCompleted.GetInvocationList();
             for (int i = 0; i < delegates.Length; i++) {
-                onGoalCompleted -= delegates[i] as Action<GoalS>;
+                onGoalCompleted -= delegates[i] as Action<Goal>;
             }
         }
     }

@@ -4,10 +4,10 @@ using UnityEngine;
 namespace RPG.Stats {
     public class BaseStats : MonoBehaviour {
         [Range(1, 99)][SerializeField] private int startingLevel = 1;
-        [SerializeField] private bool shouldUseModifiers = false;
-        [SerializeField] private CharacterClass characterClass;
-        [SerializeField] private Progression progression = null;
-        [SerializeField] private GameObject levelUpParticleEffect = null;
+        [SerializeField] private bool shouldUseModifiers = default;
+        [SerializeField] private CharacterClass characterClass = CharacterClass.Player;
+        [SerializeField] private Progression progression = default;
+        [SerializeField] private GameObject levelUpParticleEffect = default;
         private LazyValue<int> currentLevel;
         private Experience experience;
 

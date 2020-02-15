@@ -2,8 +2,9 @@ using UnityEngine;
 
 namespace RPG.Questing {
     [System.Serializable]
-    public class KillGoalsS : GoalS, IGoalS {
-        [SerializeField] private string enemy;
+    public class KillGoalsS : Goal, IGoal {
+        [Tooltip("string or substring to match against")]
+        [SerializeField] private string enemy = default;
 
         string Enemy => enemy;
 

@@ -5,9 +5,9 @@ using UnityEngine.Events;
 
 namespace RPG.NPC {
     public class DialogueInitiator : NPCBase {
-        [SerializeField] private Dialogue dialogue;
-        [SerializeField] private DialogueManager dialogueManager;
-        private bool isInteracting = false;
+        [SerializeField] private Dialogue dialogue = default;
+        [SerializeField] private DialogueManager dialogueManager = default;
+        private bool isInteracting = default;
         public DialogueInitiatedEvent onDialogueInitiated;
 
         [System.Serializable]
@@ -30,12 +30,12 @@ namespace RPG.NPC {
 
         public override void Interact() {
             if (!isInteracting) {
+                onDialogueInitiated?.Invoke(gameObject.name);
                 StartDialogue(dialogue);
             }
         }
 
         public void StartDialogue(Dialogue dialogue) {
-            onDialogueInitiated?.Invoke(gameObject.name);
             dialogueManager.StartDialogue(dialogue);
             isInteracting = true;
         }

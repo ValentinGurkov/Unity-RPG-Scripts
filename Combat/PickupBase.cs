@@ -8,7 +8,7 @@ namespace RPG.Combat {
     public class PickupBase : MonoBehaviour, IRaycastable {
         private Collider objectCollider;
 
-        [SerializeField] public OnPickupEvent onPickUp;
+        [SerializeField] private OnPickupEvent onPickUp = default;
 
         [System.Serializable]
         public class OnPickupEvent : UnityEvent<string> { }

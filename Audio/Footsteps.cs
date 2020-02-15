@@ -6,9 +6,9 @@ namespace RPG.Audio {
     /// The implementation for footsteps sounds is still TODO
     /// </summary>
     public class Footsteps : MonoBehaviour {
-        [SerializeField] private AudioClip walkClip;
-        [SerializeField] private AudioClip runClip;
-        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip walkClip = default;
+        [SerializeField] private AudioClip runClip = default;
+        [SerializeField] private AudioSource audioSource = default;
         private const string ACTION_WALK = "walk";
         private const string ACTION_RUN = "run";
 

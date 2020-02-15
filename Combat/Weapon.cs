@@ -4,8 +4,8 @@ using UnityEngine.Events;
 
 namespace RPG.Combat {
     public class Weapon : MonoBehaviour {
-        [SerializeField] private UnityEvent onHit;
-        [SerializeField] private GameObject hitEffect = null;
+        [SerializeField] private UnityEvent onHit = default;
+        [SerializeField] private GameObject hitEffect = default;
 
         public void OnHit(Health target) {
             onHit?.Invoke();

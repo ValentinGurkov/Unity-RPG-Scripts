@@ -5,14 +5,14 @@ namespace RPG.Util {
     public class ObjectPooler : MonoBehaviour {
 
         [System.Serializable]
-        private struct Pool {
+        public struct Pool {
             public string tag;
             public GameObject prefab;
             public int size;
         }
 
-        [SerializeField] private List<Pool> pools;
-        [SerializeField] private Dictionary<string, Queue<GameObject>> poolDict;
+        [SerializeField] private List<Pool> pools = default;
+        [SerializeField] private Dictionary<string, Queue<GameObject>> poolDict = default;
 
         public static ObjectPooler Instace;
 
@@ -70,8 +70,6 @@ namespace RPG.Util {
             instance.SetActive(true);
 
             return instance;
-
         }
     }
-
 }

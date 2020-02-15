@@ -14,8 +14,8 @@ namespace RPG.SceneManagement {
         [SerializeField] private float fadeOutTime = 1f;
         [SerializeField] private float fadeInTime = .5f;
         [SerializeField] private float fadeWaitTime = .5f;
-        [SerializeField] private Transform spawnPoint;
-        [SerializeField] private DestinationIdentifier destination;
+        [SerializeField] private Transform spawnPoint = default;
+        [SerializeField] private DestinationIdentifier destination = DestinationIdentifier.A;
 
         private enum DestinationIdentifier {
             A,
@@ -50,7 +50,6 @@ namespace RPG.SceneManagement {
 
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
             PlayerController newPlayerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-            QuestManager questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
             newPlayerController.enabled = false;
             newPlayerController.SetCursor(CursorType.None);
 

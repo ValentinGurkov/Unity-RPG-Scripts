@@ -7,7 +7,6 @@ namespace RPG.UI {
     public class QuestToDisplay : MonoBehaviour {
         private TextMeshProUGUI text;
         private string defaultText;
-        private QuestManager questManager;
         private string tmp = "";
 
         private void Awake() {
@@ -34,7 +33,7 @@ namespace RPG.UI {
             }
         }
 
-        public void UpdateQuestDisplay(GoalS goal) {
+        public void UpdateQuestDisplay(Goal goal) {
             if (goal != null) {
                 text.text = text.text.Replace(goal.Description, "<s>" + goal.Description + "</s>");
             }

@@ -1,23 +1,20 @@
-namespace RPG.Questing {
-    public class ConversationGoal : Goal, IGoal {
-        public string Target;
+using UnityEngine;
 
-        public ConversationGoal(Stage stage, string target, string description) {
-            Stage = stage;
-            Target = target;
-            Description = description;
-        }
+namespace RPG.Questing {
+    [System.Serializable]
+    public class ConversationGoal : Goal, IGoal {
+        [Tooltip("string or substring to match against")]
+        [SerializeField] private string target = default;
+
+        public string Target => target;
 
         public bool Evaluate(string npc) {
-            if (Stage.Active && npc.Contains(Target)) {
+            if (npc.Contains(Target)) {
                 Complete();
                 return true;
             }
             return false;
         }
-
-        public override void Init() {
-            base.Init();
-        }
     }
+
 }
