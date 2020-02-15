@@ -7,7 +7,7 @@ namespace RPG.NPC {
     [DisallowMultipleComponent]
     public class NPCBase : MonoBehaviour, IRaycastable {
 
-        public CursorType Cursor => CursorType.NPC;
+        public virtual CursorType Cursor => CursorType.NPC;
         public virtual void Interact() { }
 
         public bool HandleRaycast(GameObject callingObject) {

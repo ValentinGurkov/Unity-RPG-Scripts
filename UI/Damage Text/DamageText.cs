@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 namespace RPG.UI {
     public class DamageText : MonoBehaviour {
-        [SerializeField] private Text damageText = null;
+        [SerializeField] private Text damageText = default;
         private ObjectPooler pooler;
         private string poolTag;
 
-        private void Awake() {
+        private void Start() {
             pooler = ObjectPooler.Instace;
         }
 

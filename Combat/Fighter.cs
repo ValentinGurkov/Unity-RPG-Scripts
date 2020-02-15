@@ -14,9 +14,9 @@ namespace RPG.Combat {
 
     [RequireComponent(typeof(CharacterBehaviour))]
     public class Fighter : MonoBehaviour, IAction, ISaveable, IModifierProvider {
-        [SerializeField] private Transform leftHandTransform = null;
-        [SerializeField] private Transform rightHandTransform = null;
-        [SerializeField] private WeaponConfig defaultWeapon = null;
+        [SerializeField] private Transform leftHandTransform = default;
+        [SerializeField] private Transform rightHandTransform = default;
+        [SerializeField] private WeaponConfig defaultWeapon = default;
         [SerializeField] private float timeBetweenAttacks = 1f;
 
         private const string ATTACK_TRIGGER = "attack";

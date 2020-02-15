@@ -7,10 +7,10 @@ namespace RPG.Combat {
 
     [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/Create New  Weapon", order = 0)]
     public class WeaponConfig : ScriptableObject {
-        [SerializeField] private AnimatorOverrideController animatorOverride = null;
-        [SerializeField] private Weapon equippedPrefab = null;
+        [SerializeField] private AnimatorOverrideController animatorOverride = default;
+        [SerializeField] private Weapon equippedPrefab = default;
         [SerializeField] private string projectileTag = "arrow";
-        [SerializeField] private Projectile projectile = null;
+        [SerializeField] private Projectile projectile = default;
         [SerializeField] private float weaponRange = 3f;
         [SerializeField] private float weaponDamage = 25f;
         [SerializeField] private float percentageBonus = 0;
@@ -37,12 +37,6 @@ namespace RPG.Combat {
 
         private Transform GetTransform(Transform rightHand, Transform leftHand) {
             return hand == HAND.RIGHT ? rightHand : leftHand;
-        }
-
-        private void EstablishPoolerReference() {
-            if (pooler == null) {
-                pooler = ObjectPooler.Instace;
-            }
         }
 
         public Weapon Spawn(Transform rightHand, Transform leftHand, Animator animator) {
@@ -77,7 +71,9 @@ namespace RPG.Combat {
         /// <param name="calculatedDamage"></param>
         /// <param name="updateUI"></param>
         public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator, float calculatedDamage, Action updateUI) {
-            EstablishPoolerReference();
+            if (pooler == null) {
+                pooler = ObjectPooler.Instace;
+            }
             GameObject instance = pooler.SpawnFromPool(projectileTag);
             if (!instance) {
                 return;

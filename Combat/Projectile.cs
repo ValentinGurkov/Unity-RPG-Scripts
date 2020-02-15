@@ -9,13 +9,13 @@ namespace RPG.Combat {
 
     public class Projectile : MonoBehaviour {
         [SerializeField] private float speed = 1f;
-        [SerializeField] private bool isHoming = false;
+        [SerializeField] private bool isHoming = default;
         [SerializeField] private float projectileTTL = 10f;
         [SerializeField] private float afterHitTTL = 0.2f;
-        [SerializeField] private GameObject hitEffect = null;
-        [SerializeField] private GameObject[] destroyAfterHit;
-        [SerializeField] private UnityEvent onHit;
-        [SerializeField] private UnityEvent onLaunch;
+        [SerializeField] private GameObject hitEffect = default;
+        [SerializeField] private GameObject[] destroyAfterHit = default;
+        [SerializeField] private UnityEvent onHit = default;
+        [SerializeField] private UnityEvent onLaunch = default;
         private const string TAG_CINEMATIC = "Cinematic";
         private const string TAG_PICKUP = "Pickup";
         private float damage = 0;
@@ -30,8 +30,11 @@ namespace RPG.Combat {
         private float originalSpeed;
 
         private void Awake() {
-            pooler = ObjectPooler.Instace;
             originalSpeed = speed;
+        }
+
+        private void Start() {
+            pooler = ObjectPooler.Instace;
         }
 
         private void Update() {

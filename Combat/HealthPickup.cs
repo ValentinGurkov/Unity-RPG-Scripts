@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RPG.Combat {
     public class HealthPickup : PickupBase {
         [Range(0, 100)][SerializeField] private float healthPercentToRestore = 25;
-        [SerializeField] private GameObject healFX = null;
+        [SerializeField] private GameObject healFX = default;
         [SerializeField] private bool respawnable = true;
         [SerializeField] private float respawnTime = 5f;
 

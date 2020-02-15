@@ -1,57 +1,103 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using RPG.Combat;
 using RPG.Stats;
+using RPG.Util;
 using UnityEngine;
 
 namespace RPG.Questing {
-    public class Quest : MonoBehaviour {
-        public List<Stage> Stages { get; set; } = new List<Stage>();
-        public string QuestName { get; set; }
-        public string Description { get; set; }
-        public int ExperienceReward { get; set; }
-        public WeaponConfig ItemReward { get; set; }
-        public bool Completed { get; set; }
-        public event Action onComplete;
+    [CreateAssetMenu(fileName = "QuestS", menuName = "Quest/New Quest", order = 0)]
+    public class Quest : ScriptableObject {
+        [SerializeField] private string id = default;
+        [SerializeField] private string questName = default;
+        [SerializeField] private string description = default;
+        [SerializeField] private int experienceReward = default;
+        [SerializeField] private bool completed = default;
+        [SerializeField] private bool assigned = default;
+        [SerializeField] private bool active = default;
+        [SerializeField] private WeaponConfig itemReward = default;
+        [SerializeField] private List<StageS> stages = default;
 
         private GameObject player;
         private Experience experience;
 
-        private void Start() {
-            player = GameObject.FindWithTag("Player");
-            experience = player.GetComponent<Experience>();
+        public string ID => id;
+        public string QuestName => questName;
+        public string Description => description;
+        public bool Completed => completed;
+        public int ExperienceReward => experienceReward;
+        public bool Assigned => assigned;
+        public bool Active => active;
+        public WeaponConfig ItemReward => itemReward;
+        public List<StageS> Stages => stages;
+
+        public event Action onQuestCompleted;
+
+        private void GiveItemReward() {
+            if (itemReward != null) {
+                Debug.Log("Giving item reward");
+                // TODO Item rewards after inventory system is implemented
+            }
         }
 
-        public void CheckStages(int lastStageIndex) {
-            bool stagesCompleted = true;
+        private void GiveExperienceReward() {
+            if (experience == null || experienceReward == 0) {
+                return;
+            }
+            Debug.Log($"Giving {experienceReward} experience reward");
+            experience.GainExperience(experienceReward);
+        }
 
-            for (int stage = 0; stage < Stages.Count; stage++) {
-                if (!Stages[stage].Completed) {
+        private void CompleteQuest() {
+            Debug.Log($"Quest \"{this.name}\" has been completed!");
+            completed = true;
+            GiveItemReward();
+            GiveExperienceReward();
+            onQuestCompleted();
+            Delegate[] delegates = onQuestCompleted.GetInvocationList();
+            for (int i = 0; i < delegates.Length; i++) {
+                onQuestCompleted -= delegates[i] as Action;
+            }
+        }
+
+        public void Init() {
+            player = GameObject.FindWithTag("Player");
+            experience = player.GetComponent<Experience>();
+            assigned = true;
+            active = true;
+            Debug.Log($"Quest {this.name} started!");
+            for (int i = 0; i < stages.Count; i++) {
+                stages[i].Init();
+                stages[i].onStageCompleted += Evalute;
+            }
+            stages[0].Activate();
+        }
+
+        public void Evalute(StageS currentStage) {
+            //check for slicing by current stage position
+            bool stagesCompleted = true;
+            for (int stage = 0; stage < stages.Count; stage++) {
+                if (!stages[stage].Completed) {
                     stagesCompleted = false;
                     break;
                 }
             }
-            Completed = stagesCompleted;
-            if (lastStageIndex < Stages.Count - 1) {
-                Stages[lastStageIndex + 1].Activate();
+            if (stagesCompleted) {
+                CompleteQuest();
+                return;
             }
-        }
-
-        public void CompleteQuest() {
-            onComplete();
-            GiveItemReward();
-            GiveExperienceReward();
+            int currentStageIndex = stages.IndexOf(currentStage);
+            if (currentStageIndex < stages.Count - 1) {
+                stages[currentStageIndex + 1].Activate();
+            }
         }
 
         public void SetActiveStage(int stage, bool[] goalsCompleted, int[] goalsCurrentAmount) {
             for (int i = 0; i < Stages.Count; i++) {
                 if (i == stage) {
                     Stages[i].Activate();
-                } else {
-                    Stages[i].Active = false;
-                    if (i < stage) {
-                        Stages[i].Completed = true;
-                    }
+                } else if (i < stage) {
+                    Stages[i].Complete();
                 }
             }
             if (goalsCompleted.Length != 0 && goalsCurrentAmount.Length != 0) {
@@ -60,24 +106,6 @@ namespace RPG.Questing {
                     Stages[stage].Goals[i].CurrentAmount = goalsCurrentAmount[i];
                 }
             }
-        }
-
-        private void GiveItemReward() {
-            Debug.Log("Giving quest reward");
-            if (ItemReward != null) {
-                Debug.Log("Giving item reward");
-                // TODO Item rewards after inventory system is implemented
-                // ItemReward.Spawn(...);
-            }
-        }
-
-        private void GiveExperienceReward() {
-            Debug.Log("Giving experience reward");
-            if (experience == null || ExperienceReward == 0) {
-                return;
-            }
-            experience.GainExperience(ExperienceReward);
-
         }
     }
 }

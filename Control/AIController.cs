@@ -16,7 +16,7 @@ namespace RPG.Control {
         [SerializeField] private float dwellTime = 3f;
         [SerializeField] private float wayPointTolerance = 1f;
         [Range(0, 1)][SerializeField] private float patrolSpeedFraction = 0.2f;
-        [SerializeField] private PatrolPath patrolPath;
+        [SerializeField] private PatrolPath patrolPath = default;
 
         private int currentWaypointIndex = 0;
         private float timeSinceLastSawPlayer = Mathf.Infinity;

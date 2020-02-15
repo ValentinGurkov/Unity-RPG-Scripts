@@ -2,7 +2,7 @@
 using UnityEngine;
 
 public class WeaponPickup : PickupBase {
-    [SerializeField] private WeaponConfig weapon = null;
+    [SerializeField] private WeaponConfig weapon = default;
     [SerializeField] private float respawnTime = 5f;
     [SerializeField] private bool respawnable = true;
 

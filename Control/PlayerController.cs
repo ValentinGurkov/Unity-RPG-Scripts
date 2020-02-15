@@ -11,13 +11,13 @@ namespace RPG.Control {
     public class PlayerController : MonoBehaviour {
 
         [System.Serializable]
-        struct CursorMapping {
+        public struct CursorMapping {
             public CursorType type;
             public Texture2D texture;
             public Vector2 hotspot;
         }
 
-        [SerializeField] private CursorMapping[] mappings = null;
+        [SerializeField] private CursorMapping[] mappings = default;
         [SerializeField] private float navMeshMaxProjectionDistance = 1f;
         [SerializeField] private float raycastRadius = 1f;
 
@@ -28,9 +28,6 @@ namespace RPG.Control {
         private void Awake() {
             mover = GetComponent<Mover>();
             playerHealth = GetComponent<Health>();
-        }
-
-        private void Start() {
             mainCamera = Camera.main;
         }
 

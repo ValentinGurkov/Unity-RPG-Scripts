@@ -4,7 +4,7 @@ namespace RPG.UI {
     public class CameraFacing : MonoBehaviour {
         private Camera mainCamera;
 
-        private void Start() {
+        private void Awake() {
             mainCamera = Camera.main;
         }
 

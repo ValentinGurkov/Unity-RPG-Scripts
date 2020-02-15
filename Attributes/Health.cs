@@ -11,9 +11,9 @@ namespace RPG.Attributes {
     public class Health : MonoBehaviour, ISaveable {
 
         [SerializeField] private float regenerationPercentage = 70f;
-        [SerializeField] private TakeDamageEvent takeDamage;
-        [SerializeField] private bool startDead = false;
-        [SerializeField] private OnDieEvent onDie;
+        [SerializeField] private TakeDamageEvent takeDamage = default;
+        [SerializeField] private bool startDead = default;
+        [SerializeField] private OnDieEvent onDie = default;
 
         private const string DIE_TRIGGER = "die";
         private LazyValue<float> healthPoints;

@@ -2,17 +2,18 @@ using UnityEngine;
 
 namespace RPG.Questing {
     [System.Serializable]
-    public class PickupGoalS : Goal, IGoal {
+    public class KillGoalsS : Goal, IGoal {
         [Tooltip("string or substring to match against")]
-        [SerializeField] private string pickup = default;
+        [SerializeField] private string enemy = default;
 
-        public string Pickup => pickup;
+        string Enemy => enemy;
 
-        public bool Evaluate(string item) {
-            if (item.Contains(Pickup)) {
+        public bool Evaluate(string enemy) {
+            if (enemy.Contains(Enemy)) {
                 CurrentAmount++;
                 return base.Evaluate();
             }
+
             return false;
         }
     }

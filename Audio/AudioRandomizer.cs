@@ -5,7 +5,7 @@ namespace RPG.Audio {
     /// Allows playing random audio FX from a collection.
     /// </summary>
     public class AudioRandomizer : MonoBehaviour {
-        [SerializeField] private AudioClip[] audioClips;
+        [SerializeField] private AudioClip[] audioClips = default;
 
         private AudioSource audioSource;
 

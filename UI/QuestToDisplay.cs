@@ -7,37 +7,14 @@ namespace RPG.UI {
     public class QuestToDisplay : MonoBehaviour {
         private TextMeshProUGUI text;
         private string defaultText;
-        private QuestManager questManager;
         private string tmp = "";
 
         private void Awake() {
-            questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
             text = GetComponent<TextMeshProUGUI>();
             defaultText = text.text;
         }
 
-        // Need to find a neat way to handle the refernce to QuestManager as it is instaced dynamically
-        private void Start() {
-            questManager.onQuestAdded += UpdateQuestDisplay;
-            questManager.onQuestComplete += DisplayDefaultText;
-            UpdateQuestDisplay(questManager.LatestStage);
-        }
-
-        private void OnEnable() {
-            if (questManager != null) {
-                questManager.onQuestAdded += UpdateQuestDisplay;
-                questManager.onQuestComplete += DisplayDefaultText;
-            }
-        }
-
-        private void OnDisable() {
-            if (questManager != null) {
-                questManager.onQuestAdded -= UpdateQuestDisplay;
-                questManager.onQuestComplete -= DisplayDefaultText;
-            }
-        }
-
-        private void UpdateQuestDisplay(Stage stage) {
+        public void UpdateQuestDisplay(StageS stage) {
             if (stage != null) {
                 if (stage.Goals[0].Completed) {
                     tmp += "<s>" + stage.Goals[0].Description + "</s>";
@@ -56,9 +33,13 @@ namespace RPG.UI {
             }
         }
 
-        private void DisplayDefaultText() {
-            questManager.onQuestAdded -= UpdateQuestDisplay;
-            questManager.onQuestComplete -= DisplayDefaultText;
+        public void UpdateQuestDisplay(Goal goal) {
+            if (goal != null) {
+                text.text = text.text.Replace(goal.Description, "<s>" + goal.Description + "</s>");
+            }
+        }
+
+        public void DisplayDefaultText() {
             text.text = defaultText;
         }
     }
