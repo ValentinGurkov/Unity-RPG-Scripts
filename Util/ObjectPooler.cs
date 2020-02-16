@@ -53,6 +53,7 @@ namespace RPG.Util {
             if (!poolDict.ContainsKey(tag)) {
                 return;
             }
+            instance.transform.SetParent(transform);
             instance.SetActive(false);
             poolDict[tag].Enqueue(instance);
         }
