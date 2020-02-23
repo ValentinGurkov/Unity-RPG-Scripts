@@ -1,11 +1,11 @@
 ﻿using System;
 using RPG.Util;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RPG.UI {
     public class DamageText : MonoBehaviour {
-        [SerializeField] private Text damageText = default;
+        [SerializeField] private TextMeshProUGUI damageText = default;
         private ObjectPooler pooler;
         private string poolTag;
 

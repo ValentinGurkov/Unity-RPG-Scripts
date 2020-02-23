@@ -20,6 +20,8 @@ namespace RPG.Combat {
         [SerializeField] private float timeBetweenAttacks = 1f;
 
         private const string ATTACK_TRIGGER = "attack";
+        private const string ATTACK_TRIGGER2 = "attack2";
+        private bool firstAttack = true;
         private const string STOP_ATTACK_TRIGGER = "stopAttack";
         private Health target;
         private Health prevTarget;
@@ -122,7 +124,13 @@ namespace RPG.Combat {
 
         private void TriggerAttack() {
             animator.ResetTrigger(STOP_ATTACK_TRIGGER);
-            animator.SetTrigger(ATTACK_TRIGGER);
+            if (firstAttack) {
+                animator.SetTrigger(ATTACK_TRIGGER);
+                firstAttack = false;
+            } else {
+                animator.SetTrigger(ATTACK_TRIGGER2);
+                firstAttack = true;
+            }
         }
 
         private bool GetIsInRange(Transform targetTransform) {
