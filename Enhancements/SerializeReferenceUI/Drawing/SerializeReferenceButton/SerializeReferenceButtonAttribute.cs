@@ -2,4 +2,7 @@
 using UnityEngine;
 
 [AttributeUsage(AttributeTargets.Field)]
-public class SerializeReferenceMenuAttribute : PropertyAttribute { }
+public class SerializeReferenceButtonAttribute : PropertyAttribute
+{
+    
+}
