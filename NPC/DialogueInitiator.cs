@@ -3,41 +3,47 @@ using RPG.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPG.NPC {
-    public class DialogueInitiator : NPCBase {
+namespace RPG.NPC
+{
+    public class DialogueInitiator : NPCBase
+    {
         [SerializeField] private Dialogue dialogue = default;
         [SerializeField] private DialogueManager dialogueManager = default;
-        private bool isInteracting = default;
+        private bool m_IsInteracting;
         public DialogueInitiatedEvent onDialogueInitiated;
 
         [System.Serializable]
         public class DialogueInitiatedEvent : UnityEvent<string> { }
 
         public override CursorType Cursor => CursorType.Converse;
-        public DialogueManager DialogueManager => dialogueManager;
+        protected DialogueManager DialogueManager => dialogueManager;
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             dialogueManager.onDialogueClose += EndInteraction;
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+        {
             dialogueManager.onDialogueClose -= EndInteraction;
         }
 
-        private void EndInteraction() {
-            isInteracting = false;
+        private void EndInteraction()
+        {
+            m_IsInteracting = false;
         }
 
-        public override void Interact() {
-            if (!isInteracting) {
-                onDialogueInitiated?.Invoke(gameObject.name);
-                StartDialogue(dialogue);
-            }
+        protected override void Interact()
+        {
+            if (m_IsInteracting) return;
+            onDialogueInitiated?.Invoke(gameObject.name);
+            StartDialogue(dialogue);
         }
 
-        public void StartDialogue(Dialogue dialogue) {
+        protected void StartDialogue(Dialogue dialogue)
+        {
             dialogueManager.StartDialogue(dialogue);
-            isInteracting = true;
+            m_IsInteracting = true;
         }
     }
 }

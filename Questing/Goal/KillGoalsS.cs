@@ -1,21 +1,20 @@
 using UnityEngine;
 
-namespace RPG.Questing {
+namespace RPG.Questing
+{
     [System.Serializable]
-    public class KillGoalsS : Goal, IGoal {
-        [Tooltip("string or substring to match against")]
-        [SerializeField] private string enemy = default;
+    public class KillGoalsS : Goal, IGoal
+    {
+        [Tooltip("string or substring to match against")] [SerializeField]
+        private string enemy;
 
-        string Enemy => enemy;
+        public string Enemy => enemy;
 
-        public bool Evaluate(string enemy) {
-            if (enemy.Contains(Enemy)) {
-                CurrentAmount++;
-                return base.Evaluate();
-            }
-
-            return false;
+        public bool Evaluate(string enemy)
+        {
+            if (!enemy.Contains(Enemy)) return false;
+            CurrentAmount++;
+            return base.Evaluate();
         }
     }
-
 }

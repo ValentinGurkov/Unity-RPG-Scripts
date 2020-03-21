@@ -1,38 +1,54 @@
 using System;
 using UnityEngine;
 
-namespace RPG.Questing {
+namespace RPG.Questing
+{
     [Serializable]
-    public abstract class Goal {
-        [SerializeField] private string description = default;
-        [SerializeField] private bool completed = false;
-        [SerializeField] private int currentAmount = 0;
+    public abstract class Goal
+    {
+        [SerializeField] private string description;
+        [SerializeField] private bool completed;
+        [SerializeField] private int currentAmount;
         [SerializeField] private int requiredAmount = 1;
 
-        public int CurrentAmount { get => currentAmount; set => currentAmount = value; }
-        public bool Completed { get => completed; set => completed = value; }
+        public int CurrentAmount
+        {
+            get => currentAmount;
+            set => currentAmount = value;
+        }
+
+        public bool Completed
+        {
+            get => completed;
+            set => completed = value;
+        }
+
         public int RequiredAmount => requiredAmount;
         public string Description => description;
 
-        public event Action<Goal> onGoalCompleted;
+        public event Action<Goal> OnGoalCompleted;
 
-        public bool Evaluate() {
-            if (CurrentAmount >= RequiredAmount) {
+        public bool Evaluate()
+        {
+            if (CurrentAmount >= RequiredAmount)
+            {
                 Complete();
             }
 
             return Completed;
         }
 
-        protected void Complete() {
+        protected void Complete()
+        {
             Completed = true;
             Debug.Log("Goal " + Description + " has been completed!");
-            onGoalCompleted(this);
-            Delegate[] delegates = onGoalCompleted.GetInvocationList();
-            for (int i = 0; i < delegates.Length; i++) {
-                onGoalCompleted -= delegates[i] as Action<Goal>;
+            if (OnGoalCompleted == null) return;
+            OnGoalCompleted(this);
+            Delegate[] delegates = OnGoalCompleted.GetInvocationList();
+            for (int i = 0; i < delegates.Length; i++)
+            {
+                OnGoalCompleted -= delegates[i] as Action<Goal>;
             }
         }
     }
-
 }

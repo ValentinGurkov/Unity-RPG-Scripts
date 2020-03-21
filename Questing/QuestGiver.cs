@@ -5,71 +5,74 @@ using RPG.NPC;
 using RPG.Saving;
 using UnityEngine;
 
-namespace RPG.Questing {
-    public class QuestGiver : DialogueInitiator, IRaycastable, ISaveable {
-        [SerializeField] private Quest quest = default;
-        [SerializeField] private Dialogue questPendingDialogue = default;
-        [SerializeField] private Dialogue questCompletedDialogue = default;
-        [SerializeField] private Dialogue afterQuestDialogue = default;
+namespace RPG.Questing
+{
+    public class QuestGiver : DialogueInitiator, IRaycastable, ISaveable
+    {
+        [SerializeField] private Quest quest;
+        [SerializeField] private Dialogue questPendingDialogue;
+        [SerializeField] private Dialogue questCompletedDialogue;
+        [SerializeField] private Dialogue afterQuestDialogue;
 
-        private bool assignedQuest = false;
-        private bool hasBeenHelped = false;
-        private QuestManager questManager;
+        private bool m_AssignedQuest;
+        private bool m_HasBeenHelped;
+        private QuestManager m_QuestManager;
 
         public override CursorType Cursor => CursorType.Quest;
 
-        private void Awake() {
-            questManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
+        private void Awake()
+        {
+            m_QuestManager = GameObject.FindWithTag("QuestManager").GetComponent<QuestManager>();
         }
 
-        private void AssignQuest() {
-            if (!assignedQuest) {
-                Debug.Log("Quest assigned");
-                assignedQuest = true;
-                questManager.AddQuest(this, quest);
-                base.DialogueManager.onDialogueClose -= AssignQuest;
-            }
+        private void AssignQuest()
+        {
+            if (m_AssignedQuest) return;
+            m_AssignedQuest = true;
+            m_QuestManager.AddQuest(this, quest);
+            DialogueManager.onDialogueClose -= AssignQuest;
         }
 
-        private void CheckQuest() {
-            if (quest != null) {
-                Debug.Log("Checking quest");
-                onDialogueInitiated?.Invoke(gameObject.name);
-                if (hasBeenHelped) {
-                    Debug.Log("Quest completed");
-                    StartDialogue(questCompletedDialogue);
-                } else {
-                    Debug.Log("Quest not yet completed");
-                    StartDialogue(questPendingDialogue);
-                }
-            }
+        private void CheckQuest()
+        {
+            if (quest == null) return;
+            onDialogueInitiated?.Invoke(gameObject.name);
+            StartDialogue(m_HasBeenHelped ? questCompletedDialogue : questPendingDialogue);
         }
 
-        public override void Interact() {
-            if (!assignedQuest && !hasBeenHelped) {
+        protected override void Interact()
+        {
+            if (!m_AssignedQuest && !m_HasBeenHelped)
+            {
                 base.Interact();
-                base.DialogueManager.onDialogueClose += AssignQuest;
-            } else if (assignedQuest && !hasBeenHelped) {
+                DialogueManager.onDialogueClose += AssignQuest;
+            }
+            else if (m_AssignedQuest && !m_HasBeenHelped)
+            {
                 CheckQuest();
-            } else {
+            }
+            else
+            {
                 onDialogueInitiated?.Invoke(gameObject.name);
                 StartDialogue(afterQuestDialogue);
             }
         }
 
-        public void MarkQuestCompleted() {
-            hasBeenHelped = true;
+        public void MarkQuestCompleted()
+        {
+            m_HasBeenHelped = true;
         }
 
-        public object CaptureState() {
-            return new Tuple<bool, bool>(assignedQuest, hasBeenHelped);
+        public object CaptureState()
+        {
+            return new Tuple<bool, bool>(m_AssignedQuest, m_HasBeenHelped);
         }
 
-        public void RestoreState(object state) {
-            var t = (Tuple<bool, bool>) state;
-            assignedQuest = t.Item1;
-            hasBeenHelped = t.Item2;
+        public void RestoreState(object state)
+        {
+            (bool assignedQuest, bool hasBeenHelped) = (Tuple<bool, bool>) state;
+            m_AssignedQuest = assignedQuest;
+            m_HasBeenHelped = hasBeenHelped;
         }
     }
-
 }

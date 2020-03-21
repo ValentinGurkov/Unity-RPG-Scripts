@@ -1,6 +1,8 @@
 ﻿#if UNITY_EDITOR
 
-using UnityEditor; 
+using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(SerializeReferenceButtonAttribute))]
@@ -10,22 +12,21 @@ public class SerializeReferenceButtonAttributeDrawer : PropertyDrawer
     {
         return EditorGUI.GetPropertyHeight(property, true);
     }
- 
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
+        EditorGUI.BeginProperty(position, label, property);
 
-        
-        EditorGUI.BeginProperty(position, label, property); 
-        
         var labelPosition = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-        EditorGUI.LabelField(labelPosition, label);    
-         
-        var typeRestrictions = SerializedReferenceUIBuiltInTypeRestrictions.GetAllBuiltInTypeRestrictions(fieldInfo);
+        EditorGUI.LabelField(labelPosition, label);
+
+        IEnumerable<Func<Type, bool>> typeRestrictions =
+            SerializedReferenceUIBuiltInTypeRestrictions.GetAllBuiltInTypeRestrictions(fieldInfo);
         property.DrawSelectionButtonForManagedReference(position, typeRestrictions);
-        
+
         EditorGUI.PropertyField(position, property, GUIContent.none, true);
-        
-        EditorGUI.EndProperty(); 
-    } 
+
+        EditorGUI.EndProperty();
+    }
 }
 #endif

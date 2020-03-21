@@ -3,32 +3,37 @@ using RPG.Attributes;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.UI {
-    public class HealthDisplay : MonoBehaviour {
+namespace RPG.UI
+{
+    public class HealthDisplay : MonoBehaviour
+    {
+        private Health m_Health;
+        private TextMeshProUGUI m_Text;
 
-        private Health health;
-        private TextMeshProUGUI text;
-
-        private void Awake() {
-            health = GameObject.FindWithTag("Player").GetComponent<Health>();
-            text = GetComponent<TextMeshProUGUI>();
+        private void Awake()
+        {
+            m_Health = GameObject.FindWithTag("Player").GetComponent<Health>();
+            m_Text = GetComponent<TextMeshProUGUI>();
         }
 
-        private void Start() {
+        private void Start()
+        {
             UpdateHealth();
         }
 
-        private void OnEnable() {
-            health.onHealthUpdate += UpdateHealth;
+        private void OnEnable()
+        {
+            m_Health.OnHealthUpdate += UpdateHealth;
         }
 
-        private void OnDisable() {
-            health.onHealthUpdate -= UpdateHealth;
+        private void OnDisable()
+        {
+            m_Health.OnHealthUpdate -= UpdateHealth;
         }
 
-        private void UpdateHealth() {
-            text.text = String.Format("{0:0}/{1:0}", health.HealthPoints, health.MaxHealthPoints);
+        private void UpdateHealth()
+        {
+            m_Text.text = $"{m_Health.HealthPoints:0}/{m_Health.MaxHealthPoints:0}";
         }
     }
-
 }

@@ -5,21 +5,23 @@ using RPG.Stats;
 using RPG.Util;
 using UnityEngine;
 
-namespace RPG.Questing {
+namespace RPG.Questing
+{
     [CreateAssetMenu(fileName = "QuestS", menuName = "Quest/New Quest", order = 0)]
-    public class Quest : ScriptableObject {
-        [SerializeField] private string id = default;
-        [SerializeField] private string questName = default;
-        [SerializeField] private string description = default;
-        [SerializeField] private int experienceReward = default;
-        [SerializeField] private bool completed = default;
-        [SerializeField] private bool assigned = default;
-        [SerializeField] private bool active = default;
-        [SerializeField] private WeaponConfig itemReward = default;
-        [SerializeField] private List<StageS> stages = default;
+    public class Quest : ScriptableObject
+    {
+        [SerializeField] private string id;
+        [SerializeField] private string questName;
+        [SerializeField] private string description;
+        [SerializeField] private int experienceReward;
+        [SerializeField] private bool completed;
+        [SerializeField] private bool assigned;
+        [SerializeField] private bool active;
+        [SerializeField] private WeaponConfig itemReward;
+        [SerializeField] private List<StageS> stages;
 
-        private GameObject player;
-        private Experience experience;
+        private GameObject m_Player;
+        private Experience m_Experience;
 
         public string ID => id;
         public string QuestName => questName;
@@ -31,80 +33,99 @@ namespace RPG.Questing {
         public WeaponConfig ItemReward => itemReward;
         public List<StageS> Stages => stages;
 
-        public event Action onQuestCompleted;
+        public event Action OnQuestCompleted;
 
-        private void GiveItemReward() {
-            if (itemReward != null) {
-                Debug.Log("Giving item reward");
+        private void GiveItemReward()
+        {
+            if (itemReward != null)
+            {
                 // TODO Item rewards after inventory system is implemented
             }
         }
 
-        private void GiveExperienceReward() {
-            if (experience == null || experienceReward == 0) {
+        private void GiveExperienceReward()
+        {
+            if (m_Experience == null || experienceReward == 0)
+            {
                 return;
             }
-            Debug.Log($"Giving {experienceReward} experience reward");
-            experience.GainExperience(experienceReward);
+
+            m_Experience.GainExperience(experienceReward);
         }
 
-        private void CompleteQuest() {
-            Debug.Log($"Quest \"{this.name}\" has been completed!");
+        private void CompleteQuest()
+        {
             completed = true;
             GiveItemReward();
             GiveExperienceReward();
-            onQuestCompleted();
-            Delegate[] delegates = onQuestCompleted.GetInvocationList();
-            for (int i = 0; i < delegates.Length; i++) {
-                onQuestCompleted -= delegates[i] as Action;
+            if (OnQuestCompleted == null) return;
+            OnQuestCompleted();
+            Delegate[] delegates = OnQuestCompleted.GetInvocationList();
+            for (int i = 0; i < delegates.Length; i++)
+            {
+                OnQuestCompleted -= delegates[i] as Action;
             }
         }
 
-        public void Init() {
-            player = GameObject.FindWithTag("Player");
-            experience = player.GetComponent<Experience>();
+        public void Init()
+        {
+            m_Player = GameObject.FindWithTag("Player");
+            m_Experience = m_Player.GetComponent<Experience>();
             assigned = true;
             active = true;
-            Debug.Log($"Quest {this.name} started!");
-            for (int i = 0; i < stages.Count; i++) {
+            for (int i = 0; i < stages.Count; i++)
+            {
                 stages[i].Init();
-                stages[i].onStageCompleted += Evalute;
+                stages[i].OnStageCompleted += Evaluate;
             }
+
             stages[0].Activate();
         }
 
-        public void Evalute(StageS currentStage) {
+        private void Evaluate(StageS currentStage)
+        {
             //check for slicing by current stage position
-            bool stagesCompleted = true;
-            for (int stage = 0; stage < stages.Count; stage++) {
-                if (!stages[stage].Completed) {
-                    stagesCompleted = false;
-                    break;
-                }
+            var stagesCompleted = true;
+            for (int stage = 0; stage < stages.Count; stage++)
+            {
+                if (stages[stage].Completed) continue;
+                stagesCompleted = false;
+                break;
             }
-            if (stagesCompleted) {
+
+            if (stagesCompleted)
+            {
                 CompleteQuest();
                 return;
             }
+
             int currentStageIndex = stages.IndexOf(currentStage);
-            if (currentStageIndex < stages.Count - 1) {
+            if (currentStageIndex < stages.Count - 1)
+            {
                 stages[currentStageIndex + 1].Activate();
             }
         }
 
-        public void SetActiveStage(int stage, bool[] goalsCompleted, int[] goalsCurrentAmount) {
-            for (int i = 0; i < Stages.Count; i++) {
-                if (i == stage) {
+        public void SetActiveStage(int stage, bool[] goalsCompleted, int[] goalsCurrentAmount)
+        {
+            for (int i = 0; i < Stages.Count; i++)
+            {
+                if (i == stage)
+                {
                     Stages[i].Activate();
-                } else if (i < stage) {
+                }
+                else if (i < stage)
+                {
                     Stages[i].Complete();
                 }
             }
-            if (goalsCompleted.Length != 0 && goalsCurrentAmount.Length != 0) {
-                for (int i = 0; i < Stages[stage].Goals.Count; i++) {
-                    Stages[stage].Goals[i].Completed = goalsCompleted[i];
-                    Stages[stage].Goals[i].CurrentAmount = goalsCurrentAmount[i];
-                }
+
+            if (goalsCompleted.Length == 0 || goalsCurrentAmount.Length == 0) return;
+
+            for (int i = 0; i < Stages[stage].Goals.Count; i++)
+            {
+                Stages[stage].Goals[i].Completed = goalsCompleted[i];
+                Stages[stage].Goals[i].CurrentAmount = goalsCurrentAmount[i];
             }
         }
     }

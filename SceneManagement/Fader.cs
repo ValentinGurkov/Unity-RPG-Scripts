@@ -1,40 +1,51 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace RPG.SceneManagement {
-    public class Fader : MonoBehaviour {
-        private CanvasGroup canvasGroup;
-        private Coroutine currentActiveFade = null;
+namespace RPG.SceneManagement
+{
+    public class Fader : MonoBehaviour
+    {
+        private CanvasGroup m_CanvasGroup;
+        private Coroutine m_CurrentActiveFade;
 
-        private void Awake() {
-            canvasGroup = GetComponent<CanvasGroup>();
+        private void Awake()
+        {
+            m_CanvasGroup = GetComponent<CanvasGroup>();
         }
 
-        private IEnumerator FadeRoutine(float target, float time) {
-            while (!Mathf.Approximately(canvasGroup.alpha, target)) {
-                canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, target, Time.deltaTime / time);
+        private IEnumerator FadeRoutine(float target, float time)
+        {
+            while (!Mathf.Approximately(m_CanvasGroup.alpha, target))
+            {
+                m_CanvasGroup.alpha = Mathf.MoveTowards(m_CanvasGroup.alpha, target, Time.deltaTime / time);
                 yield return null;
             }
         }
 
-        public void FadeOutImmediate() {
-            canvasGroup.alpha = 1;
+        public void FadeOutImmediate()
+        {
+            m_CanvasGroup.alpha = 1;
         }
 
-        public Coroutine FadeOut(float time) {
+        public Coroutine FadeOut(float time)
+        {
             return Fade(1, time);
         }
 
-        public Coroutine FadeIn(float time) {
+        public Coroutine FadeIn(float time)
+        {
             return Fade(0, time);
         }
 
-        public Coroutine Fade(float target, float time) {
-            if (currentActiveFade != null) {
-                StopCoroutine(currentActiveFade);
+        private Coroutine Fade(float target, float time)
+        {
+            if (m_CurrentActiveFade != null)
+            {
+                StopCoroutine(m_CurrentActiveFade);
             }
-            currentActiveFade = StartCoroutine(FadeRoutine(target, time));
-            return currentActiveFade;
+
+            m_CurrentActiveFade = StartCoroutine(FadeRoutine(target, time));
+            return m_CurrentActiveFade;
         }
     }
 }

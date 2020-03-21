@@ -29,8 +29,7 @@ namespace RPG.Util {
             }
             Pool pool = pools.Find(p => p.tag == tag);
             for (int j = 0; j < pool.size; j++) {
-                GameObject obj = Instantiate(pool.prefab);
-                obj.transform.SetParent(transform);
+                GameObject obj = Instantiate(pool.prefab, transform, true);
                 obj.SetActive(false);
                 poolDict[tag].Enqueue(obj);
             }
@@ -38,10 +37,9 @@ namespace RPG.Util {
 
         private void FillPools() {
             for (int i = 0; i < pools.Count; i++) {
-                Queue<GameObject> objectPool = new Queue<GameObject>();
+                var objectPool = new Queue<GameObject>();
                 for (int j = 0; j < pools[i].size; j++) {
-                    GameObject obj = Instantiate(pools[i].prefab);
-                    obj.transform.SetParent(transform);
+                    GameObject obj = Instantiate(pools[i].prefab, transform, true);
                     obj.SetActive(false);
                     objectPool.Enqueue(obj);
                 }

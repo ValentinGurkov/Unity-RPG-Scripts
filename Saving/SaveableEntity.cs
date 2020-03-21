@@ -2,65 +2,83 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace RPG.Saving {
+namespace RPG.Saving
+{
     /// <summary>
     /// GameObjects with this component will allow saving the state of its' components.
     /// </summary>
     [ExecuteAlways]
-    public class SaveableEntity : MonoBehaviour {
+    public class SaveableEntity : MonoBehaviour
+    {
         [SerializeField] private string uniqueIdentifier = "";
-        private static Dictionary<string, SaveableEntity> globalLookUp = new Dictionary<string, SaveableEntity>();
+
+        private static readonly Dictionary<string, SaveableEntity> s_GlobalLookUp =
+            new Dictionary<string, SaveableEntity>();
+
         private ISaveable[] saveables;
 
         public string UUID => uniqueIdentifier;
 
-        private void Awake() {
+        private void Awake()
+        {
             saveables = GetComponents<ISaveable>();
         }
 
 #if UNITY_EDITOR
-        private void Update() {
-            if (Application.IsPlaying(gameObject) || string.IsNullOrEmpty(gameObject.scene.path)) {
+        private void Update()
+        {
+            if (Application.IsPlaying(gameObject) || string.IsNullOrEmpty(gameObject.scene.path))
+            {
                 return;
             }
 
-            SerializedObject serializedObject = new SerializedObject(this);
+            var serializedObject = new SerializedObject(this);
             SerializedProperty property = serializedObject.FindProperty("uniqueIdentifier");
 
-            if (property.stringValue == "" || !IsUnique(property.stringValue)) {
+            if (property.stringValue == "" || !IsUnique(property.stringValue))
+            {
                 property.stringValue = System.Guid.NewGuid().ToString();
                 serializedObject.ApplyModifiedProperties();
             }
-            globalLookUp[property.stringValue] = this;
+
+            s_GlobalLookUp[property.stringValue] = this;
         }
 #endif
-        private bool IsUnique(string candidate) {
-            if (!globalLookUp.ContainsKey(candidate) || globalLookUp[candidate] == this) {
+        private bool IsUnique(string candidate)
+        {
+            if (!s_GlobalLookUp.ContainsKey(candidate) || s_GlobalLookUp[candidate] == this)
+            {
                 return true;
             }
 
-            if (globalLookUp[candidate] == null || globalLookUp[candidate].UUID != candidate) {
-                globalLookUp.Remove(candidate);
+            if (s_GlobalLookUp[candidate] == null || s_GlobalLookUp[candidate].UUID != candidate)
+            {
+                s_GlobalLookUp.Remove(candidate);
                 return true;
             }
 
             return false;
         }
 
-        public object CaptureState() {
-            Dictionary<string, object> state = new Dictionary<string, object>();
-            foreach (ISaveable saveable in saveables) {
+        public object CaptureState()
+        {
+            var state = new Dictionary<string, object>();
+            foreach (ISaveable saveable in saveables)
+            {
                 state[saveable.GetType().ToString()] = saveable.CaptureState();
             }
 
             return state;
         }
 
-        public void RestoreState(object savedState) {
-            Dictionary<string, object> state = (Dictionary<string, object>) savedState;
-            foreach (ISaveable saveable in saveables) {
-                string type = saveable.GetType().ToString();
-                if (state.ContainsKey(type)) {
+        public void RestoreState(object savedState)
+        {
+            var state = (Dictionary<string, object>) savedState;
+            foreach (ISaveable saveable in saveables)
+            {
+                var type = saveable.GetType().ToString();
+                if (state.ContainsKey(type))
+                {
                     saveable.RestoreState(state[type]);
                 }
             }

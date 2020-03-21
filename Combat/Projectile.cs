@@ -5,137 +5,163 @@ using RPG.Util;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPG.Combat {
-
-    public class Projectile : MonoBehaviour {
+namespace RPG.Combat
+{
+    public class Projectile : MonoBehaviour
+    {
         [SerializeField] private float speed = 1f;
-        [SerializeField] private bool isHoming = default;
+        [SerializeField] private bool isHoming;
         [SerializeField] private float projectileTTL = 10f;
         [SerializeField] private float afterHitTTL = 0.2f;
-        [SerializeField] private GameObject hitEffect = default;
-        [SerializeField] private GameObject[] destroyAfterHit = default;
-        [SerializeField] private UnityEvent onHit = default;
-        [SerializeField] private UnityEvent onLaunch = default;
+        [SerializeField] private GameObject hitEffect;
+        [SerializeField] private GameObject[] destroyAfterHit;
+        [SerializeField] private UnityEvent onHit;
+        [SerializeField] private UnityEvent onLaunch;
         private const string TAG_CINEMATIC = "Cinematic";
         private const string TAG_PICKUP = "Pickup";
-        private float damage = 0;
-        private Health target = null;
-        private GameObject instigator = null;
-        private ObjectPooler pooler;
-        private string poolTag;
+        private float m_Damage;
+        private Health m_Target;
+        private GameObject m_Instigator;
+        private ObjectPooler m_Pooler;
+        private Transform m_Transform;
+        private string m_PoolTag;
+
         /// <summary>
         /// Can update UI when damaging an enemy (e.g. update enemy health on HUD)
         /// </summary>
-        private Action updateUI = null;
-        private float originalSpeed;
+        private Action m_UpdateUi;
 
-        private void Awake() {
-            originalSpeed = speed;
+        private float m_OriginalSpeed;
+
+        private void Awake()
+        {
+            m_OriginalSpeed = speed;
+            m_Transform = transform;
         }
 
-        private void Start() {
-            pooler = ObjectPooler.Instace;
+        private void Start()
+        {
+            m_Pooler = ObjectPooler.Instace;
         }
 
-        private void Update() {
-            if (target == null) {
+        private void Update()
+        {
+            if (m_Target == null)
+            {
                 return;
             }
-            if (isHoming && !target.IsDead) {
-                transform.LookAt(GetAimLocation());
+
+            if (isHoming && !m_Target.IsDead)
+            {
+                m_Transform.LookAt(GetAimLocation());
             }
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+
+            m_Transform.Translate(Vector3.forward * (speed * Time.deltaTime));
             StartCoroutine(ReturnToPoolWithDelay(projectileTTL));
         }
 
-        private void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other)
+        {
             // make projectiles go trough cinematic triggers and items on the ground
-            if (other.gameObject.CompareTag(TAG_CINEMATIC) || other.gameObject.CompareTag(TAG_PICKUP)) {
+            if (other.gameObject.CompareTag(TAG_CINEMATIC) || other.gameObject.CompareTag(TAG_PICKUP))
+            {
                 return;
             }
 
-            foreach (GameObject toDestroy in destroyAfterHit) {
+            foreach (GameObject toDestroy in destroyAfterHit)
+            {
                 toDestroy.SetActive(true);
             }
 
-            Health targetHealth = other.GetComponent<Health>();
+            var targetHealth = other.GetComponent<Health>();
 
-            if (targetHealth == null) { // to disallow friendly fire -  || targetHealth != target
+            if (targetHealth == null)
+            {
+                // to disallow friendly fire -  || targetHealth != target
                 ReturnToPool();
                 return;
             }
 
-            if (targetHealth.IsDead) {
+            if (targetHealth.IsDead)
+            {
                 StartCoroutine(ReturnToPoolWithDelay(projectileTTL));
                 return;
             }
 
             speed = 0;
 
-            if (hitEffect != null) {
-                Vector3 closestPoint = !targetHealth.IsDead ? other.ClosestPoint(transform.position) : target.GetComponent<Collider>().ClosestPoint(transform.position);
+            if (hitEffect != null)
+            {
+                Vector3 position = m_Transform.position;
+                Vector3 closestPoint = !targetHealth.IsDead
+                    ? other.ClosestPoint(position)
+                    : m_Target.GetComponent<Collider>().ClosestPoint(position);
                 GameObject impactObj = Instantiate(hitEffect);
                 impactObj.transform.position = closestPoint;
-                impactObj.transform.rotation = transform.rotation;
+                impactObj.transform.rotation = m_Transform.rotation;
             }
 
-            if (targetHealth == target) {
-                target.TakeDamage(instigator, damage);
-            } else {
-                targetHealth.TakeDamage(instigator, damage);
+            if (targetHealth == m_Target)
+            {
+                m_Target.TakeDamage(m_Instigator, m_Damage);
+            }
+            else
+            {
+                targetHealth.TakeDamage(m_Instigator, m_Damage);
             }
 
-            foreach (GameObject toDestroy in destroyAfterHit) {
+            foreach (GameObject toDestroy in destroyAfterHit)
+            {
                 toDestroy.SetActive(false);
             }
 
             onHit?.Invoke();
-            updateUI?.Invoke();
+            m_UpdateUi?.Invoke();
 
             StartCoroutine(ReturnToPoolWithDelay(afterHitTTL));
         }
 
-        private void PointTowardsTarget() {
-            if (target != null) {
-                transform.LookAt(GetAimLocation());
-                onLaunch?.Invoke();
+        private void PointTowardsTarget()
+        {
+            if (m_Target == null) return;
+            m_Transform.LookAt(GetAimLocation());
+            onLaunch?.Invoke();
+        }
+
+        private Vector3 GetAimLocation()
+        {
+            var targetCollider = m_Target.GetComponent<CapsuleCollider>();
+            if (targetCollider == null)
+            {
+                return m_Target.transform.position;
             }
+
+            return m_Target.transform.position + Vector3.up * targetCollider.height / 2;
         }
 
-        private Vector3 GetAimLocation() {
-            CapsuleCollider targetCollider = target.GetComponent<CapsuleCollider>();
-            if (targetCollider == null) {
-                return target.transform.position;
-            }
-            return target.transform.position + Vector3.up * targetCollider.height / 2;
+        private void ReturnToPool()
+        {
+            m_Pooler.AddToPool(m_PoolTag, gameObject);
         }
 
-        private void ReturnToPool() {
-            pooler.AddToPool(poolTag, gameObject);
-        }
-
-        private IEnumerator ReturnToPoolWithDelay(float delay) {
+        private IEnumerator ReturnToPoolWithDelay(float delay)
+        {
             yield return new WaitForSeconds(delay);
             ReturnToPool();
         }
 
-        // TODO finish this
-        /// <summary>
-        /// Sets the target for the projectile.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="instigator"></param>
-        /// <param name="damage"></param>
-        /// <param name="updateUI"></param>
-        public void SetTarget(Health target, GameObject instigator, float damage, Action updateUI, string tag) {
-            this.target = target;
-            this.damage = damage;
-            this.instigator = instigator;
-            this.updateUI = updateUI;
-            speed = originalSpeed;
-            if (string.IsNullOrEmpty(poolTag)) {
-                poolTag = tag;
+        public void SetTarget(Health target, GameObject instigator, float damage, Action updateUI, string poolTag)
+        {
+            m_Target = target;
+            m_Damage = damage;
+            m_Instigator = instigator;
+            m_UpdateUi = updateUI;
+            speed = m_OriginalSpeed;
+            if (string.IsNullOrEmpty(m_PoolTag))
+            {
+                m_PoolTag = poolTag;
             }
+
             PointTowardsTarget();
         }
     }

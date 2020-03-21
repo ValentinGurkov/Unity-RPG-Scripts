@@ -1,30 +1,36 @@
 ﻿using UnityEngine;
 
-namespace RPG.Audio {
+namespace RPG.Audio
+{
     /// <summary>
     /// Allows playing random audio FX from a collection.
     /// </summary>
-    public class AudioRandomizer : MonoBehaviour {
-        [SerializeField] private AudioClip[] audioClips = default;
+    public class AudioRandomizer : MonoBehaviour
+    {
+        [SerializeField] private AudioClip[] audioClips;
 
-        private AudioSource audioSource;
+        private AudioSource m_AudioSource;
 
-        private void Awake() {
-            audioSource = GetComponent<AudioSource>();
-            audioSource.clip = audioClips[0];
+        private void Awake()
+        {
+            m_AudioSource = GetComponent<AudioSource>();
+            m_AudioSource.clip = audioClips[0];
         }
 
-        public void PlayRandomClip() {
-            if (audioClips.Length > 1) {
-                AudioClip prevClip = audioSource.clip;
+        public void PlayRandomClip()
+        {
+            if (audioClips.Length > 1)
+            {
+                AudioClip prevClip = m_AudioSource.clip;
 
-                do {
-                    audioSource.clip = audioClips[Random.Range(0, audioClips.Length)];
-                } while (audioSource.clip == prevClip);
+                do
+                {
+                    m_AudioSource.clip = audioClips[Random.Range(0, audioClips.Length)];
+                } while (m_AudioSource.clip == prevClip);
             }
 
-            audioSource.pitch = Random.Range(0.9f, 1.1f);
-            audioSource.Play();
+            m_AudioSource.pitch = Random.Range(0.9f, 1.1f);
+            m_AudioSource.Play();
         }
     }
 }

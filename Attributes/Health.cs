@@ -6,116 +6,137 @@ using RPG.Util;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPG.Attributes {
-
-    public class Health : MonoBehaviour, ISaveable {
-
+namespace RPG.Attributes
+{
+    public class Health : MonoBehaviour, ISaveable
+    {
         [SerializeField] private float regenerationPercentage = 70f;
-        [SerializeField] private TakeDamageEvent takeDamage = default;
-        [SerializeField] private bool startDead = default;
-        [SerializeField] private OnDieEvent onDie = default;
+        [SerializeField] private TakeDamageEvent takeDamage;
+        [SerializeField] private bool startDead;
+        [SerializeField] private OnDieEvent onDie;
 
-        private const string DIE_TRIGGER = "die";
-        private LazyValue<float> healthPoints;
-        private Animator animator;
-        private ActionScheduler actionScheduler;
-        private BaseStats baseStats;
+        private LazyValue<float> m_HealthPoints;
+        private Animator m_Animator;
+        private ActionScheduler m_ActionScheduler;
+        private BaseStats m_BaseStats;
+        private static readonly int s_Die = Animator.StringToHash("die");
 
-        public event Action onHealthUpdate;
+        public event Action OnHealthUpdate;
 
-        [System.Serializable]
+        [Serializable]
         public class TakeDamageEvent : UnityEvent<float> { }
 
-        [System.Serializable]
+        [Serializable]
         public class OnDieEvent : UnityEvent<String> { }
 
-        public bool IsDead { get; private set; } = false;
+        public bool IsDead { get; private set; }
         public float Percentage => Fraction * 100;
-        public float HealthPoints => healthPoints.value;
-        public float MaxHealthPoints => baseStats.GetStat(Stat.Health);
-        public float Fraction => healthPoints.value / baseStats.GetStat(Stat.Health);
+        public float HealthPoints => m_HealthPoints.Value;
+        public float MaxHealthPoints => m_BaseStats.GetStat(Stat.Health);
+        public float Fraction => m_HealthPoints.Value / m_BaseStats.GetStat(Stat.Health);
 
-        private void Awake() {
-            animator = GetComponent<Animator>();
-            actionScheduler = GetComponent<ActionScheduler>();
-            baseStats = GetComponent<BaseStats>();
-            healthPoints = new LazyValue<float>(GetInitialHealth);
+        private void Awake()
+        {
+            m_Animator = GetComponent<Animator>();
+            m_ActionScheduler = GetComponent<ActionScheduler>();
+            m_BaseStats = GetComponent<BaseStats>();
+            m_HealthPoints = new LazyValue<float>(GetInitialHealth);
         }
 
-        private void Start() {
-            healthPoints.ForceInit();
-            if (startDead) {
+        private void Start()
+        {
+            m_HealthPoints.ForceInit();
+            if (startDead)
+            {
                 Die();
             }
         }
 
-        private void OnEnable() {
-            baseStats.onLevelUp += RegenerateHealth;
+        private void OnEnable()
+        {
+            m_BaseStats.OnLevelUp += RegenerateHealth;
         }
 
-        private void OnDisable() {
-            baseStats.onLevelUp -= RegenerateHealth;
+        private void OnDisable()
+        {
+            m_BaseStats.OnLevelUp -= RegenerateHealth;
         }
 
-        private float GetInitialHealth() {
-            return baseStats.GetStat(Stat.Health);
+        private float GetInitialHealth()
+        {
+            return m_BaseStats.GetStat(Stat.Health);
         }
 
-        public void TakeDamage(GameObject instigator, float damage) {
-            if (IsDead) {
+        public void TakeDamage(GameObject instigator, float damage)
+        {
+            if (IsDead)
+            {
                 return;
             }
-            healthPoints.value = Mathf.Max(healthPoints.value - damage, 0);
+
+            m_HealthPoints.Value = Mathf.Max(m_HealthPoints.Value - damage, 0);
             takeDamage?.Invoke(damage);
-            onHealthUpdate?.Invoke();
-            if (healthPoints.value == 0) {
-                onDie?.Invoke(gameObject.name);
+            OnHealthUpdate?.Invoke();
+            if (m_HealthPoints.Value >= Mathf.Epsilon) return;
+            onDie?.Invoke(gameObject.name);
+            Die();
+            AwardExperience(instigator);
+        }
+
+        public void Heal(float healthPercentToRestore)
+        {
+            m_HealthPoints.Value = Mathf.Min(m_HealthPoints.Value + (MaxHealthPoints * healthPercentToRestore / 100),
+                MaxHealthPoints);
+            OnHealthUpdate?.Invoke();
+        }
+
+        public object CaptureState()
+        {
+            return m_HealthPoints.Value;
+        }
+
+        public void RestoreState(object state)
+        {
+            m_HealthPoints.Value = (float) state;
+            if (m_HealthPoints.Value <= 0)
+            {
                 Die();
-                AwardExperience(instigator);
             }
         }
 
-        public void Heal(float healthPercentToRestore) {
-            healthPoints.value = Mathf.Min(healthPoints.value + (MaxHealthPoints * healthPercentToRestore / 100), MaxHealthPoints);
-            onHealthUpdate?.Invoke();
-        }
-
-        public object CaptureState() {
-            return healthPoints.value;
-        }
-
-        public void RestoreState(object state) {
-            healthPoints.value = (float) state;
-            if (healthPoints.value <= 0) {
-                Die();
-            }
-        }
-
-        private void AwardExperience(GameObject instigator) {
-            Experience experience = instigator.GetComponent<Experience>();
-            if (experience == null) {
+        private void AwardExperience(GameObject instigator)
+        {
+            var experience = instigator.GetComponent<Experience>();
+            if (experience == null)
+            {
                 return;
             }
 
-            experience.GainExperience(baseStats.GetStat(Stat.ExperienceReward));
+            experience.GainExperience(m_BaseStats.GetStat(Stat.ExperienceReward));
         }
 
-        private bool RegenerateHealth() {
-            if (IsDead) {
+        private bool RegenerateHealth()
+        {
+            if (IsDead)
+            {
                 return false;
             }
-            float regenHealthPoints = baseStats.GetStat(Stat.Health) * (regenerationPercentage / 100);
-            healthPoints.value = Mathf.Max(healthPoints.value, regenHealthPoints);
-            onHealthUpdate?.Invoke();
+
+            float regenHealthPoints = m_BaseStats.GetStat(Stat.Health) * (regenerationPercentage / 100);
+            m_HealthPoints.Value = Mathf.Max(m_HealthPoints.Value, regenHealthPoints);
+            OnHealthUpdate?.Invoke();
             return true;
         }
 
-        private void Die() {
-            if (IsDead) {
+        private void Die()
+        {
+            if (IsDead)
+            {
                 return;
             }
-            animator.SetTrigger(DIE_TRIGGER);
-            actionScheduler.CancelCurrentAction();
+
+            m_Animator.SetTrigger(s_Die);
+            m_ActionScheduler.CancelCurrentAction();
             IsDead = true;
         }
     }
