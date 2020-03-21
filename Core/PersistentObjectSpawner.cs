@@ -1,23 +1,27 @@
 ﻿using UnityEngine;
 
-namespace RPG.Core {
-
-    public class PersistentObjectSpawner : MonoBehaviour {
+namespace RPG.Core
+{
+    public class PersistentObjectSpawner : MonoBehaviour
+    {
         [SerializeField] private GameObject persistentObjectsPrefab = default;
 
-        private static bool hasSpawned = false;
+        private static bool _hasSpawned;
 
-        private void Awake() {
-            if (hasSpawned) {
+        private void Awake()
+        {
+            if (_hasSpawned)
+            {
                 return;
             }
 
             SpawnPersistentObjects();
 
-            hasSpawned = true;
+            _hasSpawned = true;
         }
 
-        private void SpawnPersistentObjects() {
+        private void SpawnPersistentObjects()
+        {
             GameObject persistentObjects = Instantiate(persistentObjectsPrefab);
             DontDestroyOnLoad(persistentObjects);
         }

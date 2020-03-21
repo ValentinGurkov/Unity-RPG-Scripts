@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace RPG.Events {
-    public class GameEventListener : MonoBehaviour {
-        [Tooltip("Event to register with.")]
-        public GameEvent Event;
+namespace RPG.Events
+{
+    public class GameEventListener : MonoBehaviour
+    {
+        [Tooltip("Event to register with.")] public GameEvent Event;
 
         [Tooltip("Response to invoke when Event is raised.")]
         public StringEvent Response;
@@ -12,15 +13,18 @@ namespace RPG.Events {
         [System.Serializable]
         public class StringEvent : UnityEvent<string> { }
 
-        private void OnEnable() {
+        private void OnEnable()
+        {
             Event.RegisterListener(this);
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+        {
             Event.UnregisterListener(this);
         }
 
-        public void OnEventRaised(string context) {
+        public void OnEventRaised(string context)
+        {
             Response.Invoke(context);
         }
     }

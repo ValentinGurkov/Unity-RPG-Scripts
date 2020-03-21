@@ -4,44 +4,52 @@ using RPG.Core;
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace RPG.Cinematics {
+namespace RPG.Cinematics
+{
+    public class CinematicControlRemover : MonoBehaviour
+    {
+        public event Action<bool> OnCinematicStart;
+        public event Action<bool> OnCinematicEnd;
+        private PlayableDirector m_PlayableDirector;
+        private ActionScheduler m_ActionScheduler;
+        private GameObject m_Player;
+        private PlayerController m_PlayerController;
 
-    public class CinematicControlRemover : MonoBehaviour {
-        public event Action<bool> onCinematicStart;
-        public event Action<bool> onCinematicEnd;
-        private PlayableDirector playableDirector;
-        private ActionScheduler actionScheduler;
-        private GameObject player;
-        private PlayerController playerController;
-
-        private void Awake() {
-            playableDirector = GetComponent<PlayableDirector>();
-            player = GameObject.FindWithTag("Player");
-            playerController = player.GetComponent<PlayerController>();
-            actionScheduler = player.GetComponent<ActionScheduler>();
+        private void Awake()
+        {
+            m_PlayableDirector = GetComponent<PlayableDirector>();
+            m_Player = GameObject.FindWithTag("Player");
+            m_PlayerController = m_Player.GetComponent<PlayerController>();
+            m_ActionScheduler = m_Player.GetComponent<ActionScheduler>();
         }
 
-        private void OnEnable() {
-            playableDirector.played += DisableControl;
-            playableDirector.stopped += EnableControl;
+        private void OnEnable()
+        {
+            m_PlayableDirector.played += DisableControl;
+            m_PlayableDirector.stopped += EnableControl;
         }
 
-        private void OnDisable() {
-            playableDirector.played -= DisableControl;
-            playableDirector.stopped -= EnableControl;
+        private void OnDisable()
+        {
+            m_PlayableDirector.played -= DisableControl;
+            m_PlayableDirector.stopped -= EnableControl;
         }
 
-        public void EnableControl(PlayableDirector pd) {
-            if (playableDirector != null) {
-                playerController.enabled = true;
+        private void EnableControl(PlayableDirector pd)
+        {
+            if (m_PlayableDirector != null)
+            {
+                m_PlayerController.enabled = true;
             }
-            onCinematicEnd(false);
+
+            OnCinematicEnd(false);
         }
 
-        public void DisableControl(PlayableDirector pd) {
-            actionScheduler.CancelCurrentAction();
-            playerController.enabled = false;
-            onCinematicStart(true);
+        private void DisableControl(PlayableDirector pd)
+        {
+            m_ActionScheduler.CancelCurrentAction();
+            m_PlayerController.enabled = false;
+            OnCinematicStart(true);
         }
     }
 }

@@ -3,33 +3,38 @@ using RPG.Stats;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.UI {
-    public class LevelToDisplay : MonoBehaviour {
+namespace RPG.UI
+{
+    public class LevelToDisplay : MonoBehaviour
+    {
+        private BaseStats m_BaseStats;
+        private TextMeshProUGUI m_Text;
 
-        private BaseStats baseStats;
-        private TextMeshProUGUI text;
-
-        private void Awake() {
-            baseStats = GameObject.FindWithTag("Player").GetComponent<BaseStats>();
-            text = GetComponent<TextMeshProUGUI>();
+        private void Awake()
+        {
+            m_BaseStats = GameObject.FindWithTag("Player").GetComponent<BaseStats>();
+            m_Text = GetComponent<TextMeshProUGUI>();
         }
 
-        private void Start() {
+        private void Start()
+        {
             UpdateLevel();
         }
 
-        private void OnEnable() {
-            baseStats.onLevelUp += UpdateLevel;
+        private void OnEnable()
+        {
+            m_BaseStats.OnLevelUp += UpdateLevel;
         }
 
-        private void OnDisable() {
-            baseStats.onLevelUp -= UpdateLevel;
+        private void OnDisable()
+        {
+            m_BaseStats.OnLevelUp -= UpdateLevel;
         }
 
-        private bool UpdateLevel() {
-            text.text = String.Format("{0:0}", baseStats.Level);
+        private bool UpdateLevel()
+        {
+            m_Text.text = $"{m_BaseStats.Level:0}";
             return true;
         }
     }
-
 }

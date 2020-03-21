@@ -3,32 +3,37 @@ using RPG.Stats;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.UI {
-    public class ExperienceDisplay : MonoBehaviour {
+namespace RPG.UI
+{
+    public class ExperienceDisplay : MonoBehaviour
+    {
+        private Experience m_Experience;
+        private TextMeshProUGUI m_Text;
 
-        private Experience experience;
-        private TextMeshProUGUI text;
-
-        private void Awake() {
-            experience = GameObject.FindWithTag("Player").GetComponent<Experience>();
-            text = GetComponent<TextMeshProUGUI>();
+        private void Awake()
+        {
+            m_Experience = GameObject.FindWithTag("Player").GetComponent<Experience>();
+            m_Text = GetComponent<TextMeshProUGUI>();
         }
 
-        private void Start() {
+        private void Start()
+        {
             UpdateExperience();
         }
 
-        private void OnEnable() {
-            experience.onExperienceGained += UpdateExperience;
+        private void OnEnable()
+        {
+            m_Experience.OnExperienceGained += UpdateExperience;
         }
 
-        private void OnDisable() {
-            experience.onExperienceGained -= UpdateExperience;
+        private void OnDisable()
+        {
+            m_Experience.OnExperienceGained -= UpdateExperience;
         }
 
-        private void UpdateExperience() {
-            text.text = String.Format("{0:0}", experience.ExperiencePoints);
+        private void UpdateExperience()
+        {
+            m_Text.text = $"{m_Experience.ExperiencePoints:0}";
         }
     }
-
 }
