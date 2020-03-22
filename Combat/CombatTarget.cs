@@ -20,10 +20,10 @@ namespace RPG.Combat
                 return false;
             }
 
-            if (Input.GetMouseButton(0))
-            {
-                fighter.Attack(gameObject);
-            }
+            /* if (Input.GetMouseButton(0))
+             {
+                 fighter.Attack(gameObject);
+             } */
 
             return true;
         }

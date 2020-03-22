@@ -35,31 +35,31 @@ namespace RPG.Control
 
         private void Update()
         {
-            if (Input.GetKey("escape"))
-            {
-                Application.Quit();
-            }
+            /*  if (Input.GetKey("escape"))
+              {
+                  Application.Quit();
+              }
 
-            if (InteractWithUI())
-            {
-                return;
-            }
+              if (InteractWithUI())
+              {
+                  return;
+              }
 
-            if (m_PlayerHealth.IsDead)
-            {
-                SetCursor(CursorType.None);
-                return;
-            }
+              if (m_PlayerHealth.IsDead)
+              {
+                  SetCursor(CursorType.None);
+                  return;
+              }
 
-            if (InteractWithComponent())
-            {
-                return;
-            }
+              if (InteractWithComponent())
+              {
+                  return;
+              }
 
-            if (InteractWithMovement())
-            {
-                return;
-            }
+              if (InteractWithMovement())
+              {
+                  return;
+              }*/
 
             SetCursor(CursorType.None);
         }
@@ -108,11 +108,11 @@ namespace RPG.Control
             if (!hasHit) return false;
             if (!m_Mover.CanMoveTo(target)) return false;
 
-            if (Input.GetMouseButton(0))
-            {
-                m_Mover.StartMovement(target, 1f);
-            }
-
+            /*  if (Input.GetMouseButton(0))
+              {
+                  m_Mover.StartMovement(target, 1f);
+              }
+            */
             SetCursor(CursorType.Movement);
             return true;
         }
@@ -154,7 +154,8 @@ namespace RPG.Control
 
         private Ray GetMouseRay()
         {
-            return m_MainCamera.ScreenPointToRay(Input.mousePosition);
+            return new Ray();
+            //return m_MainCamera.ScreenPointToRay(Input.mousePosition);
         }
 
         public void SetCursor(CursorType type)

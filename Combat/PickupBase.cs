@@ -54,10 +54,10 @@ namespace RPG.Combat
 
         public bool HandleRaycast(GameObject callingObject)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                callingObject.GetComponent<Mover>().StartMovement(transform.position, 1f);
-            }
+            /*if (Input.GetMouseButtonDown(0))
+             {
+                 callingObject.GetComponent<Mover>().StartMovement(transform.position, 1f);
+             }*/
 
             return true;
         }
