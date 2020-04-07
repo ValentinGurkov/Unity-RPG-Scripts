@@ -38,6 +38,9 @@ namespace RPG.Control
             /*  if (Input.GetKey("escape"))
               {
                   Application.Quit();
+                  #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+                  #endif
               }
 
               if (InteractWithUI())

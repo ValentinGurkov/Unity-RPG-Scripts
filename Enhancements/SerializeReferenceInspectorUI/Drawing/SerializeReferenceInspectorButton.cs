@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 public static class SerializeReferenceInspectorButton
 {
     /// Must be drawn before DefaultProperty in order to receive input
@@ -36,3 +37,5 @@ public static class SerializeReferenceInspectorButton
         EditorGUI.indentLevel = storedIndent;
     }
 }
+
+#endif

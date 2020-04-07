@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Movement;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,8 +10,6 @@ namespace Core
     {
         [SerializeField] private LayerMask clickableLayer;
         [SerializeField] private float navMeshMaxProjectionDistance = 1f;
-        [SerializeField] private float speed = 6f;
-        [SerializeField] private float speedModifier = 1f;
         [SerializeField] private Transform indicator;
 
         private readonly WaitForSeconds m_IndicatorHideDelay = new WaitForSeconds(0.2f);
@@ -42,8 +39,7 @@ namespace Core
         private IEnumerator Move()
         {
             Ray ray = GetMouseRay();
-            if (Physics.Raycast(ray, out RaycastHit hit, 50, clickableLayer.value) &&
-                hit.transform.CompareTag("Terrain"))
+            if (Physics.Raycast(ray, out RaycastHit hit, 50, clickableLayer.value))
             {
                 indicator.position = hit.point;
                 indicator.gameObject.SetActive(true);
@@ -55,7 +51,7 @@ namespace Core
                 ray = GetMouseRay();
                 if (Physics.Raycast(ray, out hit, 50, clickableLayer.value))
                 {
-                    m_Mover.Move(hit.point, speed * speedModifier);
+                    m_Mover.Move(hit.point);
                 }
 
                 yield return null;
