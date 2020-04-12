@@ -68,7 +68,7 @@ namespace Core
 
         public Ray GetMouseRay()
         {
-            return m_Camera.ScreenPointToRay(m_Mouse.position.ReadValue());
+            return m_Camera.ScreenPointToRay(m_MouseInput.MousePosition);
         }
 
         private bool RaycastNavMesh(out Vector3 target)

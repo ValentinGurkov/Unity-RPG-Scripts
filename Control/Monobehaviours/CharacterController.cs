@@ -25,6 +25,7 @@ namespace Control
 
         [SerializeField] private bool isHoldingMouseButton;
         [SerializeField] private bool isPressingInteract;
+        [SerializeField] private Vector2 mousePosition;
         [SerializeField] private Vector3 moveDirection;
         [SerializeField] private Vector3 rotationDirection;
 
@@ -34,6 +35,8 @@ namespace Control
         public bool IsPressingInteract => isPressingInteract;
 
         public Vector3 MoveDirection => moveDirection;
+
+        public Vector2 MousePosition => mousePosition;
 
         public Vector3 RotationDirection
         {
@@ -53,16 +56,27 @@ namespace Control
         private void OnEnable()
         {
             m_InputActions.Player.Enable();
-            if (mouseInput != null) m_InputActions.Player.MouseMove.performed += OnMouseInput;
+            if (mouseInput != null)
+            {
+                m_InputActions.Player.MouseMove.performed += OnMouseInput;
+                m_InputActions.Player.MousePosition.performed += OnMousePosition;
+            }
+
             if (movementInput != null) m_InputActions.Player.Movement.performed += OnMoveInput;
             if (analogRotationInput != null) m_InputActions.Player.AnalogAim.performed += OnAnalogAimInput;
         }
 
         private void OnDisable()
         {
-            if (mouseInput != null) m_InputActions.Player.MouseMove.performed -= OnMouseInput;
+            if (mouseInput != null)
+            {
+                m_InputActions.Player.MouseMove.performed -= OnMouseInput;
+                m_InputActions.Player.MousePosition.performed -= OnMousePosition;
+            }
+
             if (movementInput != null) m_InputActions.Player.Movement.performed -= OnMoveInput;
             if (analogRotationInput != null) m_InputActions.Player.AnalogAim.performed -= OnAnalogAimInput;
+
             m_InputActions.Player.Disable();
         }
 
@@ -82,7 +96,7 @@ namespace Control
 
         private void OnMouseInput(InputAction.CallbackContext obj)
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
             var value = obj.ReadValue<float>();
             isHoldingMouseButton = value >= 0.15f;
 
@@ -103,6 +117,11 @@ namespace Control
             analogRotationInput.Execute();
         }
 
+        private void OnMousePosition(InputAction.CallbackContext obj)
+        {
+            mousePosition = obj.ReadValue<Vector2>();
+        }
+
         #endregion
 
         #region Mouse Cursor Updates
@@ -114,7 +133,7 @@ namespace Control
 
         private static bool InteractWithUI()
         {
-            if (!EventSystem.current.IsPointerOverGameObject()) return false;
+            if (!EventSystem.current || !EventSystem.current.IsPointerOverGameObject()) return false;
             SetCursor(GameManager.CursorTypes[Constants.CursorTypes.UI] as CursorType);
             return true;
         }
