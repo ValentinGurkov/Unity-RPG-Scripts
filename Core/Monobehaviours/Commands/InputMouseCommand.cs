@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace Core
 {
+    [RequireComponent(typeof(CharacterMoverNavMesh))]
     public class InputMouseCommand : Command
     {
         [SerializeField] private LayerMask clickableLayer;
@@ -15,19 +16,17 @@ namespace Core
         private readonly WaitForSeconds m_IndicatorHideDelay = new WaitForSeconds(0.2f);
         private IMouseInput m_MouseInput;
         private Coroutine m_MoveCoroutine;
-        private Mouse m_Mouse;
         private Camera m_Camera;
-        private CharacterMover m_Mover;
+        private CharacterMoverNavMesh m_Mover;
 
         private void Awake()
         {
             m_MouseInput = GetComponent<IMouseInput>();
-            m_Mover = GetComponent<CharacterMover>();
+            m_Mover = GetComponent<CharacterMoverNavMesh>();
         }
 
         private void Start()
         {
-            m_Mouse = Mouse.current;
             m_Camera = Camera.main;
         }
 

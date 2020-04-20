@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace Core
 {
+    [RequireComponent(typeof(CharacterMoverNavMesh))]
     public class InputMoveNavMeshCommand : Command
     {
         [SerializeField] private float directionModifier = 1f;
 
         private IMoveInput m_MoveInput;
-        private CharacterMover m_Mover;
+        private CharacterMoverNavMesh m_Mover;
         private Transform m_Transform;
         private Camera m_Camera;
         private Coroutine m_MoveRoutine;
@@ -17,7 +18,7 @@ namespace Core
         private void Awake()
         {
             m_MoveInput = GetComponent<IMoveInput>();
-            m_Mover = GetComponent<CharacterMover>();
+            m_Mover = GetComponent<CharacterMoverNavMesh>();
             m_Transform = transform;
             m_Camera = Camera.main;
         }

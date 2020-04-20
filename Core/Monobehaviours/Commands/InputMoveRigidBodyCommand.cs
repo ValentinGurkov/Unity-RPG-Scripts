@@ -5,9 +5,9 @@ namespace Core
 {
     public class InputMoveRigidBodyCommand : Command
     {
-        public AnimationCurve speed;
-        public float speedModifier = 1;
-        public float turnSmoothing;
+        [SerializeField] private AnimationCurve speed;
+        [SerializeField] private float speedModifier = 1;
+        [SerializeField] private float turnSmoothing;
 
         private Rigidbody m_Rigidbody;
         private IMoveInput m_Move;
@@ -15,7 +15,6 @@ namespace Core
         private Coroutine m_MoveCoroutine;
         private Coroutine m_RotateCoroutine;
         private Transform m_Transform;
-
 
         private void Awake()
         {
@@ -38,7 +37,6 @@ namespace Core
                 float time = Time.fixedDeltaTime * speed.Evaluate(m_Move.MoveDirection.magnitude) * speedModifier;
 
                 m_Rigidbody.MovePosition(m_Transform.position + m_Move.MoveDirection * time);
-
                 yield return null;
             }
 
@@ -51,7 +49,7 @@ namespace Core
 
             while (m_Move.MoveDirection != Vector3.zero)
             {
-                yield return new WaitUntil(() => (m_Rotate.RotationDirection == Vector3.zero));
+                yield return new WaitUntil(() => m_Rotate.RotationDirection == Vector3.zero);
 
                 if (m_Move.MoveDirection == Vector3.zero) continue;
 
