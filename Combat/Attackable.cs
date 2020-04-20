@@ -10,10 +10,6 @@ namespace Combat
 
         public override bool HandleRaycast(GameObject callingObject)
         {
-            var mouseInput = callingObject.GetComponent<IMouseInput>();
-
-            if (mouseInput.IsHoldingMouseButton) { }
-
             return true;
         }
     }
