@@ -8,7 +8,8 @@ using Util;
 
 namespace Control
 {
-    public class CharacterController : MonoBehaviour, IMouseInput, IMoveInput, IRotationInput, IInteractInput
+    public class CharacterController : MonoBehaviour, IMouseInput, IMoveInput, IRotationInput, IInteractInput,
+        IDashInput
     {
         #region Members
 
@@ -17,7 +18,7 @@ namespace Control
 
         [SerializeField] private Command movementInput;
         [SerializeField] private Command analogRotationInput;
-        [SerializeField] private Command mouseRotationInput;
+        [SerializeField] private Command dashInput;
         [SerializeField] private float raycastRadius = 1f;
 
         private readonly RaycastHit[] m_Hits = new RaycastHit[5];
@@ -25,6 +26,7 @@ namespace Control
 
         [SerializeField] private bool isHoldingMouseButton;
         [SerializeField] private bool isPressingInteract;
+        [SerializeField] private bool isDashing;
         [SerializeField] private Vector2 mousePosition;
         [SerializeField] private Vector3 moveDirection;
         [SerializeField] private Vector3 rotationDirection;
@@ -33,6 +35,8 @@ namespace Control
         public bool IsHoldingMouseButton => isHoldingMouseButton;
 
         public bool IsPressingInteract => isPressingInteract;
+
+        public bool IsDashing => isDashing;
 
         public Vector3 MoveDirection => moveDirection;
 
@@ -64,6 +68,11 @@ namespace Control
 
             if (movementInput != null) m_InputActions.Player.Movement.performed += OnMoveInput;
             if (analogRotationInput != null) m_InputActions.Player.AnalogAim.performed += OnAnalogAimInput;
+            if (dashInput != null)
+            {
+                m_InputActions.Player.Dash.performed += OnSkillInput;
+                m_InputActions.Player.Dash.canceled += OnSkillEnd;
+            }
         }
 
         private void OnDisable()
@@ -76,6 +85,11 @@ namespace Control
 
             if (movementInput != null) m_InputActions.Player.Movement.performed -= OnMoveInput;
             if (analogRotationInput != null) m_InputActions.Player.AnalogAim.performed -= OnAnalogAimInput;
+            if (dashInput != null)
+            {
+                m_InputActions.Player.Dash.performed -= OnSkillInput;
+                m_InputActions.Player.Dash.canceled -= OnSkillEnd;
+            }
 
             m_InputActions.Player.Disable();
         }
@@ -120,6 +134,20 @@ namespace Control
         private void OnMousePosition(InputAction.CallbackContext obj)
         {
             mousePosition = obj.ReadValue<Vector2>();
+        }
+
+        private void OnSkillInput(InputAction.CallbackContext obj)
+        {
+            var value = obj.ReadValue<float>();
+            isDashing = value >= 0.15f;
+
+            dashInput.Execute();
+        }
+
+        private void OnSkillEnd(InputAction.CallbackContext context)
+        {
+            isDashing = false;
+            dashInput.Complete();
         }
 
         #endregion

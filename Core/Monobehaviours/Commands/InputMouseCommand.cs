@@ -15,12 +15,14 @@ namespace Core
 
         private readonly WaitForSeconds m_IndicatorHideDelay = new WaitForSeconds(0.2f);
         private IMouseInput m_MouseInput;
+        private IDashInput m_DashInput;
         private Coroutine m_MoveCoroutine;
         private Camera m_Camera;
         private CharacterMoverNavMesh m_Mover;
 
         private void Awake()
         {
+            m_DashInput = GetComponent<IDashInput>();
             m_MouseInput = GetComponent<IMouseInput>();
             m_Mover = GetComponent<CharacterMoverNavMesh>();
         }
@@ -45,7 +47,7 @@ namespace Core
                 StartCoroutine(HideIndicator());
             }
 
-            while (m_MouseInput.IsHoldingMouseButton)
+            while (m_MouseInput.IsHoldingMouseButton && !m_DashInput.IsDashing)
             {
                 ray = GetMouseRay();
                 if (Physics.Raycast(ray, out hit, 50, clickableLayer.value))

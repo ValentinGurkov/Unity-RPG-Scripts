@@ -91,6 +91,14 @@ namespace Input
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""7bdd0ed0-dba6-403c-a92b-da90109c91b7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -410,6 +418,17 @@ namespace Input
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""Mouse Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0cb5a856-25eb-408b-9023-618648396c57"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1236,6 +1255,7 @@ namespace Input
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
             m_Player_MouseMove = m_Player.FindAction("Mouse Move", throwIfNotFound: true);
             m_Player_MousePosition = m_Player.FindAction("Mouse Position", throwIfNotFound: true);
+            m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1315,6 +1335,7 @@ namespace Input
         private readonly InputAction m_Player_Fire;
         private readonly InputAction m_Player_MouseMove;
         private readonly InputAction m_Player_MousePosition;
+        private readonly InputAction m_Player_Dash;
         public struct PlayerActions
         {
             private @PlayerInputActions m_Wrapper;
@@ -1328,6 +1349,7 @@ namespace Input
             public InputAction @Fire => m_Wrapper.m_Player_Fire;
             public InputAction @MouseMove => m_Wrapper.m_Player_MouseMove;
             public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
+            public InputAction @Dash => m_Wrapper.m_Player_Dash;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1364,6 +1386,9 @@ namespace Input
                     @MousePosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
                     @MousePosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
                     @MousePosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
+                    @Dash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
+                    @Dash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
+                    @Dash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1395,6 +1420,9 @@ namespace Input
                     @MousePosition.started += instance.OnMousePosition;
                     @MousePosition.performed += instance.OnMousePosition;
                     @MousePosition.canceled += instance.OnMousePosition;
+                    @Dash.started += instance.OnDash;
+                    @Dash.performed += instance.OnDash;
+                    @Dash.canceled += instance.OnDash;
                 }
             }
         }
@@ -1641,6 +1669,7 @@ namespace Input
             void OnFire(InputAction.CallbackContext context);
             void OnMouseMove(InputAction.CallbackContext context);
             void OnMousePosition(InputAction.CallbackContext context);
+            void OnDash(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {

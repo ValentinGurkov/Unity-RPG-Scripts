@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Core;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,29 +10,66 @@ namespace Movement
         [SerializeField] private float speed = 6f;
         [SerializeField] private float speedModifier = 1f;
         [SerializeField] private float maxNavPathLength = 40f;
+
+        [Header("Dash Settings")] [SerializeField]
+        private float dashSpeed = 25f;
+
+        [SerializeField] private float dashAcceleration = 1000f;
+        [SerializeField] private float dashDistance = 10f;
+        [SerializeField] private float dashDuration = 0.2f;
         private NavMeshAgent m_NavMeshAgent;
         private Coroutine m_SpeedRoutine;
+        private Transform m_Transform;
+        private WaitForSeconds m_DashWait;
+        private float m_OriginalAcceleration;
+        private bool m_IsDashing;
 
         public Vector3 Velocity => m_NavMeshAgent.velocity;
 
         private void Awake()
         {
             m_NavMeshAgent = GetComponent<NavMeshAgent>();
+            m_Transform = transform;
+            m_OriginalAcceleration = m_NavMeshAgent.acceleration;
+            m_DashWait = new WaitForSeconds(dashDuration);
         }
 
         public void Move(Vector3 destination)
         {
             Cancel();
+            m_NavMeshAgent.acceleration = m_OriginalAcceleration;
             m_NavMeshAgent.isStopped = false;
             m_NavMeshAgent.destination = destination;
             if (m_SpeedRoutine != null) StopCoroutine(m_SpeedRoutine);
             m_SpeedRoutine = StartCoroutine(SetSpeed());
         }
 
+        public void Dash(Vector3 destination)
+        {
+            Cancel();
+            m_NavMeshAgent.isStopped = false;
+            if (m_SpeedRoutine != null) StopCoroutine(m_SpeedRoutine);
+            if (!m_IsDashing)
+            {
+                StartCoroutine(DashRoutine(destination));
+            }
+        }
+
+        private IEnumerator DashRoutine(Vector3 destination)
+        {
+            m_IsDashing = true;
+            m_NavMeshAgent.acceleration = dashAcceleration;
+            m_NavMeshAgent.speed = dashSpeed;
+            Vector3 position = m_Transform.position;
+            m_NavMeshAgent.destination = position + (destination - position).normalized * dashDistance;
+            yield return m_DashWait;
+            m_IsDashing = false;
+        }
+
         public bool CanMoveTo(Vector3 destination)
         {
             var path = new NavMeshPath();
-            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
+            bool hasPath = NavMesh.CalculatePath(m_Transform.position, destination, NavMesh.AllAreas, path);
             return hasPath && path.status == NavMeshPathStatus.PathComplete && GetPathLength(path) <= maxNavPathLength;
         }
 
@@ -61,7 +97,7 @@ namespace Movement
             while (m_NavMeshAgent.remainingDistance >= m_NavMeshAgent.stoppingDistance)
             {
                 yield return m_NavMeshAgent.speed =
-                    Mathf.Lerp(speed, m_NavMeshAgent.velocity.magnitude, Time.deltaTime * 60) * speedModifier;
+                    Mathf.Lerp(speed, m_NavMeshAgent.velocity.magnitude, Time.deltaTime) * speedModifier;
             }
 
             m_SpeedRoutine = null;

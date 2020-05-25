@@ -16,6 +16,7 @@ namespace Control
         private static readonly int s_SpeedAnimKey = Animator.StringToHash("Speed");
         private static readonly int s_HorizontalAnimKey = Animator.StringToHash("Horizontal");
         private static readonly int s_VerticalAnimKey = Animator.StringToHash("Vertical");
+        private static readonly int s_Dashing = Animator.StringToHash("Dash");
 
 
         private void Awake()
@@ -47,6 +48,11 @@ namespace Control
                 m_Animator.SetFloat(s_HorizontalAnimKey, horizontalDot);
                 m_Animator.SetFloat(s_VerticalAnimKey, verticalDot);
             }
+        }
+
+        public void Dash()
+        {
+            m_Animator.SetTrigger(s_Dashing);
         }
     }
 }
