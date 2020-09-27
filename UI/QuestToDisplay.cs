@@ -1,5 +1,6 @@
 ﻿using System;
-using RPG.Questing;
+using QuestingV1.Goal;
+using QuestingV1.Stage;
 using TMPro;
 using UnityEngine;
 

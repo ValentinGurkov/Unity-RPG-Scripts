@@ -1,31 +1,30 @@
-﻿using UnityEngine;
+﻿using Events;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace RPG.Events
 {
     public class GameEventListener : MonoBehaviour
     {
-        [Tooltip("Event to register with.")] public GameEvent Event;
+        [Tooltip("Event to register with.")] [SerializeField]
+        private GameEvent @event;
 
-        [Tooltip("Response to invoke when Event is raised.")]
-        public StringEvent Response;
-
-        [System.Serializable]
-        public class StringEvent : UnityEvent<string> { }
+        [Tooltip("Response to invoke when Event is raised.")] [SerializeField]
+        private UnityEvent response;
 
         private void OnEnable()
         {
-            Event.RegisterListener(this);
+            @event.RegisterListener(this);
         }
 
         private void OnDisable()
         {
-            Event.UnregisterListener(this);
+            @event.UnregisterListener(this);
         }
 
-        public void OnEventRaised(string context)
+        public void OnEventRaised()
         {
-            Response.Invoke(context);
+            response.Invoke();
         }
     }
 }

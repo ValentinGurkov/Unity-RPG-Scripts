@@ -6,7 +6,10 @@ namespace Core
     [DisallowMultipleComponent]
     public abstract class Interactable : MonoBehaviour, IRaycastable
     {
-        public virtual CursorType Cursor => GameManager.CursorTypes[Constants.CursorTypes.None] as CursorType;
+        [SerializeField] protected GameManager gameManager;
+
+        public virtual CursorType Cursor => gameManager.Enums.CursorTypes[Constants.CursorTypes.None];
+        public virtual string Type => Constants.CursorTypes.None;
 
         public virtual bool HandleRaycast(GameObject callingObject)
         {

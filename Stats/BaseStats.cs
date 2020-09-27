@@ -1,5 +1,5 @@
-﻿using RPG.Util;
-using UnityEngine;
+﻿using UnityEngine;
+using Util;
 
 namespace RPG.Stats
 {

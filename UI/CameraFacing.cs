@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 
-namespace RPG.UI
+namespace UI
 {
     public class CameraFacing : MonoBehaviour
     {
-        private Camera m_MainCamera;
+        private Camera _mainCamera;
 
         private void Start()
         {
-            m_MainCamera = Camera.main;
+            _mainCamera = Camera.main;
         }
 
         private void LateUpdate()
         {
-            transform.forward = m_MainCamera.transform.forward;
+            transform.forward = _mainCamera.transform.forward;
         }
     }
 }

@@ -1,30 +1,27 @@
-﻿using RPG.Util;
-using UnityEngine;
+﻿using UnityEngine;
+using Util;
 
-namespace RPG.UI
+namespace UI.Damage_Text
 {
     public class DamageTextSpawner : MonoBehaviour
     {
-        [SerializeField] private string poolTag = "damageText";
-        private ObjectPooler m_Pooler;
+        [SerializeField] private DamageText damageTextPrefab;
+        private ObjectPooler _pooler;
 
         private void Start()
         {
-            m_Pooler = ObjectPooler.Instace;
+            _pooler = FindObjectOfType<ObjectPooler>();
         }
 
-        public void Spawn(float damage)
+        public void Spawn(float damage, bool isCritical, Color color)
         {
-            GameObject instance = m_Pooler.SpawnFromPool(poolTag);
-            if (instance == null)
-            {
-                return;
-            }
-
+            GameObject instance = _pooler.SpawnFromPool(damageTextPrefab.gameObject);
+            if (instance == null) return;
+            instance.SetActive(false);
             instance.transform.position = transform.position;
+            instance.SetActive(true);
             var damageText = instance.GetComponent<DamageText>();
-            damageText.SetValue(damage);
-            damageText.SetPoolTag(poolTag);
+            damageText.Initialize(damage, isCritical, color, _pooler);
         }
     }
 }

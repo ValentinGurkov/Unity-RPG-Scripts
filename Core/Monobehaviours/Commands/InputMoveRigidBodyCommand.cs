@@ -9,64 +9,64 @@ namespace Core
         [SerializeField] private float speedModifier = 1;
         [SerializeField] private float turnSmoothing;
 
-        private Rigidbody m_Rigidbody;
-        private IMoveInput m_Move;
-        private IRotationInput m_Rotate;
-        private Coroutine m_MoveCoroutine;
-        private Coroutine m_RotateCoroutine;
-        private Transform m_Transform;
+        private Rigidbody _rigidbody;
+        private IMoveInput _move;
+        private IRotationInput _rotate;
+        private Coroutine _moveCoroutine;
+        private Coroutine _rotateCoroutine;
+        private Transform _transform;
 
         private void Awake()
         {
-            m_Rigidbody = GetComponent<Rigidbody>();
-            m_Move = GetComponent<IMoveInput>();
-            m_Rotate = GetComponent<IRotationInput>();
-            m_Transform = transform;
+            _rigidbody = GetComponent<Rigidbody>();
+            _move = GetComponent<IMoveInput>();
+            _rotate = GetComponent<IRotationInput>();
+            _transform = transform;
         }
 
         public override void Execute()
         {
-            if (m_MoveCoroutine == null) m_MoveCoroutine = StartCoroutine(Move());
-            if (m_RotateCoroutine == null) m_RotateCoroutine = StartCoroutine(Rotate());
+            if (_moveCoroutine == null) _moveCoroutine = StartCoroutine(Move());
+            if (_rotateCoroutine == null) _rotateCoroutine = StartCoroutine(Rotate());
         }
 
         private IEnumerator Move()
         {
-            while (m_Move.MoveDirection != Vector3.zero)
+            while (_move.MoveDirection != Vector3.zero)
             {
-                float time = Time.fixedDeltaTime * speed.Evaluate(m_Move.MoveDirection.magnitude) * speedModifier;
+                float time = Time.fixedDeltaTime * speed.Evaluate(_move.MoveDirection.magnitude) * speedModifier;
 
-                m_Rigidbody.MovePosition(m_Transform.position + m_Move.MoveDirection * time);
+                _rigidbody.MovePosition(_transform.position + _move.MoveDirection * time);
                 yield return null;
             }
 
-            m_MoveCoroutine = null;
+            _moveCoroutine = null;
         }
 
         private IEnumerator Rotate()
         {
             var time = 0.0f;
 
-            while (m_Move.MoveDirection != Vector3.zero)
+            while (_move.MoveDirection != Vector3.zero)
             {
-                yield return new WaitUntil(() => m_Rotate.RotationDirection == Vector3.zero);
+                yield return new WaitUntil(() => _rotate.RotationDirection == Vector3.zero);
 
-                if (m_Move.MoveDirection == Vector3.zero) continue;
+                if (_move.MoveDirection == Vector3.zero) continue;
 
-                if (m_Move.MoveDirection.magnitude <= 0.5f)
+                if (_move.MoveDirection.magnitude <= 0.5f)
                 {
-                    Quaternion targetRotation = Quaternion.LookRotation(m_Move.MoveDirection, Vector3.up);
-                    time += Time.fixedDeltaTime * turnSmoothing * m_Move.MoveDirection.magnitude;
-                    Quaternion newRotation = Quaternion.Lerp(m_Rigidbody.rotation, targetRotation, time);
-                    m_Rigidbody.MoveRotation(newRotation);
+                    Quaternion targetRotation = Quaternion.LookRotation(_move.MoveDirection, Vector3.up);
+                    time += Time.fixedDeltaTime * turnSmoothing * _move.MoveDirection.magnitude;
+                    Quaternion newRotation = Quaternion.Lerp(_rigidbody.rotation, targetRotation, time);
+                    _rigidbody.MoveRotation(newRotation);
                 }
                 else
                 {
-                    m_Rigidbody.MoveRotation(Quaternion.LookRotation(m_Move.MoveDirection, Vector3.up));
+                    _rigidbody.MoveRotation(Quaternion.LookRotation(_move.MoveDirection, Vector3.up));
                 }
             }
 
-            m_RotateCoroutine = null;
+            _rotateCoroutine = null;
         }
     }
 }

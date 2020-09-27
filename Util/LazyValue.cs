@@ -1,4 +1,4 @@
-namespace RPG.Util
+namespace Util
 {
     /// <summary>
     /// Container class that wraps a value and ensures initialisation is
@@ -6,8 +6,8 @@ namespace RPG.Util
     /// </summary>
     public class LazyValue<T>
     {
-        private T m_Value;
-        private bool m_Initialized;
+        private T _value;
+        private bool _initialized;
         private readonly InitializerDelegate _initializer;
 
         public delegate T InitializerDelegate();
@@ -16,7 +16,7 @@ namespace RPG.Util
         /// Setup the container but don't initialise the value yet.
         /// </summary>
         /// <param name="initializer">
-        /// The initialiser delegate to call when first used.
+        /// The initializer delegate to call when first used.
         /// </param>
         public LazyValue(InitializerDelegate initializer)
         {
@@ -36,13 +36,13 @@ namespace RPG.Util
             {
                 // Ensure we init before returning a value.
                 ForceInit();
-                return m_Value;
+                return _value;
             }
             set
             {
                 // Don't use default init anymore.
-                m_Initialized = true;
-                m_Value = value;
+                _initialized = true;
+                _value = value;
             }
         }
 
@@ -51,9 +51,9 @@ namespace RPG.Util
         /// </summary>
         public void ForceInit()
         {
-            if (m_Initialized) return;
-            m_Value = _initializer();
-            m_Initialized = true;
+            if (_initialized) return;
+            _value = _initializer();
+            _initialized = true;
         }
     }
 }

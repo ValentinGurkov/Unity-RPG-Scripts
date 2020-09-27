@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using RPG.Attributes;
-using RPG.Util;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 
 namespace RPG.Combat
 {
@@ -17,6 +17,7 @@ namespace RPG.Combat
         [SerializeField] private GameObject[] destroyAfterHit;
         [SerializeField] private UnityEvent onHit;
         [SerializeField] private UnityEvent onLaunch;
+        [SerializeField] private string m_PoolTag;
         private const string TAG_CINEMATIC = "Cinematic";
         private const string TAG_PICKUP = "Pickup";
         private float m_Damage;
@@ -24,7 +25,6 @@ namespace RPG.Combat
         private GameObject m_Instigator;
         private ObjectPooler m_Pooler;
         private Transform m_Transform;
-        private string m_PoolTag;
 
         /// <summary>
         /// Can update UI when damaging an enemy (e.g. update enemy health on HUD)
@@ -37,11 +37,6 @@ namespace RPG.Combat
         {
             m_OriginalSpeed = speed;
             m_Transform = transform;
-        }
-
-        private void Start()
-        {
-            m_Pooler = ObjectPooler.Instace;
         }
 
         private void Update()
@@ -141,7 +136,7 @@ namespace RPG.Combat
 
         private void ReturnToPool()
         {
-            m_Pooler.AddToPool(m_PoolTag, gameObject);
+            m_Pooler.AddToPool(gameObject);
         }
 
         private IEnumerator ReturnToPoolWithDelay(float delay)

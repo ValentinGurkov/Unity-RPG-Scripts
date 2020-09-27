@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RPG.Audio
+namespace Audio
 {
     /// <summary>
     /// Allows playing random audio FX from a collection.
@@ -9,28 +9,29 @@ namespace RPG.Audio
     {
         [SerializeField] private AudioClip[] audioClips;
 
-        private AudioSource m_AudioSource;
+        private AudioSource _audioSource;
 
         private void Awake()
         {
-            m_AudioSource = GetComponent<AudioSource>();
-            m_AudioSource.clip = audioClips[0];
+            _audioSource = GetComponent<AudioSource>();
+            _audioSource.clip = audioClips[0];
         }
 
+        // Called by a Unity event
         public void PlayRandomClip()
         {
             if (audioClips.Length > 1)
             {
-                AudioClip prevClip = m_AudioSource.clip;
+                AudioClip prevClip = _audioSource.clip;
 
                 do
                 {
-                    m_AudioSource.clip = audioClips[Random.Range(0, audioClips.Length)];
-                } while (m_AudioSource.clip == prevClip);
+                    _audioSource.clip = audioClips[Random.Range(0, audioClips.Length)];
+                } while (_audioSource.clip == prevClip);
             }
 
-            m_AudioSource.pitch = Random.Range(0.9f, 1.1f);
-            m_AudioSource.Play();
+            _audioSource.pitch = Random.Range(0.9f, 1.1f);
+            _audioSource.Play();
         }
     }
 }

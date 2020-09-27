@@ -2,39 +2,39 @@
 using Movement;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
+using Logger = Util.Logger;
 
 namespace Core
 {
     [RequireComponent(typeof(CharacterMoverNavMesh))]
-    public class InputMouseCommand : Command
+    public class InputMouseMoveCommand : Command
     {
         [SerializeField] private LayerMask clickableLayer;
         [SerializeField] private float navMeshMaxProjectionDistance = 1f;
         [SerializeField] private Transform indicator;
 
-        private readonly WaitForSeconds m_IndicatorHideDelay = new WaitForSeconds(0.2f);
-        private IMouseInput m_MouseInput;
-        private IDashInput m_DashInput;
-        private Coroutine m_MoveCoroutine;
-        private Camera m_Camera;
-        private CharacterMoverNavMesh m_Mover;
+        private readonly WaitForSeconds _indicatorHideDelay = new WaitForSeconds(0.2f);
+        private IMouseInput _mouseInput;
+        private IDashInput _dashInput;
+        private Coroutine _moveCoroutine;
+        private Camera _camera;
+        private CharacterMoverNavMesh _mover;
 
         private void Awake()
         {
-            m_DashInput = GetComponent<IDashInput>();
-            m_MouseInput = GetComponent<IMouseInput>();
-            m_Mover = GetComponent<CharacterMoverNavMesh>();
+            _dashInput = GetComponent<IDashInput>();
+            _mouseInput = GetComponent<IMouseInput>();
+            _mover = GetComponent<CharacterMoverNavMesh>();
         }
 
         private void Start()
         {
-            m_Camera = Camera.main;
+            _camera = Camera.main;
         }
 
         public override void Execute()
         {
-            if (m_MoveCoroutine == null) m_MoveCoroutine = StartCoroutine(Move());
+            if (_moveCoroutine == null) _moveCoroutine = StartCoroutine(Move());
         }
 
         private IEnumerator Move()
@@ -47,29 +47,31 @@ namespace Core
                 StartCoroutine(HideIndicator());
             }
 
-            while (m_MouseInput.IsHoldingMouseButton && !m_DashInput.IsDashing)
+            while (_mouseInput.IsHoldingMouseButton && !_dashInput.IsDashing)
             {
                 ray = GetMouseRay();
+                Logger.Log("check move");
                 if (Physics.Raycast(ray, out hit, 50, clickableLayer.value))
                 {
-                    m_Mover.Move(hit.point);
+                    Logger.Log("moving");
+                    _mover.StartMovement(hit.point);
                 }
 
                 yield return null;
             }
 
-            m_MoveCoroutine = null;
+            _moveCoroutine = null;
         }
 
         private IEnumerator HideIndicator()
         {
-            yield return m_IndicatorHideDelay;
+            yield return _indicatorHideDelay;
             indicator.gameObject.SetActive(false);
         }
 
         public Ray GetMouseRay()
         {
-            return m_Camera.ScreenPointToRay(m_MouseInput.MousePosition);
+            return _camera.ScreenPointToRay(_mouseInput.MousePosition);
         }
 
         private bool RaycastNavMesh(out Vector3 target)
@@ -93,7 +95,7 @@ namespace Core
         public bool InteractWithMovement()
         {
             bool hasHit = RaycastNavMesh(out Vector3 target);
-            return hasHit && m_Mover.CanMoveTo(target);
+            return hasHit && _mover.CanMoveTo(target);
         }
     }
 }

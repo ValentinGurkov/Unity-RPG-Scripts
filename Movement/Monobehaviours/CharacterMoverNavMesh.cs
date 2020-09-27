@@ -1,11 +1,12 @@
 ﻿using System.Collections;
+using Core;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Movement
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class CharacterMoverNavMesh : MonoBehaviour
+    public class CharacterMoverNavMesh : MonoBehaviour, IAction
     {
         [SerializeField] private float speed = 6f;
         [SerializeField] private float speedModifier = 1f;
@@ -17,6 +18,7 @@ namespace Movement
         [SerializeField] private float dashAcceleration = 1000f;
         [SerializeField] private float dashDistance = 10f;
         [SerializeField] private float dashDuration = 0.2f;
+        private ActionScheduler _actionScheduler;
         private NavMeshAgent m_NavMeshAgent;
         private Coroutine m_SpeedRoutine;
         private Transform m_Transform;
@@ -28,10 +30,17 @@ namespace Movement
 
         private void Awake()
         {
+            _actionScheduler = GetComponent<ActionScheduler>();
             m_NavMeshAgent = GetComponent<NavMeshAgent>();
             m_Transform = transform;
             m_OriginalAcceleration = m_NavMeshAgent.acceleration;
             m_DashWait = new WaitForSeconds(dashDuration);
+        }
+
+        public void StartMovement(Vector3 destination)
+        {
+            _actionScheduler.StartAction(this);
+            Move(destination);
         }
 
         public void Move(Vector3 destination)
@@ -47,12 +56,16 @@ namespace Movement
         public void Dash(Vector3 destination)
         {
             Cancel();
-            m_NavMeshAgent.isStopped = false;
+            _actionScheduler.StartAction(this);
             if (m_SpeedRoutine != null) StopCoroutine(m_SpeedRoutine);
-            if (!m_IsDashing)
-            {
-                StartCoroutine(DashRoutine(destination));
-            }
+            if (m_IsDashing) return;
+            m_NavMeshAgent.isStopped = false;
+            StartCoroutine(DashRoutine(destination));
+        }
+
+        public void Cancel()
+        {
+            m_NavMeshAgent.isStopped = true;
         }
 
         private IEnumerator DashRoutine(Vector3 destination)
@@ -87,10 +100,6 @@ namespace Movement
             return total;
         }
 
-        private void Cancel()
-        {
-            m_NavMeshAgent.isStopped = true;
-        }
 
         private IEnumerator SetSpeed()
         {

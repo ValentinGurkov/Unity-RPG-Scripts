@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RPG.Saving
+namespace Util
 {
     /// <summary>
     /// Serializable variant of Unity's Vector3 for use with the BinaryFormatter.
@@ -8,18 +8,18 @@ namespace RPG.Saving
     [System.Serializable]
     public class SerializableVector3
     {
-        private float m_X, m_Y, m_Z;
+        private float _x, _y, _z;
 
         public SerializableVector3(Vector3 vector)
         {
-            m_X = vector.x;
-            m_Y = vector.y;
-            m_Z = vector.z;
+            _x = vector.x;
+            _y = vector.y;
+            _z = vector.z;
         }
 
         public Vector3 ToVector()
         {
-            return new Vector3(m_X, m_Y, m_Z);
+            return new Vector3(_x, _y, _z);
         }
     }
 }

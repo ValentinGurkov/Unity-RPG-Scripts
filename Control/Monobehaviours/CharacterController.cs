@@ -13,16 +13,25 @@ namespace Control
     {
         #region Members
 
-        [Header("Input Commands")] [SerializeField]
-        private InputMouseCommand mouseInput;
+        [SerializeField] private GameManager gameManager;
 
-        [SerializeField] private Command movementInput;
+
+        [Header("Mouse Input Commands")] [SerializeField]
+        private InputMouseMoveCommand mouseMoveInput;
+
+        [SerializeField] private InputMouseAttackCommand mouseAttackInput;
+
+        [Header("Other Input Commands")] [SerializeField]
+        private Command movementInput;
+
         [SerializeField] private Command analogRotationInput;
         [SerializeField] private Command dashInput;
         [SerializeField] private float raycastRadius = 1f;
 
-        private readonly RaycastHit[] m_Hits = new RaycastHit[5];
-        private PlayerInputActions m_InputActions;
+        private readonly RaycastHit[] _hits = new RaycastHit[5];
+        private PlayerInputActions _inputActions;
+        private string _currentCursor;
+        private GameObject _hoverTarget;
 
         [SerializeField] private bool isHoldingMouseButton;
         [SerializeField] private bool isPressingInteract;
@@ -54,54 +63,45 @@ namespace Control
 
         private void Awake()
         {
-            m_InputActions = new PlayerInputActions();
+            _inputActions = new PlayerInputActions();
+            _currentCursor = Constants.CursorTypes.None;
         }
 
         private void OnEnable()
         {
-            m_InputActions.Player.Enable();
-            if (mouseInput != null)
+            _inputActions.Player.Enable();
+            if (mouseMoveInput != null)
             {
-                m_InputActions.Player.MouseMove.performed += OnMouseInput;
-                m_InputActions.Player.MousePosition.performed += OnMousePosition;
+                _inputActions.Player.MouseClick.performed += OnMouseInput;
+                _inputActions.Player.MousePosition.performed += OnMousePosition;
             }
 
-            if (movementInput != null) m_InputActions.Player.Movement.performed += OnMoveInput;
-            if (analogRotationInput != null) m_InputActions.Player.AnalogAim.performed += OnAnalogAimInput;
+            if (movementInput != null) _inputActions.Player.Movement.performed += OnMoveInput;
+            if (analogRotationInput != null) _inputActions.Player.AnalogAim.performed += OnAnalogAimInput;
             if (dashInput != null)
             {
-                m_InputActions.Player.Dash.performed += OnSkillInput;
-                m_InputActions.Player.Dash.canceled += OnSkillEnd;
+                _inputActions.Player.Dash.performed += OnSkillInput;
+                _inputActions.Player.Dash.canceled += OnSkillEnd;
             }
         }
 
         private void OnDisable()
         {
-            if (mouseInput != null)
+            if (mouseMoveInput != null)
             {
-                m_InputActions.Player.MouseMove.performed -= OnMouseInput;
-                m_InputActions.Player.MousePosition.performed -= OnMousePosition;
+                _inputActions.Player.MouseClick.performed -= OnMouseInput;
+                _inputActions.Player.MousePosition.performed -= OnMousePosition;
             }
 
-            if (movementInput != null) m_InputActions.Player.Movement.performed -= OnMoveInput;
-            if (analogRotationInput != null) m_InputActions.Player.AnalogAim.performed -= OnAnalogAimInput;
+            if (movementInput != null) _inputActions.Player.Movement.performed -= OnMoveInput;
+            if (analogRotationInput != null) _inputActions.Player.AnalogAim.performed -= OnAnalogAimInput;
             if (dashInput != null)
             {
-                m_InputActions.Player.Dash.performed -= OnSkillInput;
-                m_InputActions.Player.Dash.canceled -= OnSkillEnd;
+                _inputActions.Player.Dash.performed -= OnSkillInput;
+                _inputActions.Player.Dash.canceled -= OnSkillEnd;
             }
 
-            m_InputActions.Player.Disable();
-        }
-
-        private void Update()
-        {
-            if (!Cursor.visible || mouseInput == null) return;
-            if (InteractWithUI()) return;
-            if (InteractWithComponent()) return;
-            if (InteractWithMovement()) return;
-
-            SetCursor(GameManager.CursorTypes[Constants.CursorTypes.None] as CursorType);
+            _inputActions.Player.Disable();
         }
 
         #endregion
@@ -114,7 +114,18 @@ namespace Control
             var value = obj.ReadValue<float>();
             isHoldingMouseButton = value >= 0.15f;
 
-            mouseInput.Execute();
+            switch (_currentCursor)
+            {
+                case Constants.CursorTypes.Movement:
+                    mouseMoveInput.Execute();
+                    break;
+                case Constants.CursorTypes.Combat:
+                    mouseAttackInput.Execute(_hoverTarget);
+                    break;
+                default:
+                    mouseMoveInput.Execute();
+                    break;
+            }
         }
 
         private void OnMoveInput(InputAction.CallbackContext obj)
@@ -134,6 +145,12 @@ namespace Control
         private void OnMousePosition(InputAction.CallbackContext obj)
         {
             mousePosition = obj.ReadValue<Vector2>();
+            if (!Cursor.visible || mouseMoveInput == null) return;
+            if (InteractWithUI()) return;
+            if (InteractWithComponent()) return;
+            if (InteractWithMovement()) return;
+
+            SetCursor(gameManager.Enums.CursorTypes[Constants.CursorTypes.None], Constants.CursorTypes.None);
         }
 
         private void OnSkillInput(InputAction.CallbackContext obj)
@@ -154,35 +171,36 @@ namespace Control
 
         #region Mouse Cursor Updates
 
-        private static void SetCursor(CursorType type)
+        private void SetCursor(CursorType cursor, string type)
         {
-            Cursor.SetCursor(type.Texture, type.Hotspot, CursorMode.Auto);
+            Cursor.SetCursor(cursor.Texture, cursor.Hotspot, CursorMode.Auto);
+            _currentCursor = type;
         }
 
-        private static bool InteractWithUI()
+        private bool InteractWithUI()
         {
             if (!EventSystem.current || !EventSystem.current.IsPointerOverGameObject()) return false;
-            SetCursor(GameManager.CursorTypes[Constants.CursorTypes.UI] as CursorType);
+            SetCursor(gameManager.Enums.CursorTypes[Constants.CursorTypes.UI], Constants.CursorTypes.UI);
             return true;
         }
 
         private bool InteractWithMovement()
         {
-            if (!mouseInput.InteractWithMovement()) return false;
-            SetCursor(GameManager.CursorTypes[Constants.CursorTypes.Movement] as CursorType);
+            if (!mouseMoveInput.InteractWithMovement()) return false;
+            SetCursor(gameManager.Enums.CursorTypes[Constants.CursorTypes.Movement], Constants.CursorTypes.Movement);
             return true;
         }
 
         private int RaycastAllSorted()
         {
-            int size = Physics.SphereCastNonAlloc(mouseInput.GetMouseRay(), raycastRadius, m_Hits);
+            int size = Physics.SphereCastNonAlloc(mouseMoveInput.GetMouseRay(), raycastRadius, _hits);
             var distances = new float[size];
             for (var i = 0; i < size; i++)
             {
-                distances[i] = m_Hits[i].distance;
+                distances[i] = _hits[i].distance;
             }
 
-            Array.Sort(distances, m_Hits);
+            Array.Sort(distances, _hits);
             return size;
         }
 
@@ -192,10 +210,11 @@ namespace Control
 
             for (var i = 0; i < size; i++)
             {
-                var raycastable = m_Hits[i].transform.GetComponent<IRaycastable>();
+                var raycastable = _hits[i].transform.GetComponent<IRaycastable>();
                 if (raycastable == null) return false;
                 if (!raycastable.HandleRaycast(gameObject)) continue;
-                SetCursor(raycastable.Cursor);
+                SetCursor(raycastable.Cursor, raycastable.Type);
+                _hoverTarget = _hits[i].transform.gameObject;
                 return true;
             }
 

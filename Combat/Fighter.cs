@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core;
 using RPG.Attributes;
 using RPG.Cinematics;
 using RPG.Core;
 using RPG.Movement;
 using RPG.Saving;
 using RPG.Stats;
-using RPG.Util;
 using UnityEngine;
-using static RPG.Util.Utility;
+using Util;
+using static Util.Utility;
 
 namespace RPG.Combat
 {
@@ -19,6 +20,8 @@ namespace RPG.Combat
         [SerializeField] private Transform rightHandTransform;
         [SerializeField] private WeaponConfig defaultWeapon;
         [SerializeField] private float timeBetweenAttacks = 1f;
+        [SerializeField] private ObjectPooler pooler;
+
 
         private Health m_Target;
         private Health m_PrevTarget;
@@ -163,7 +166,7 @@ namespace RPG.Combat
                 if (m_CurrentWeaponConfig.HasProjectile())
                 {
                     m_CurrentWeaponConfig.LaunchProjectile(rightHandTransform, leftHandTransform, m_Target, gameObject,
-                        damage, UpdateTargetUi);
+                        damage, UpdateTargetUi, pooler);
                 }
                 else
                 {

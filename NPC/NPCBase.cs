@@ -1,7 +1,7 @@
 ﻿using RPG.Core;
 using RPG.Movement;
 using UnityEngine;
-using static RPG.Util.Utility;
+using static Util.Utility;
 
 namespace RPG.NPC
 {

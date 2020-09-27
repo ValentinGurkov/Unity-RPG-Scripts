@@ -5,6 +5,7 @@ namespace NPC
 {
     public class QuestGiver : NPC
     {
-        public override CursorType Cursor => GameManager.CursorTypes[Constants.CursorTypes.QuestGiver] as CursorType;
+        public override CursorType Cursor => gameManager.Enums.CursorTypes[Constants.CursorTypes.QuestGiver];
+        public override string Type => Constants.CursorTypes.QuestGiver;
     }
 }

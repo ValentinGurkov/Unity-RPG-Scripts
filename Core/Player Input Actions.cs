@@ -77,7 +77,7 @@ namespace Input
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Mouse Move"",
+                    ""name"": ""MouseClick"",
                     ""type"": ""Button"",
                     ""id"": ""e80282d0-273f-40d6-ac53-4af0a2f3c5e7"",
                     ""expectedControlType"": """",
@@ -406,7 +406,7 @@ namespace Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""Mouse Move"",
+                    ""action"": ""MouseClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1253,7 +1253,7 @@ namespace Input
             m_Player_Skill = m_Player.FindAction("Skill", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-            m_Player_MouseMove = m_Player.FindAction("Mouse Move", throwIfNotFound: true);
+            m_Player_MouseClick = m_Player.FindAction("MouseClick", throwIfNotFound: true);
             m_Player_MousePosition = m_Player.FindAction("Mouse Position", throwIfNotFound: true);
             m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
             // UI
@@ -1333,7 +1333,7 @@ namespace Input
         private readonly InputAction m_Player_Skill;
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Fire;
-        private readonly InputAction m_Player_MouseMove;
+        private readonly InputAction m_Player_MouseClick;
         private readonly InputAction m_Player_MousePosition;
         private readonly InputAction m_Player_Dash;
         public struct PlayerActions
@@ -1347,7 +1347,7 @@ namespace Input
             public InputAction @Skill => m_Wrapper.m_Player_Skill;
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @Fire => m_Wrapper.m_Player_Fire;
-            public InputAction @MouseMove => m_Wrapper.m_Player_MouseMove;
+            public InputAction @MouseClick => m_Wrapper.m_Player_MouseClick;
             public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
             public InputAction @Dash => m_Wrapper.m_Player_Dash;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1380,9 +1380,9 @@ namespace Input
                     @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                     @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                     @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                    @MouseMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseMove;
-                    @MouseMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseMove;
-                    @MouseMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseMove;
+                    @MouseClick.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseClick;
+                    @MouseClick.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseClick;
+                    @MouseClick.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseClick;
                     @MousePosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
                     @MousePosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
                     @MousePosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
@@ -1414,9 +1414,9 @@ namespace Input
                     @Fire.started += instance.OnFire;
                     @Fire.performed += instance.OnFire;
                     @Fire.canceled += instance.OnFire;
-                    @MouseMove.started += instance.OnMouseMove;
-                    @MouseMove.performed += instance.OnMouseMove;
-                    @MouseMove.canceled += instance.OnMouseMove;
+                    @MouseClick.started += instance.OnMouseClick;
+                    @MouseClick.performed += instance.OnMouseClick;
+                    @MouseClick.canceled += instance.OnMouseClick;
                     @MousePosition.started += instance.OnMousePosition;
                     @MousePosition.performed += instance.OnMousePosition;
                     @MousePosition.canceled += instance.OnMousePosition;
@@ -1667,7 +1667,7 @@ namespace Input
             void OnSkill(InputAction.CallbackContext context);
             void OnLook(InputAction.CallbackContext context);
             void OnFire(InputAction.CallbackContext context);
-            void OnMouseMove(InputAction.CallbackContext context);
+            void OnMouseClick(InputAction.CallbackContext context);
             void OnMousePosition(InputAction.CallbackContext context);
             void OnDash(InputAction.CallbackContext context);
         }

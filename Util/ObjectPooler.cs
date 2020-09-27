@@ -1,71 +1,85 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPG.Util {
-    public class ObjectPooler : MonoBehaviour {
-
+namespace Util
+{
+    public class ObjectPooler : MonoBehaviour
+    {
         [System.Serializable]
-        public struct Pool {
-            public string tag;
+        public struct Pool
+        {
             public GameObject prefab;
             public int size;
         }
 
-        [SerializeField] private List<Pool> pools = default;
-        [SerializeField] private Dictionary<string, Queue<GameObject>> poolDict = default;
+        [SerializeField] private List<Pool> pools;
+        private IDictionary<GameObject, Queue<GameObject>> _poolDict;
 
-        public static ObjectPooler Instace;
-
-        private void Awake() {
-            Instace = this;
-            poolDict = new Dictionary<string, Queue<GameObject>>();
+        private void Awake()
+        {
+            _poolDict = new Dictionary<GameObject, Queue<GameObject>>();
 
             FillPools();
         }
 
-        private void FillPool(string tag) {
-            if (!poolDict.ContainsKey(tag)) {
+        private void FillPool(GameObject instance)
+        {
+            //TODO can't create new pools at the moment
+            if (!_poolDict.ContainsKey(instance))
+            {
                 return;
             }
-            Pool pool = pools.Find(p => p.tag == tag);
-            for (int j = 0; j < pool.size; j++) {
+
+            Pool pool = pools.Find(p => p.prefab == instance);
+            for (var j = 0; j < pool.size; j++)
+            {
                 GameObject obj = Instantiate(pool.prefab, transform, true);
                 obj.SetActive(false);
-                poolDict[tag].Enqueue(obj);
+                _poolDict[instance].Enqueue(obj);
             }
         }
 
-        private void FillPools() {
-            for (int i = 0; i < pools.Count; i++) {
+        private void FillPools()
+        {
+            for (var i = 0; i < pools.Count; i++)
+            {
                 var objectPool = new Queue<GameObject>();
-                for (int j = 0; j < pools[i].size; j++) {
+                for (var j = 0; j < pools[i].size; j++)
+                {
                     GameObject obj = Instantiate(pools[i].prefab, transform, true);
                     obj.SetActive(false);
                     objectPool.Enqueue(obj);
                 }
-                poolDict.Add(pools[i].tag, objectPool);
+
+                _poolDict.Add(pools[i].prefab, objectPool);
             }
         }
 
-        public void AddToPool(string tag, GameObject instance) {
-            if (!poolDict.ContainsKey(tag)) {
+        public void AddToPool(GameObject instance)
+        {
+            if (!_poolDict.ContainsKey(instance))
+            {
                 return;
             }
+
             instance.transform.SetParent(transform);
             instance.SetActive(false);
-            poolDict[tag].Enqueue(instance);
+            _poolDict[instance].Enqueue(instance);
         }
 
-        public GameObject SpawnFromPool(string tag) {
-            if (!poolDict.ContainsKey(tag)) {
+        public GameObject SpawnFromPool(GameObject requested)
+        {
+            if (!_poolDict.ContainsKey(requested))
+            {
                 return null;
             }
 
-            if (poolDict[tag].Count == 0) {
-                FillPool(tag);
+            if (_poolDict[requested].Count == 0)
+            {
+                FillPool(requested);
             }
 
-            GameObject instance = poolDict[tag].Dequeue();
+            GameObject instance = _poolDict[requested].Dequeue();
             instance.SetActive(true);
 
             return instance;

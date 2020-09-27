@@ -1,10 +1,11 @@
 ﻿using System;
+using Core;
 using RPG.Core;
 using RPG.Saving;
 using RPG.Stats;
-using RPG.Util;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 
 namespace RPG.Attributes
 {

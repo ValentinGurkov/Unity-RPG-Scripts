@@ -5,15 +5,15 @@ namespace Core
 {
     public class DashCommand : Command
     {
-        private IMouseInput m_MouseInput;
-        private CharacterMoverNavMesh m_Mover;
-        private Camera m_Camera;
+        private IMouseInput _mouseInput;
+        private CharacterMoverNavMesh _mover;
+        private Camera _camera;
 
         private void Awake()
         {
-            m_MouseInput = GetComponent<IMouseInput>();
-            m_Mover = GetComponent<CharacterMoverNavMesh>();
-            m_Camera = Camera.main;
+            _mouseInput = GetComponent<IMouseInput>();
+            _mover = GetComponent<CharacterMoverNavMesh>();
+            _camera = Camera.main;
         }
 
         public override void Execute()
@@ -21,13 +21,13 @@ namespace Core
             Ray ray = GetMouseRay();
             if (Physics.Raycast(ray, out RaycastHit lookDirectionHit, 50f, LayerMask.GetMask("Ground")))
             {
-                m_Mover.Dash(lookDirectionHit.point);
+                _mover.Dash(lookDirectionHit.point);
             }
         }
 
         private Ray GetMouseRay()
         {
-            return m_Camera.ScreenPointToRay(m_MouseInput.MousePosition);
+            return _camera.ScreenPointToRay(_mouseInput.MousePosition);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using RPG.Attributes;
-using RPG.Util;
 using UnityEngine;
+using Util;
 
 namespace RPG.Combat
 {
@@ -16,8 +16,8 @@ namespace RPG.Combat
         [SerializeField] private float weaponDamage = 25f;
         [SerializeField] private float percentageBonus;
         [SerializeField] private Hand hand = Hand.Right;
-        private const string WEAPON_NAME = "Weapon";
-        private const string DESTORYING = "Destroying";
+        private const string WeaponName = "Weapon";
+        private const string Destroying = "Destroying";
 
         private enum Hand
         {
@@ -25,17 +25,17 @@ namespace RPG.Combat
             Right
         }
 
-        private ObjectPooler m_Pooler;
+        private ObjectPooler _pooler;
         public float Range => weaponRange;
         public float Damage => weaponDamage;
         public float PercentageBonus => percentageBonus;
 
         private void DestroyOldWeapon(Transform rightHand, Transform leftHand)
         {
-            Transform currentWeapon = rightHand.Find(WEAPON_NAME);
+            Transform currentWeapon = rightHand.Find(WeaponName);
             if (currentWeapon == null)
             {
-                currentWeapon = leftHand.Find(WEAPON_NAME);
+                currentWeapon = leftHand.Find(WeaponName);
             }
 
             if (currentWeapon == null)
@@ -43,7 +43,7 @@ namespace RPG.Combat
                 return;
             }
 
-            currentWeapon.name = DESTORYING;
+            currentWeapon.name = Destroying;
             Destroy(currentWeapon.gameObject);
         }
 
@@ -59,10 +59,10 @@ namespace RPG.Combat
             if (equippedPrefab != null)
             {
                 weapon = Instantiate(equippedPrefab, GetTransform(rightHand, leftHand));
-                weapon.gameObject.name = WEAPON_NAME;
+                weapon.gameObject.name = WeaponName;
             }
 
-            AnimatorOverrideController overrideController =
+            var overrideController =
                 animator.runtimeAnimatorController as AnimatorOverrideController;
             if (animatorOverride != null)
             {
@@ -82,14 +82,11 @@ namespace RPG.Combat
         }
 
         public void LaunchProjectile(Transform rightHand, Transform leftHand, Health target, GameObject instigator,
-            float calculatedDamage, Action updateUI)
+            float calculatedDamage, Action updateUI, ObjectPooler pooler)
         {
-            if (m_Pooler == null)
-            {
-                m_Pooler = ObjectPooler.Instace;
-            }
+            _pooler = pooler;
 
-            GameObject instance = m_Pooler.SpawnFromPool(projectileTag);
+            GameObject instance = _pooler.SpawnFromPool(projectile.gameObject);
             if (!instance)
             {
                 return;

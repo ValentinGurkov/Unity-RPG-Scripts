@@ -4,46 +4,49 @@ using UnityEngine;
 
 namespace Core
 {
+    // <summary>
+    /// Moving on NavMesh using arrow keys
+    /// </summary>
     [RequireComponent(typeof(CharacterMoverNavMesh))]
     public class InputMoveNavMeshCommand : Command
     {
         [SerializeField] private float directionModifier = 1f;
 
-        private IMoveInput m_MoveInput;
-        private CharacterMoverNavMesh m_Mover;
-        private Transform m_Transform;
-        private Camera m_Camera;
-        private Coroutine m_MoveRoutine;
+        private IMoveInput _moveInput;
+        private CharacterMoverNavMesh _mover;
+        private Transform _transform;
+        private Camera _camera;
+        private Coroutine _moveRoutine;
 
         private void Awake()
         {
-            m_MoveInput = GetComponent<IMoveInput>();
-            m_Mover = GetComponent<CharacterMoverNavMesh>();
-            m_Transform = transform;
-            m_Camera = Camera.main;
+            _moveInput = GetComponent<IMoveInput>();
+            _mover = GetComponent<CharacterMoverNavMesh>();
+            _transform = transform;
+            _camera = Camera.main;
         }
 
         public override void Execute()
         {
-            if (m_MoveRoutine == null) m_MoveRoutine = StartCoroutine(Move());
+            if (_moveRoutine == null) _moveRoutine = StartCoroutine(Move());
         }
 
         private IEnumerator Move()
         {
-            while (m_MoveInput.MoveDirection != Vector3.zero)
+            while (_moveInput.MoveDirection != Vector3.zero)
             {
-                Vector3 screenPos = m_Camera.WorldToScreenPoint(
-                    m_Transform.position + m_MoveInput.MoveDirection * directionModifier);
-                Ray ray = m_Camera.ScreenPointToRay(screenPos);
+                Vector3 screenPos = _camera.WorldToScreenPoint(
+                    _transform.position + _moveInput.MoveDirection * directionModifier);
+                Ray ray = _camera.ScreenPointToRay(screenPos);
                 if (Physics.Raycast(ray, out RaycastHit hit, 50f))
                 {
-                    m_Mover.Move(hit.point);
+                    _mover.Move(hit.point);
                 }
 
                 yield return null;
             }
 
-            m_MoveRoutine = null;
+            _moveRoutine = null;
         }
     }
 }

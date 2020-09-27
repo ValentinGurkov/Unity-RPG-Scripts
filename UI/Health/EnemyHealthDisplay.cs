@@ -1,21 +1,20 @@
-﻿using System;
-using RPG.Combat;
+﻿using Combat;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.UI
+namespace UI.Health
 {
     public class EnemyHealthDisplay : MonoBehaviour
     {
-        private Fighter m_Fighter;
-        private TextMeshProUGUI m_Text;
-        private string m_DefaultText;
+        private FighterNew _fighter;
+        private TextMeshProUGUI _text;
+        private string _defaultText;
 
         private void Awake()
         {
-            m_Fighter = GameObject.FindWithTag("Player").GetComponent<Fighter>();
-            m_Text = GetComponent<TextMeshProUGUI>();
-            m_DefaultText = m_Text.text;
+            _fighter = GameObject.FindWithTag("Player").GetComponent<FighterNew>();
+            _text = GetComponent<TextMeshProUGUI>();
+            _defaultText = _text.text;
         }
 
         private void Start()
@@ -25,24 +24,17 @@ namespace RPG.UI
 
         private void OnEnable()
         {
-            m_Fighter.UpdateTargetUi += UpdateTargetHealth;
+            _fighter.OnTargetStatusChanged += UpdateTargetHealth;
         }
 
         private void OnDisable()
         {
-            m_Fighter.UpdateTargetUi -= UpdateTargetHealth;
+            _fighter.OnTargetStatusChanged -= UpdateTargetHealth;
         }
 
         private void UpdateTargetHealth()
         {
-            if (m_Fighter.Target == null)
-            {
-                m_Text.text = m_DefaultText;
-            }
-            else
-            {
-                m_Text.text = $"{m_Fighter.Target.HealthPoints:0}/{m_Fighter.Target.MaxHealthPoints:0}";
-            }
+            _text.text = _fighter.Target == null ? _defaultText : $"{_fighter.Target.Health:0}/{_fighter.Target.MaxHealth:0}";
         }
     }
 }

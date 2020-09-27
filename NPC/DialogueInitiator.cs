@@ -1,4 +1,4 @@
-﻿using RPG.Conversing;
+﻿using ConversingV1;
 using RPG.Core;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,12 +20,12 @@ namespace RPG.NPC
 
         private void OnEnable()
         {
-            dialogueManager.onDialogueClose += EndInteraction;
+            dialogueManager.OnDialogueClose += EndInteraction;
         }
 
         private void OnDisable()
         {
-            dialogueManager.onDialogueClose -= EndInteraction;
+            dialogueManager.OnDialogueClose -= EndInteraction;
         }
 
         private void EndInteraction()

@@ -1,15 +1,30 @@
-﻿using RPG.Attributes;
+﻿using Attributes;
 using UnityEngine;
 
-namespace RPG.UI
+namespace UI.Health
 {
     public class HealthBar : MonoBehaviour
     {
-        [SerializeField] private Health health;
+        [SerializeField] private HealthNew health;
         [SerializeField] private RectTransform foreground;
         [SerializeField] private Canvas rootCanvas;
 
-        private void Update()
+        private void Start()
+        {
+            UpdateHealthDisplay();
+        }
+
+        private void OnEnable()
+        {
+            health.OnHealthUpdate += UpdateHealthDisplay;
+        }
+
+        private void OnDisable()
+        {
+            health.OnHealthUpdate -= UpdateHealthDisplay;
+        }
+
+        private void UpdateHealthDisplay()
         {
             if (Mathf.Approximately(health.Fraction, 0) || Mathf.Approximately(health.Fraction, 1))
             {

@@ -1,37 +1,35 @@
-﻿using System;
-using RPG.Util;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
+using Util;
 
-namespace RPG.UI
+namespace UI.Damage_Text
 {
     public class DamageText : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI damageText;
-        private ObjectPooler m_Pooler;
-        private string m_PoolTag;
+        [SerializeField] private float critFontMultiplier = 0.1f;
 
-        private void Start()
+        private ObjectPooler _pooler;
+        private float _fontSize;
+
+        private void Awake()
         {
-            m_Pooler = ObjectPooler.Instace;
+            _fontSize = damageText.fontSize;
         }
 
+        // Called by animation event
         public void DestroyText()
         {
-            m_Pooler.AddToPool(m_PoolTag, gameObject);
+            _pooler.AddToPool(gameObject);
         }
 
-        public void SetPoolTag(string tag)
+        public void Initialize(float amount, bool isCritical, Color color, ObjectPooler pooler)
         {
-            if (string.IsNullOrEmpty(m_PoolTag))
-            {
-                m_PoolTag = tag;
-            }
-        }
-
-        public void SetValue(float amount)
-        {
+            _pooler = pooler;
             damageText.text = $"{amount:0}";
+            damageText.color = color;
+            damageText.fontStyle = isCritical ? FontStyles.Bold | FontStyles.Italic : FontStyles.Normal;
+            damageText.fontSize = isCritical ? _fontSize + _fontSize * critFontMultiplier : _fontSize;
         }
     }
 }

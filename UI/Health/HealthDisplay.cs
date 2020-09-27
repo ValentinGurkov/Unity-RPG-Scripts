@@ -1,19 +1,18 @@
-﻿using System;
-using RPG.Attributes;
+﻿using Attributes;
 using TMPro;
 using UnityEngine;
 
-namespace RPG.UI
+namespace UI.Health
 {
     public class HealthDisplay : MonoBehaviour
     {
-        private Health m_Health;
-        private TextMeshProUGUI m_Text;
+        [SerializeField] private HealthNew health;
+        [SerializeField] private TextMeshProUGUI text;
 
         private void Awake()
         {
-            m_Health = GameObject.FindWithTag("Player").GetComponent<Health>();
-            m_Text = GetComponent<TextMeshProUGUI>();
+            // in case prefab in the scene is not connected to the player in the scene
+            if (health == null) health = GameObject.FindWithTag("Player").GetComponent<HealthNew>();
         }
 
         private void Start()
@@ -23,17 +22,17 @@ namespace RPG.UI
 
         private void OnEnable()
         {
-            m_Health.OnHealthUpdate += UpdateHealth;
+            health.OnHealthUpdate += UpdateHealth;
         }
 
         private void OnDisable()
         {
-            m_Health.OnHealthUpdate -= UpdateHealth;
+            health.OnHealthUpdate -= UpdateHealth;
         }
 
         private void UpdateHealth()
         {
-            m_Text.text = $"{m_Health.HealthPoints:0}/{m_Health.MaxHealthPoints:0}";
+            text.text = $"{health.Health:0}/{health.MaxHealth:0}";
         }
     }
 }
