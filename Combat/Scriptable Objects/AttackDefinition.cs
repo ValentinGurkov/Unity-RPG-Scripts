@@ -44,7 +44,7 @@ namespace Combat
 
             target.TakeDamage(damage, isCritical, damageType.Color);
 
-            if (hitEffect == null) return target.IsDead;
+            if (hitEffect == null || weaponTransform == null) return target.IsDead;
             GameObject impactObj = Instantiate(hitEffect);
             impactObj.transform.position = target.GetComponent<Collider>().ClosestPoint(weaponTransform.position);
             impactObj.transform.rotation = weaponTransform.rotation;

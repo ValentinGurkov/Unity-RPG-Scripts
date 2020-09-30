@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Core
 {
-    // <summary>
+    /// <summary>
     /// Moving on NavMesh using arrow keys
     /// </summary>
     [RequireComponent(typeof(CharacterMoverNavMesh))]
@@ -40,7 +40,7 @@ namespace Core
                 Ray ray = _camera.ScreenPointToRay(screenPos);
                 if (Physics.Raycast(ray, out RaycastHit hit, 50f))
                 {
-                    _mover.Move(hit.point);
+                    _mover.Move(hit.point, 1f);
                 }
 
                 yield return null;

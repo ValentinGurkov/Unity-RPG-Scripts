@@ -32,11 +32,6 @@ namespace Attributes
             _animator = GetComponent<Animator>();
         }
 
-        private void Start()
-        {
-            health = 5f;
-        }
-
         public void TakeDamage(float damage, bool isCritical, Color color)
         {
             health = Mathf.Max(health - damage, 0);

@@ -1,6 +1,5 @@
 ﻿using Events;
 using UnityEngine;
-using RPG.Events;
 
 namespace Animation.Behaviours
 {
@@ -10,7 +9,10 @@ namespace Animation.Behaviours
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            onAnimationExit?.Raise();
+            if (onAnimationExit != null)
+            {
+                onAnimationExit.Raise();
+            }
         }
     }
 }

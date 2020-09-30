@@ -1,13 +1,12 @@
-﻿using Core;
-using RPG.Attributes;
-using RPG.Combat;
-using RPG.Core;
-using RPG.Movement;
+﻿using Attributes;
+using Combat;
+using Core;
+using Movement;
 using UnityEngine;
 using Util;
 using static Util.Utility;
 
-namespace RPG.Control
+namespace Control
 {
     public class AIController : MonoBehaviour
     {
@@ -20,73 +19,73 @@ namespace RPG.Control
         [Range(0, 1)] [SerializeField] private float patrolSpeedFraction = 0.2f;
         [SerializeField] private PatrolPath patrolPath;
 
-        private int m_CurrentWaypointIndex;
-        private float m_TimeSinceLastSawPlayer = Mathf.Infinity;
-        private float m_TimeSinceLastWaypoint = Mathf.Infinity;
-        private float m_TimeSinceAggrevated = Mathf.Infinity;
-        private bool m_HasNotAggrevated = true;
-        private GameObject m_Player;
-        private Health m_PlayerHealth;
-        private Health m_AiHealth;
-        private Fighter m_Fighter;
-        private Mover m_Mover;
-        private ActionScheduler m_ActionScheduler;
-        private LazyValue<Vector3> m_GuardPosition;
+        private int _currentWaypointIndex;
+        private float _timeSinceLastSawPlayer = Mathf.Infinity;
+        private float _timeSinceLastWaypoint = Mathf.Infinity;
+        private float _timeSinceAggravated = Mathf.Infinity;
+        private bool _hasNotAggravated = true;
+        private GameObject _player;
+        private HealthNew _playerHealth;
+        private HealthNew _aiHealth;
+        private FighterNew _fighter;
+        private CharacterMoverNavMesh _mover;
+        private ActionScheduler _actionScheduler;
+        private LazyValue<Vector3> _guardPosition;
 
         public PatrolPath PatrolPath => patrolPath;
 
         private void Awake()
         {
-            m_Player = GameObject.FindWithTag("Player");
-            m_PlayerHealth = m_Player.GetComponent<Health>();
-            m_AiHealth = GetComponent<Health>();
-            m_Fighter = GetComponent<Fighter>();
-            m_Mover = GetComponent<Mover>();
-            m_ActionScheduler = GetComponent<ActionScheduler>();
-            m_GuardPosition = new LazyValue<Vector3>(GetGuardPosition);
+            _player = GameObject.FindWithTag("Player");
+            _playerHealth = _player.GetComponent<HealthNew>();
+            _aiHealth = GetComponent<HealthNew>();
+            _fighter = GetComponent<FighterNew>();
+            _mover = GetComponent<CharacterMoverNavMesh>();
+            _actionScheduler = GetComponent<ActionScheduler>();
+            _guardPosition = new LazyValue<Vector3>(GetGuardPosition);
         }
 
         private void Start()
         {
-            m_GuardPosition.ForceInit();
+            _guardPosition.ForceInit();
         }
 
         private void Update()
         {
-            if (m_AiHealth.IsDead)
+            if (_aiHealth.IsDead)
             {
                 return;
             }
 
-            if (IsAggrevated())
+            if (IsAggravated())
             {
-                m_TimeSinceLastSawPlayer = 0;
+                _timeSinceLastSawPlayer = 0;
                 AttackBehaviour();
             }
-            else if (m_TimeSinceLastSawPlayer < suspicionTime)
+            else if (_timeSinceLastSawPlayer < suspicionTime)
             {
                 SuspicionBehaviour();
             }
             else
             {
-                m_HasNotAggrevated = true;
+                _hasNotAggravated = true;
                 PatrolBehaviour();
             }
 
             UpdateTimers();
         }
-
+#if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, chaseDistance);
         }
-
+#endif
         private void UpdateTimers()
         {
-            m_TimeSinceLastSawPlayer += Time.deltaTime;
-            m_TimeSinceLastWaypoint += Time.deltaTime;
-            m_TimeSinceAggrevated += Time.deltaTime;
+            _timeSinceLastSawPlayer += Time.deltaTime;
+            _timeSinceLastWaypoint += Time.deltaTime;
+            _timeSinceAggravated += Time.deltaTime;
         }
 
         private Vector3 GetGuardPosition()
@@ -96,14 +95,14 @@ namespace RPG.Control
 
         private void AttackBehaviour()
         {
-            m_Fighter.Attack(m_Player);
-            AggrevateNearbyEnemies();
-            if (!m_HasNotAggrevated) return;
-            m_HasNotAggrevated = false;
-            Aggrevate();
+            _fighter.Attack(_player);
+            AggravateNearbyEnemies();
+            if (!_hasNotAggravated) return;
+            _hasNotAggravated = false;
+            Aggravate();
         }
 
-        private void AggrevateNearbyEnemies()
+        private void AggravateNearbyEnemies()
         {
             RaycastHit[] hits = Physics.SphereCastAll(transform.position, shoutDistance, Vector3.up, 0);
             foreach (RaycastHit hit in hits)
@@ -115,32 +114,32 @@ namespace RPG.Control
                     continue;
                 }
 
-                ai.Aggrevate();
+                ai.Aggravate();
             }
         }
 
-        private bool IsAggrevated()
+        private bool IsAggravated()
         {
-            return !m_PlayerHealth.IsDead && IsTargetInRange(transform, m_Player.transform, chaseDistance) ||
-                   m_TimeSinceAggrevated < aggroCooldown;
+            return !_playerHealth.IsDead && IsTargetInRange(transform, _player.transform, chaseDistance) ||
+                   _timeSinceAggravated < aggroCooldown;
         }
 
         private void SuspicionBehaviour()
         {
-            m_ActionScheduler.CancelCurrentAction();
+            _actionScheduler.CancelCurrentAction();
         }
 
         private void PatrolBehaviour()
         {
-            Vector3 nextPosition = m_GuardPosition.Value;
+            Vector3 nextPosition = _guardPosition.Value;
 
             if (patrolPath != null)
             {
                 if (IsAtWayPoint())
                 {
-                    if (dwellTime < m_TimeSinceLastWaypoint)
+                    if (dwellTime < _timeSinceLastWaypoint)
                     {
-                        m_TimeSinceLastWaypoint = 0;
+                        _timeSinceLastWaypoint = 0;
                         CycleWaypoint();
                     }
                 }
@@ -148,7 +147,7 @@ namespace RPG.Control
                 nextPosition = GetCurrentWaypoint().position;
             }
 
-            m_Mover.StartMovement(nextPosition, patrolSpeedFraction);
+            _mover.StartMovement(nextPosition, patrolSpeedFraction);
         }
 
         private bool IsAtWayPoint()
@@ -158,17 +157,17 @@ namespace RPG.Control
 
         private void CycleWaypoint()
         {
-            m_CurrentWaypointIndex = patrolPath.GetNextIndex(m_CurrentWaypointIndex);
+            _currentWaypointIndex = patrolPath.GetNextIndex(_currentWaypointIndex);
         }
 
         private Transform GetCurrentWaypoint()
         {
-            return patrolPath.GetWayPoint(m_CurrentWaypointIndex);
+            return patrolPath.GetWayPoint(_currentWaypointIndex);
         }
 
-        private void Aggrevate()
+        private void Aggravate()
         {
-            m_TimeSinceAggrevated = 0;
+            _timeSinceAggravated = 0;
         }
     }
 }

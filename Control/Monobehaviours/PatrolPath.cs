@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-namespace RPG.Control
+namespace Control
 {
     /// <summary>
     /// Used for calculating patrol path of NPCs and visualizing it with gizmos in the editor.
     /// </summary>
     public class PatrolPath : MonoBehaviour
     {
-        private const float waypointRadius = 0.3f;
+        private const float WaypointRadius = 0.3f;
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
@@ -22,15 +22,15 @@ namespace RPG.Control
                     Gizmos.color = Color.yellow;
                 }
 
-                if (active == this.gameObject)
+                if (active == gameObject)
                 {
                     Gizmos.color = new Color(0.4f, 1, 0.5f);
                 }
             }
 
-            for (int i = 0; i < transform.childCount; i++)
+            for (var i = 0; i < transform.childCount; i++)
             {
-                Gizmos.DrawSphere(GetWayPoint(i).position, waypointRadius);
+                Gizmos.DrawSphere(GetWayPoint(i).position, WaypointRadius);
                 Gizmos.DrawLine(GetWayPoint(i).position, GetWayPoint(i + 1).position);
             }
         }

@@ -27,6 +27,7 @@ namespace Combat
         private GameObject _equippedWeapon;
         private float _timeSinceLastAttack;
         private bool _attackFinished;
+        private bool _isPlayer;
         private static readonly int s_Attack = Animator.StringToHash("Attack");
         private static readonly int s_StopAttack = Animator.StringToHash("StopAttack");
 
@@ -43,6 +44,8 @@ namespace Combat
 
             //TODO what to do if there is no scriptable object defaultWeapon attached?
             if (defaultWeapon != null) SpawnWeapon();
+
+            _isPlayer = gameObject.CompareTag("Player");
         }
 
         private void Update()
@@ -67,7 +70,6 @@ namespace Combat
             _target = target.GetComponent<HealthNew>();
             if (_target == null || _target.IsDead) return;
             if (_attackRoutine != null) StopCoroutine(_attackRoutine);
-            _actionScheduler.StartAction(this);
             _attackRoutine = StartCoroutine(PursueAndAttackTarget());
         }
 
@@ -101,13 +103,14 @@ namespace Combat
         {
             while (_target != null && !IsTargetInRange(transform, _target.transform, attackRange))
             {
-                _mover.Move(_target.transform.position);
+                _mover.StartMovement(_target.transform.position, 1f);
                 yield return null;
             }
 
             if (_target == null) yield break;
+            _actionScheduler.StartAction(this);
             AttackBehaviour();
-            while (_mouseInput.IsHoldingMouseButton)
+            while (_isPlayer && _mouseInput.IsHoldingMouseButton)
             {
                 if (_attackFinished)
                 {
@@ -153,7 +156,7 @@ namespace Combat
         private void Hit()
         {
             if (_target == null) return;
-            bool isTargetDead = defaultWeapon.Attack(_target, _equippedWeapon.transform);
+            bool isTargetDead = defaultWeapon.Attack(_target, _equippedWeapon != null ? _equippedWeapon.transform : null);
             if (isTargetDead) _target = null;
             OnTargetStatusChanged?.Invoke();
         }

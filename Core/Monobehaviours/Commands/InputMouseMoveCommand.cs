@@ -2,7 +2,6 @@
 using Movement;
 using UnityEngine;
 using UnityEngine.AI;
-using Logger = Util.Logger;
 
 namespace Core
 {
@@ -50,11 +49,9 @@ namespace Core
             while (_mouseInput.IsHoldingMouseButton && !_dashInput.IsDashing)
             {
                 ray = GetMouseRay();
-                Logger.Log("check move");
                 if (Physics.Raycast(ray, out hit, 50, clickableLayer.value))
                 {
-                    Logger.Log("moving");
-                    _mover.StartMovement(hit.point);
+                    _mover.StartMovement(hit.point, 1f);
                 }
 
                 yield return null;
