@@ -1,11 +1,13 @@
 ﻿using System;
+using Combat;
+using Pooling;
 using RPG.Attributes;
 using UnityEngine;
 using Util;
 
 namespace RPG.Combat
 {
-    [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/Create New  Weapon", order = 0)]
+    [CreateAssetMenu(fileName = "WeaponConfig", menuName = "Weapons/Create New  WeaponConfig", order = 0)]
     public class WeaponConfig : ScriptableObject
     {
         [SerializeField] private AnimatorOverrideController animatorOverride;
@@ -16,7 +18,7 @@ namespace RPG.Combat
         [SerializeField] private float weaponDamage = 25f;
         [SerializeField] private float percentageBonus;
         [SerializeField] private Hand hand = Hand.Right;
-        private const string WeaponName = "Weapon";
+        private const string WeaponName = "WeaponConfig";
         private const string Destroying = "Destroying";
 
         private enum Hand
@@ -86,16 +88,14 @@ namespace RPG.Combat
         {
             _pooler = pooler;
 
-            GameObject instance = _pooler.SpawnFromPool(projectile.gameObject);
+            GameObject instance = _pooler.SpawnFromPool(projectile.gameObject, GetTransform(rightHand, leftHand).position);
             if (!instance)
             {
                 return;
             }
 
             var projectileInstance = instance.GetComponent<Projectile>();
-            projectileInstance.transform.position = GetTransform(rightHand, leftHand).position;
-            projectile.transform.rotation = Quaternion.identity;
-            projectileInstance.SetTarget(target, instigator, calculatedDamage, updateUI, projectileTag);
+            //projectileInstance.SetTarget(target, instigator, calculatedDamage);
         }
     }
 }

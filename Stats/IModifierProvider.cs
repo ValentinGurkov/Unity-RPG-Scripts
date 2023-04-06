@@ -3,7 +3,7 @@
 namespace RPG.Stats
 {
     /// <summary>
-    /// Classes that provide modifiers to base stats implement this interface
+    /// CharacterClass that provide modifiers to base stats implement this interface
     /// </summary>
     public interface IModifierProvider
     {

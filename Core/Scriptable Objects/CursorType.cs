@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    [CreateAssetMenu(fileName = "New Cursor Type", menuName = "Enums/Cursor Type", order = 0)]
+    [CreateAssetMenu(fileName = "New Cursor Type", menuName = "Enum/Cursor Type", order = 0)]
     public class CursorType : ScriptableObject
     {
         [SerializeField] private Texture2D texture;

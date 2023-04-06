@@ -40,7 +40,6 @@ namespace Control
         [SerializeField] private Vector3 moveDirection;
         [SerializeField] private Vector3 rotationDirection;
 
-
         public bool IsHoldingMouseButton => isHoldingMouseButton;
 
         public bool IsPressingInteract => isPressingInteract;

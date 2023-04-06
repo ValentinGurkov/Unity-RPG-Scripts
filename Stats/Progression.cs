@@ -18,8 +18,7 @@ namespace RPG.Stats
         [Serializable]
         private class CharacterProgression
         {
-            [HideInInspector] [SerializeField]
-            private string Name = Enum.GetName(typeof(CharacterClass), GetActiveInstances());
+            [HideInInspector] [SerializeField] private string Name = Enum.GetName(typeof(CharacterClass), GetActiveInstances());
 
             [SerializeField] private ProgressionStat[] stats = new ProgressionStat[Enum.GetNames(typeof(Stat)).Length];
             private CharacterClass m_CharacteClass = (CharacterClass) GetActiveInstances();
@@ -44,7 +43,7 @@ namespace RPG.Stats
                     _instances = 0;
                 }
 
-                ;
+
                 return _instances;
             }
         }
@@ -52,8 +51,7 @@ namespace RPG.Stats
         [Serializable]
         private class ProgressionStat
         {
-            [HideInInspector] [SerializeField]
-            private string statName = Enum.GetName(typeof(Stat), GetActiveInstances());
+            [HideInInspector] [SerializeField] private string statName = Enum.GetName(typeof(Stat), GetActiveInstances());
 
             [SerializeField] private Stat stat = (Stat) GetActiveInstances();
             [SerializeField] private float[] levels = new float[5];

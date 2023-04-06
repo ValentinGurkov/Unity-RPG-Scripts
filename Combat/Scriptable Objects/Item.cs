@@ -8,7 +8,7 @@ namespace Combat
     {
         [SerializeField] private string itemName;
         [SerializeField] private AnimatorOverrideController animatorOverride;
-        [SerializeField] private Weapon equippedPrefab;
+        [SerializeField] private WeaponConfig equippedPrefab;
         [SerializeField] private float itemWeight;
         [SerializeField] private ItemDefinition itemType;
         [SerializeField] private ItemSlot itemSlot;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Pooling;
+using UnityEngine;
 using Util;
 
 namespace UI.Damage_Text
@@ -15,11 +16,8 @@ namespace UI.Damage_Text
 
         public void Spawn(float damage, bool isCritical, Color color)
         {
-            GameObject instance = _pooler.SpawnFromPool(damageTextPrefab.gameObject);
+            GameObject instance = _pooler.SpawnFromPool(damageTextPrefab.gameObject, transform.position);
             if (instance == null) return;
-            instance.SetActive(false);
-            instance.transform.position = transform.position;
-            instance.SetActive(true);
             var damageText = instance.GetComponent<DamageText>();
             damageText.Initialize(damage, isCritical, color, _pooler);
         }

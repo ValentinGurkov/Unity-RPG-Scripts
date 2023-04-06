@@ -2,6 +2,6 @@
 
 namespace Combat
 {
-    [CreateAssetMenu(fileName = "New Item Definition", menuName = "Enums/Item Definition", order = 0)]
+    [CreateAssetMenu(fileName = "New Item Definition", menuName = "Enum/Item Definition", order = 0)]
     public class ItemDefinition : ScriptableObject { }
 }

@@ -46,14 +46,8 @@ namespace Combat
 
         protected void Pickup()
         {
-            if (respawnable)
-            {
-                StartCoroutine(HideForSeconds());
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            if (respawnable) StartCoroutine(HideForSeconds());
+            else Destroy(gameObject);
 
             onPickUp?.Invoke(gameObject.name);
         }

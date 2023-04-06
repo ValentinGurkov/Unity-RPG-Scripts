@@ -18,7 +18,7 @@
             public const string Health = "Health";
             public const string Gold = "Gold";
             public const string Armor = "Armor";
-            public const string Weapon = "Weapon";
+            public const string Weapon = "WeaponConfig";
         }
 
         public static class ItemSlots
@@ -48,6 +48,21 @@
             public const string Instant = "Instant";
             public const string OverTime = "Over time";
             public const string Mixed = "Mixed";
+        }
+
+        public static class CharacterClasses
+        {
+            public const string Archer = "Archer";
+            public const string Grunt = "Grunt";
+            public const string Player = "Player";
+        }
+
+        public static class Stats
+        {
+            public const string Damage = "Damage";
+            public const string Health = "Health";
+            public const string ExperienceToLevelUp = "ExperienceToLevelUp";
+            public const string ExperienceReward = "ExperienceReward";
         }
     }
 }

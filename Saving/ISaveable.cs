@@ -1,4 +1,4 @@
-﻿namespace RPG.Saving
+﻿namespace Saving
 {
     /// <summary>
     /// Implemented by every component that desires to save its' state.

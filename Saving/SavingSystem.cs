@@ -4,20 +4,21 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Logger = Util.Logger;
 
-namespace RPG.Saving
+namespace Saving
 {
     /// <summary>
     /// Core saving system functionality based on the BinaryFormatter.
     /// </summary>
     public class SavingSystem : MonoBehaviour
     {
-        private const string LAST_SCENE_BUILD_INDEX = "lastSceneBuildIndex";
+        private const string LastSceneBuildIndex = "lastSceneBuildIndex";
 
         private void SaveFile(string fileName, object state)
         {
             string path = GetPathFromSaveFile(fileName);
-            print("Saving to " + path);
+            Logger.Log($"Saving to {path}");
             using (FileStream stream = File.Open(path, FileMode.Create))
             {
                 var formatter = new BinaryFormatter();
@@ -28,12 +29,13 @@ namespace RPG.Saving
         private Dictionary<string, object> LoadFile(string fileName)
         {
             string path = GetPathFromSaveFile(fileName);
-            print("Loading from " + GetPathFromSaveFile(fileName));
             if (!File.Exists(path))
             {
                 return new Dictionary<string, object>();
             }
 
+
+            Logger.Log($"Loading from {GetPathFromSaveFile(fileName)}");
             using (FileStream stream = File.Open(path, FileMode.Open))
             {
                 var formatter = new BinaryFormatter();
@@ -48,7 +50,7 @@ namespace RPG.Saving
                 state[saveable.UUID] = saveable.CaptureState();
             }
 
-            state[LAST_SCENE_BUILD_INDEX] = SceneManager.GetActiveScene().buildIndex;
+            state[LastSceneBuildIndex] = SceneManager.GetActiveScene().buildIndex;
         }
 
         private static void RestoreState(IReadOnlyDictionary<string, object> state)
@@ -71,9 +73,9 @@ namespace RPG.Saving
         {
             Dictionary<string, object> state = LoadFile(fileName);
             int buildIndex = SceneManager.GetActiveScene().buildIndex;
-            if (state.ContainsKey(LAST_SCENE_BUILD_INDEX))
+            if (state.ContainsKey(LastSceneBuildIndex))
             {
-                buildIndex = (int) state[LAST_SCENE_BUILD_INDEX];
+                buildIndex = (int) state[LastSceneBuildIndex];
             }
 
             yield return SceneManager.LoadSceneAsync(buildIndex);
@@ -92,8 +94,9 @@ namespace RPG.Saving
             RestoreState(LoadFile(fileName));
         }
 
-        public static void Delete(string fileName)
+        public void Delete(string fileName)
         {
+            Logger.Log($"Deleting {GetPathFromSaveFile(fileName)} if present");
             File.Delete(GetPathFromSaveFile(fileName));
         }
     }

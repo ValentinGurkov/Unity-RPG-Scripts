@@ -1,5 +1,6 @@
 ﻿using System;
 using RPG.Stats;
+using Stats;
 using TMPro;
 using UnityEngine;
 

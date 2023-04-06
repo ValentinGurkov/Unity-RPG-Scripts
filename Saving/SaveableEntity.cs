@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace RPG.Saving
+namespace Saving
 {
     /// <summary>
     /// GameObjects with this component will allow saving the state of its' components.
@@ -15,22 +15,19 @@ namespace RPG.Saving
         private static readonly Dictionary<string, SaveableEntity> s_GlobalLookUp =
             new Dictionary<string, SaveableEntity>();
 
-        private ISaveable[] saveables;
+        private ISaveable[] _saveables;
 
         public string UUID => uniqueIdentifier;
 
         private void Awake()
         {
-            saveables = GetComponents<ISaveable>();
+            _saveables = GetComponents<ISaveable>();
         }
 
 #if UNITY_EDITOR
         private void Update()
         {
-            if (Application.IsPlaying(gameObject) || string.IsNullOrEmpty(gameObject.scene.path))
-            {
-                return;
-            }
+            if (Application.IsPlaying(gameObject) || string.IsNullOrEmpty(gameObject.scene.path)) return;
 
             var serializedObject = new SerializedObject(this);
             SerializedProperty property = serializedObject.FindProperty("uniqueIdentifier");
@@ -51,19 +48,15 @@ namespace RPG.Saving
                 return true;
             }
 
-            if (s_GlobalLookUp[candidate] == null || s_GlobalLookUp[candidate].UUID != candidate)
-            {
-                s_GlobalLookUp.Remove(candidate);
-                return true;
-            }
-
-            return false;
+            if (s_GlobalLookUp[candidate] != null && s_GlobalLookUp[candidate].UUID == candidate) return false;
+            s_GlobalLookUp.Remove(candidate);
+            return true;
         }
 
         public object CaptureState()
         {
             var state = new Dictionary<string, object>();
-            foreach (ISaveable saveable in saveables)
+            foreach (ISaveable saveable in _saveables)
             {
                 state[saveable.GetType().ToString()] = saveable.CaptureState();
             }
@@ -74,7 +67,7 @@ namespace RPG.Saving
         public void RestoreState(object savedState)
         {
             var state = (Dictionary<string, object>) savedState;
-            foreach (ISaveable saveable in saveables)
+            foreach (ISaveable saveable in _saveables)
             {
                 var type = saveable.GetType().ToString();
                 if (state.ContainsKey(type))

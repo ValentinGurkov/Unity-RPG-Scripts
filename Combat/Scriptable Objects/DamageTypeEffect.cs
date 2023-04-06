@@ -2,6 +2,6 @@
 
 namespace Combat
 {
-    [CreateAssetMenu(fileName = "New Damage Type Effect", menuName = "Enums/Damage Type Effect", order = 0)]
+    [CreateAssetMenu(fileName = "New Damage Type Effect", menuName = "Enum/Damage Type Effect", order = 0)]
     public class DamageTypeEffect : ScriptableObject { }
 }

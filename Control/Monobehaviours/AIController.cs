@@ -52,10 +52,7 @@ namespace Control
 
         private void Update()
         {
-            if (_aiHealth.IsDead)
-            {
-                return;
-            }
+            if (_aiHealth.IsDead) return;
 
             if (IsAggravated())
             {
@@ -109,10 +106,7 @@ namespace Control
             {
                 var ai = hit.collider.GetComponent<AIController>();
 
-                if (ai == null || ai == this)
-                {
-                    continue;
-                }
+                if (ai == null || ai == this) continue;
 
                 ai.Aggravate();
             }
@@ -165,7 +159,8 @@ namespace Control
             return patrolPath.GetWayPoint(_currentWaypointIndex);
         }
 
-        private void Aggravate()
+        // Used in Health TakeDamage event
+        public void Aggravate()
         {
             _timeSinceAggravated = 0;
         }

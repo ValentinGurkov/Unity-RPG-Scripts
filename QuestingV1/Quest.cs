@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using QuestingV1.Stage;
 using RPG.Combat;
 using RPG.Stats;
+using Stats;
 using UnityEngine;
 
 namespace QuestingV1

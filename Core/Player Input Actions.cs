@@ -77,7 +77,7 @@ namespace Input
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""MouseClick"",
+                    ""name"": ""Mouse Click"",
                     ""type"": ""Button"",
                     ""id"": ""e80282d0-273f-40d6-ac53-4af0a2f3c5e7"",
                     ""expectedControlType"": """",
@@ -406,7 +406,7 @@ namespace Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
-                    ""action"": ""MouseClick"",
+                    ""action"": ""Mouse Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1179,6 +1179,71 @@ namespace Input
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""ce006521-e1bd-489a-82c1-888432987e81"",
+            ""actions"": [
+                {
+                    ""name"": ""Save"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7daaea3-4baa-45dc-99e2-aa54b2a36e83"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Load"",
+                    ""type"": ""Button"",
+                    ""id"": ""6ebeb445-bdcb-4456-9a54-7d98037469ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Delete Save"",
+                    ""type"": ""Button"",
+                    ""id"": ""3f214c18-b772-44f6-a364-4198f1e0cb2a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4cbcac47-ebad-44f6-9546-1c27da172fb3"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Save"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""78d163b6-3052-41c6-a4b9-a7fdbc406e8e"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Load"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f6a04e00-0df1-4aa3-830e-88a103ed4540"",
+                    ""path"": ""<Keyboard>/delete"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""Delete Save"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1253,7 +1318,7 @@ namespace Input
             m_Player_Skill = m_Player.FindAction("Skill", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-            m_Player_MouseClick = m_Player.FindAction("MouseClick", throwIfNotFound: true);
+            m_Player_MouseClick = m_Player.FindAction("Mouse Click", throwIfNotFound: true);
             m_Player_MousePosition = m_Player.FindAction("Mouse Position", throwIfNotFound: true);
             m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
             // UI
@@ -1277,6 +1342,11 @@ namespace Input
             m_Camera_RotationX = m_Camera.FindAction("Rotation X", throwIfNotFound: true);
             m_Camera_RotationY = m_Camera.FindAction("Rotation Y", throwIfNotFound: true);
             m_Camera_ScrollY = m_Camera.FindAction("ScrollY", throwIfNotFound: true);
+            // Menu
+            m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
+            m_Menu_Save = m_Menu.FindAction("Save", throwIfNotFound: true);
+            m_Menu_Load = m_Menu.FindAction("Load", throwIfNotFound: true);
+            m_Menu_DeleteSave = m_Menu.FindAction("Delete Save", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -1613,6 +1683,55 @@ namespace Input
             }
         }
         public CameraActions @Camera => new CameraActions(this);
+
+        // Menu
+        private readonly InputActionMap m_Menu;
+        private IMenuActions m_MenuActionsCallbackInterface;
+        private readonly InputAction m_Menu_Save;
+        private readonly InputAction m_Menu_Load;
+        private readonly InputAction m_Menu_DeleteSave;
+        public struct MenuActions
+        {
+            private @PlayerInputActions m_Wrapper;
+            public MenuActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Save => m_Wrapper.m_Menu_Save;
+            public InputAction @Load => m_Wrapper.m_Menu_Load;
+            public InputAction @DeleteSave => m_Wrapper.m_Menu_DeleteSave;
+            public InputActionMap Get() { return m_Wrapper.m_Menu; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+            public void SetCallbacks(IMenuActions instance)
+            {
+                if (m_Wrapper.m_MenuActionsCallbackInterface != null)
+                {
+                    @Save.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnSave;
+                    @Save.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnSave;
+                    @Save.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnSave;
+                    @Load.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnLoad;
+                    @Load.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnLoad;
+                    @Load.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnLoad;
+                    @DeleteSave.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnDeleteSave;
+                    @DeleteSave.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnDeleteSave;
+                    @DeleteSave.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnDeleteSave;
+                }
+                m_Wrapper.m_MenuActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @Save.started += instance.OnSave;
+                    @Save.performed += instance.OnSave;
+                    @Save.canceled += instance.OnSave;
+                    @Load.started += instance.OnLoad;
+                    @Load.performed += instance.OnLoad;
+                    @Load.canceled += instance.OnLoad;
+                    @DeleteSave.started += instance.OnDeleteSave;
+                    @DeleteSave.performed += instance.OnDeleteSave;
+                    @DeleteSave.canceled += instance.OnDeleteSave;
+                }
+            }
+        }
+        public MenuActions @Menu => new MenuActions(this);
         private int m_KeyboardandMouseSchemeIndex = -1;
         public InputControlScheme KeyboardandMouseScheme
         {
@@ -1693,6 +1812,12 @@ namespace Input
             void OnRotationX(InputAction.CallbackContext context);
             void OnRotationY(InputAction.CallbackContext context);
             void OnScrollY(InputAction.CallbackContext context);
+        }
+        public interface IMenuActions
+        {
+            void OnSave(InputAction.CallbackContext context);
+            void OnLoad(InputAction.CallbackContext context);
+            void OnDeleteSave(InputAction.CallbackContext context);
         }
     }
 }

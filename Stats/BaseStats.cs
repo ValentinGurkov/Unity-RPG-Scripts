@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Stats;
+using UnityEngine;
 using Util;
 
 namespace RPG.Stats
@@ -10,59 +11,47 @@ namespace RPG.Stats
         [SerializeField] private CharacterClass characterClass = CharacterClass.Player;
         [SerializeField] private Progression progression;
         [SerializeField] private GameObject levelUpParticleEffect;
-        private LazyValue<int> m_CurrentLevel;
-        private Experience m_Experience;
+        private LazyValue<int> _currentLevel;
+        private Experience _experience;
 
         public delegate bool LevelUpHandler();
 
         public event LevelUpHandler OnLevelUp;
         public CharacterClass CharacterClass => characterClass;
-        public int Level => m_CurrentLevel.Value;
+        public int Level => _currentLevel.Value;
 
         private void Awake()
         {
-            m_Experience = GetComponent<Experience>();
-            m_CurrentLevel = new LazyValue<int>(CalculateLevel);
+            _experience = GetComponent<Experience>();
+            _currentLevel = new LazyValue<int>(CalculateLevel);
         }
 
         private void Start()
         {
-            m_CurrentLevel.ForceInit();
+            _currentLevel.ForceInit();
         }
 
         private void OnEnable()
         {
-            if (m_Experience != null)
-            {
-                m_Experience.OnExperienceGained += UpdateLevel;
-            }
+            if (_experience != null) _experience.OnExperienceGained += UpdateLevel;
         }
 
         private void OnDisable()
         {
-            if (m_Experience != null)
-            {
-                m_Experience.OnExperienceGained -= UpdateLevel;
-            }
+            if (_experience != null) _experience.OnExperienceGained -= UpdateLevel;
         }
 
         private void UpdateLevel()
         {
             int newLevel = CalculateLevel();
-            if (newLevel <= m_CurrentLevel.Value) return;
-            m_CurrentLevel.Value = newLevel;
-            if (OnLevelUp?.Invoke() == true)
-            {
-                LevelUpEffect();
-            }
+            if (newLevel <= _currentLevel.Value) return;
+            _currentLevel.Value = newLevel;
+            if (OnLevelUp?.Invoke() == true) LevelUpEffect();
         }
 
         private float GetAdditiveModifiers(Stat stat)
         {
-            if (!shouldUseModifiers)
-            {
-                return 0;
-            }
+            if (!shouldUseModifiers) return 0;
 
             float total = 0;
             foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
@@ -102,12 +91,12 @@ namespace RPG.Stats
 
         private int CalculateLevel()
         {
-            if (m_Experience == null)
+            if (_experience == null)
             {
                 return startingLevel;
             }
 
-            float currentXP = m_Experience.ExperiencePoints;
+            float currentXP = _experience.ExperiencePoints;
             int penultimateLevel = progression.GetLevels(Stat.ExperienceToLevelUp, characterClass);
             for (int level = 1; level <= penultimateLevel; level++)
             {
@@ -123,7 +112,7 @@ namespace RPG.Stats
 
         public float GetStat(Stat stat)
         {
-            return (progression.GetStat(stat, characterClass, m_CurrentLevel.Value) + GetAdditiveModifiers(stat)) *
+            return (progression.GetStat(stat, characterClass, _currentLevel.Value) + GetAdditiveModifiers(stat)) *
                    (1 + GetPercentageModifier(stat) / 100);
         }
     }

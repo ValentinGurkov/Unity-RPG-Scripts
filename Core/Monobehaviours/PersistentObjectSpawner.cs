@@ -1,19 +1,16 @@
 ﻿using UnityEngine;
 
-namespace RPG.Core
+namespace Core
 {
     public class PersistentObjectSpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject persistentObjectsPrefab = default;
+        [SerializeField] private GameObject persistentObjectsPrefab;
 
         private static bool _hasSpawned;
 
         private void Awake()
         {
-            if (_hasSpawned)
-            {
-                return;
-            }
+            if (_hasSpawned) return;
 
             SpawnPersistentObjects();
 

@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using Core;
+using Saving;
 using UnityEngine;
 using UnityEngine.AI;
+using Util;
 
 namespace Movement
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class CharacterMoverNavMesh : MonoBehaviour, IAction
+    public class CharacterMoverNavMesh : MonoBehaviour, IAction, ISaveable
     {
         [SerializeField] private float speed = 6f;
         [SerializeField] private float speedModifier = 1f;
@@ -57,7 +59,13 @@ namespace Movement
         {
             Cancel();
             _actionScheduler.StartAction(this);
-            if (_speedRoutine != null) StopCoroutine(_speedRoutine);
+            if (_speedRoutine != null)
+            {
+                StopCoroutine(_speedRoutine);
+                _speedRoutine = null;
+            }
+
+            ;
             if (_isDashing) return;
             _navMeshAgent.isStopped = false;
             StartCoroutine(DashRoutine(destination));
@@ -65,7 +73,14 @@ namespace Movement
 
         public void Cancel()
         {
+            if (_speedRoutine != null)
+            {
+                StopCoroutine(_speedRoutine);
+                _speedRoutine = null;
+            }
+
             _navMeshAgent.isStopped = true;
+            _navMeshAgent.acceleration = float.MaxValue;
         }
 
         private IEnumerator DashRoutine(Vector3 destination)
@@ -105,11 +120,25 @@ namespace Movement
         {
             while (_navMeshAgent.remainingDistance >= _navMeshAgent.stoppingDistance)
             {
-                yield return _navMeshAgent.speed =
-                    Mathf.Lerp(speed, _navMeshAgent.velocity.magnitude, Time.deltaTime) * speedModifier * Mathf.Clamp01(speedFraction);
+                yield return _navMeshAgent.speed = Mathf.Lerp(speed, _navMeshAgent.velocity.magnitude, Time.deltaTime) * speedModifier *
+                                                   Mathf.Clamp01(speedFraction);
             }
 
             _speedRoutine = null;
+        }
+
+        public object CaptureState()
+        {
+            return new SerializableVector3(_transform.position);
+        }
+
+        public void RestoreState(object state)
+        {
+            var position = (SerializableVector3) state;
+            _navMeshAgent.enabled = false;
+            _transform.position = position.ToVector();
+            _navMeshAgent.enabled = true;
+            _actionScheduler.CancelCurrentAction();
         }
     }
 }

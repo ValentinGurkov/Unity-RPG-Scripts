@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Combat;
 using Sirenix.OdinInspector;
+using Stats;
 using UnityEngine;
 
 namespace Core
@@ -23,5 +24,11 @@ namespace Core
 
         [SerializeField] private Dictionary<string, DamageTypeEffect> damageTypeEffects;
         public Dictionary<string, DamageTypeEffect> DamageTypeEffects => damageTypeEffects;
+
+        [SerializeField] private Dictionary<string, CharacterClass> characterClasses;
+        public Dictionary<string, CharacterClass> CharacterClasses => characterClasses;
+
+        [SerializeField] private Dictionary<string, Stat> stats;
+        public Dictionary<string, Stat> Stats => stats;
     }
 }

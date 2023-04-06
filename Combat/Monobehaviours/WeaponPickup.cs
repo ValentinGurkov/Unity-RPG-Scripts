@@ -4,7 +4,7 @@ namespace Combat
 {
     public class WeaponPickup : PickupBase
     {
-        [SerializeField] private Weapon weapon;
+        [SerializeField] private WeaponConfig weaponConfig;
 
 
         private void OnTriggerEnter(Collider other)
@@ -16,7 +16,7 @@ namespace Combat
 
         private void Pickup(FighterNew fighter)
         {
-            fighter.EquipWeapon(weapon);
+            fighter.EquipWeapon(weaponConfig);
             base.Pickup();
         }
     }

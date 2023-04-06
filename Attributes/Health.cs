@@ -1,11 +1,13 @@
 ﻿using System;
 using Core;
 using RPG.Core;
-using RPG.Saving;
-using RPG.Stats;
+using Saving;
+using Stats;
 using UnityEngine;
 using UnityEngine.Events;
 using Util;
+using BaseStats = RPG.Stats.BaseStats;
+using Stat = RPG.Stats.Stat;
 
 namespace RPG.Attributes
 {
@@ -28,7 +30,7 @@ namespace RPG.Attributes
         public class TakeDamageEvent : UnityEvent<float> { }
 
         [Serializable]
-        public class OnDieEvent : UnityEvent<String> { }
+        public class OnDieEvent : UnityEvent<string> { }
 
         public bool IsDead { get; private set; }
         public float Percentage => Fraction * 100;

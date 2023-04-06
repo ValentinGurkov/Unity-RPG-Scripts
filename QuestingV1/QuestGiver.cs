@@ -2,12 +2,12 @@
 using ConversingV1;
 using RPG.Core;
 using RPG.NPC;
-using RPG.Saving;
+using Saving;
 using UnityEngine;
 
 namespace QuestingV1
 {
-    public class QuestGiver : DialogueInitiator, IRaycastable, ISaveable
+    public class QuestGiver : DialogueInitiator, IRaycastableOld, ISaveable
     {
         [SerializeField] private Quest quest;
         [SerializeField] private Dialogue questPendingDialogue;

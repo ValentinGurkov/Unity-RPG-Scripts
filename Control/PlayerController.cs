@@ -79,8 +79,8 @@ namespace RPG.Control
             RaycastHit[] hits = RaycastAllSorted();
             foreach (RaycastHit hit in hits)
             {
-                IRaycastable[] raycastables = hit.transform.GetComponents<IRaycastable>();
-                foreach (IRaycastable raycastable in raycastables)
+                IRaycastableOld[] raycastables = hit.transform.GetComponents<IRaycastableOld>();
+                foreach (IRaycastableOld raycastable in raycastables)
                 {
                     if (!raycastable.HandleRaycast(gameObject)) continue;
                     SetCursor(raycastable.Cursor);

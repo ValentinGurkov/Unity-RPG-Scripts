@@ -1,30 +1,32 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace RPG.SceneManagement
+namespace SceneManagement
 {
     public class Fader : MonoBehaviour
     {
-        private CanvasGroup m_CanvasGroup;
-        private Coroutine m_CurrentActiveFade;
+        private CanvasGroup _canvasGroup;
+        private Coroutine _currentActiveFade;
 
         private void Awake()
         {
-            m_CanvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup = GetComponent<CanvasGroup>();
         }
 
         private IEnumerator FadeRoutine(float target, float time)
         {
-            while (!Mathf.Approximately(m_CanvasGroup.alpha, target))
+            while (!Mathf.Approximately(_canvasGroup.alpha, target))
             {
-                m_CanvasGroup.alpha = Mathf.MoveTowards(m_CanvasGroup.alpha, target, Time.deltaTime / time);
+                _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, target, Time.deltaTime / time);
                 yield return null;
             }
+
+            _currentActiveFade = null;
         }
 
         public void FadeOutImmediate()
         {
-            m_CanvasGroup.alpha = 1;
+            _canvasGroup.alpha = 1;
         }
 
         public Coroutine FadeOut(float time)
@@ -39,13 +41,10 @@ namespace RPG.SceneManagement
 
         private Coroutine Fade(float target, float time)
         {
-            if (m_CurrentActiveFade != null)
-            {
-                StopCoroutine(m_CurrentActiveFade);
-            }
+            if (_currentActiveFade != null) StopCoroutine(_currentActiveFade);
 
-            m_CurrentActiveFade = StartCoroutine(FadeRoutine(target, time));
-            return m_CurrentActiveFade;
+            _currentActiveFade = StartCoroutine(FadeRoutine(target, time));
+            return _currentActiveFade;
         }
     }
 }

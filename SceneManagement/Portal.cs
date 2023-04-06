@@ -4,8 +4,9 @@ using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using Logger = Util.Logger;
 
-namespace RPG.SceneManagement
+namespace SceneManagement
 {
     public class Portal : MonoBehaviour
     {
@@ -29,17 +30,14 @@ namespace RPG.SceneManagement
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
-            {
-                StartCoroutine(Transition(other.GetComponent<PlayerController>()));
-            }
+            if (other.CompareTag("Player")) StartCoroutine(Transition(other.GetComponent<PlayerController>()));
         }
 
         private IEnumerator Transition(PlayerController playerController)
         {
             if (sceneToLoad < 0)
             {
-                Debug.LogError("Scene to load is not set!");
+                Logger.Log("Scene to load is not set!");
                 yield break;
             }
 

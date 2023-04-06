@@ -6,7 +6,7 @@ using static Util.Utility;
 namespace RPG.NPC
 {
     [DisallowMultipleComponent]
-    public class NPCBase : MonoBehaviour, IRaycastable
+    public class NPCBase : MonoBehaviour, IRaycastableOld
     {
         public virtual CursorType Cursor => CursorType.NPC;
         protected virtual void Interact() { }

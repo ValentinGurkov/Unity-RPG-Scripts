@@ -1,30 +1,39 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Attributes;
 using Core;
 using Movement;
+using Pooling;
+using Saving;
+using Stats;
 using UnityEngine;
+using Util;
 using static Util.Utility;
 
 namespace Combat
 {
-    [RequireComponent(typeof(CharacterBehaviour))]
-    public class FighterNew : MonoBehaviour, IAction
+    [RequireComponent(typeof(CharacterBehaviour), typeof(HealthNew), typeof(ActionScheduler))]
+    public class FighterNew : MonoBehaviour, IAction, ISaveable, IModifierProvider
     {
+        [SerializeField] private Enums enums;
         [SerializeField] private float timeBetweenAttacks = 1f;
         [SerializeField] private float attackRange = 3f;
-        [SerializeField] private Weapon defaultWeapon;
+        [SerializeField] private WeaponConfig weapon;
         [SerializeField] private Transform leftHand;
         [SerializeField] private Transform rightHand;
+        [SerializeField] private ObjectPooler objectPooler;
+
 
         private IMouseInput _mouseInput;
         private CharacterMoverNavMesh _mover;
         private Animator _animator;
         private HealthNew _target;
-        private ActionScheduler _actionScheduler;
+        private CharacterBehaviour _targetCharacterBehaviour;
         private CharacterBehaviour _characterBehaviour;
+        private ActionScheduler _actionScheduler;
+        private BaseStats _baseStats;
         private Coroutine _attackRoutine;
-        private GameObject _equippedWeapon;
         private float _timeSinceLastAttack;
         private bool _attackFinished;
         private bool _isPlayer;
@@ -41,11 +50,17 @@ namespace Combat
             _mouseInput = GetComponent<IMouseInput>();
             _actionScheduler = GetComponent<ActionScheduler>();
             _characterBehaviour = GetComponent<CharacterBehaviour>();
+            _baseStats = GetComponent<BaseStats>();
 
-            //TODO what to do if there is no scriptable object defaultWeapon attached?
-            if (defaultWeapon != null) SpawnWeapon();
+            //TODO what to do if there is no scriptable object weapon attached?
+            if (weapon != null) SpawnWeapon();
 
             _isPlayer = gameObject.CompareTag("Player");
+        }
+
+        private void Start()
+        {
+            objectPooler = FindObjectOfType<ObjectPooler>();
         }
 
         private void Update()
@@ -68,6 +83,7 @@ namespace Combat
         public void Attack(GameObject target)
         {
             _target = target.GetComponent<HealthNew>();
+            _targetCharacterBehaviour = _target.GetComponent<CharacterBehaviour>();
             if (_target == null || _target.IsDead) return;
             if (_attackRoutine != null) StopCoroutine(_attackRoutine);
             _attackRoutine = StartCoroutine(PursueAndAttackTarget());
@@ -76,6 +92,7 @@ namespace Combat
         public void Cancel()
         {
             _target = null;
+            _targetCharacterBehaviour = null;
             StopAttack();
             _mover.Cancel();
             OnTargetStatusChanged?.Invoke();
@@ -87,15 +104,15 @@ namespace Combat
             _attackFinished = true;
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public void EquipWeapon(WeaponConfig weaponConfig)
         {
-            defaultWeapon = weapon;
+            weapon = weaponConfig;
             SpawnWeapon();
         }
 
         private bool GetIsInRange(Transform targetTransform)
         {
-            return IsTargetInRange(transform, targetTransform, defaultWeapon.Range);
+            return IsTargetInRange(transform, targetTransform, weapon.Range);
         }
 
 
@@ -107,15 +124,12 @@ namespace Combat
                 yield return null;
             }
 
-            if (_target == null) yield break;
+            if (_target == null || _target.IsDead) yield break;
             _actionScheduler.StartAction(this);
             AttackBehaviour();
             while (_isPlayer && _mouseInput.IsHoldingMouseButton)
             {
-                if (_attackFinished)
-                {
-                    AttackBehaviour();
-                }
+                if (_attackFinished) AttackBehaviour();
 
                 yield return null;
             }
@@ -126,12 +140,12 @@ namespace Combat
         private void MakeEyeContact()
         {
             _characterBehaviour.LookAtTarget(_target.transform);
-            _target.GetComponent<CharacterBehaviour>().LookAtTarget(gameObject.transform);
+            //_targetCharacterBehaviour.LookAtTarget(gameObject.transform);
         }
 
         private void AttackBehaviour()
         {
-            if (_target == null) return;
+            if (_target == null || _target.IsDead) return;
             MakeEyeContact();
             if (_timeSinceLastAttack < timeBetweenAttacks) return;
             // This will trigger the animation Hit() event
@@ -156,9 +170,14 @@ namespace Combat
         private void Hit()
         {
             if (_target == null) return;
-            bool isTargetDead = defaultWeapon.Attack(_target, _equippedWeapon != null ? _equippedWeapon.transform : null);
-            if (isTargetDead) _target = null;
-            OnTargetStatusChanged?.Invoke();
+            /*TODO this can be rethought and instead of the fighter calculating base damage from level + weapon stats,
+             it can only pass the base damage from level. This would make the modifier interface obsolete though.
+             What if there are other things influencing damage (buffs, etc.)? Then then the interface makes sense.*/
+            float damage = _baseStats.GetStat(enums.Stats[Constants.Stats.Damage]);
+            weapon.Attack(gameObject, _target, damage);
+            if (!_target.IsDead) return;
+            _target = null;
+            _targetCharacterBehaviour = null;
         }
 
         // Animation Trigger
@@ -169,9 +188,38 @@ namespace Combat
 
         private void SpawnWeapon()
         {
-            _equippedWeapon = defaultWeapon.Spawn(leftHand, rightHand, _animator);
-            attackRange = defaultWeapon.Range;
-            timeBetweenAttacks = defaultWeapon.Cooldown;
+            weapon.Spawn(leftHand, rightHand, _animator, objectPooler);
+            attackRange = weapon.Range;
+            timeBetweenAttacks = weapon.Cooldown;
+            weapon.OnAttackFinished += OnTargetStatusChanged;
+        }
+
+        public object CaptureState()
+        {
+            return weapon.name;
+        }
+
+        public void RestoreState(object state)
+        {
+            var weaponName = (string) state;
+            var weaponConfig = Resources.Load<WeaponConfig>(weaponName);
+            EquipWeapon(weaponConfig);
+        }
+
+        public IEnumerable<float> GetAdditiveModifiers(Stat stat)
+        {
+            if (stat == enums.Stats[Constants.Stats.Damage])
+            {
+                yield return weapon.Damage;
+            }
+        }
+
+        public IEnumerable<float> GetPercentageModifiers(Stat stat)
+        {
+            if (stat == enums.Stats[Constants.Stats.Damage])
+            {
+                yield return weapon.PercentageBonus;
+            }
         }
     }
 }

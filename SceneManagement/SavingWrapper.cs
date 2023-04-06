@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using RPG.Saving;
+using Saving;
 using UnityEngine;
 
-namespace RPG.SceneManagement
+namespace SceneManagement
 {
     /// <summary>
     /// Leverages the core saving functionality to match the game's designed way of saving.
@@ -10,9 +10,9 @@ namespace RPG.SceneManagement
     public class SavingWrapper : MonoBehaviour
     {
         [SerializeField] private float fadeOutTime = 0.5f;
-        private const string defaultSaveFile = "save";
-        private SavingSystem savingSystem;
-        private Fader fader;
+        private const string DefaultSaveFile = "save";
+        private SavingSystem _savingSystem;
+        private Fader _fader;
 
         private void Awake()
         {
@@ -34,26 +34,26 @@ namespace RPG.SceneManagement
 
         private IEnumerator LoadLastScene()
         {
-            savingSystem = GetComponent<SavingSystem>();
-            yield return savingSystem.LoadLastScene(defaultSaveFile);
-            fader = FindObjectOfType<Fader>();
-            fader.FadeOutImmediate();
-            yield return fader.FadeIn(fadeOutTime);
+            _savingSystem = GetComponent<SavingSystem>();
+            yield return _savingSystem.LoadLastScene(DefaultSaveFile);
+            //_fader = FindObjectOfType<Fader>();
+            //_fader.FadeOutImmediate();
+            //yield return _fader.FadeIn(fadeOutTime);
         }
 
         public void Save()
         {
-            savingSystem.Save(defaultSaveFile);
+            _savingSystem.Save(DefaultSaveFile);
         }
 
         public void Load()
         {
-            savingSystem.Load(defaultSaveFile);
+            _savingSystem.Load(DefaultSaveFile);
         }
 
         public void Delete()
         {
-            SavingSystem.Delete(defaultSaveFile);
+            _savingSystem.Delete(DefaultSaveFile);
         }
     }
 }
